@@ -3,6 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'package:zockblock_app/core/routing/app_router.dart';
 
 void main() {
   runApp(const ZockblockApp());
@@ -17,7 +18,8 @@ class ZockblockApp extends StatelessWidget {
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
 
-        return MaterialApp(
+        return MaterialApp.router(
+          routerConfig: appRouter,
           title: 'Zockblock',
           // i18n
           localizationsDelegates: const [
@@ -38,7 +40,6 @@ class ZockblockApp extends StatelessWidget {
               ? ThemeData(useMaterial3: true, colorScheme: darkDynamic)
               : materialTheme.dark(),
           themeMode: ThemeMode.system,
-          home: const Placeholder(),
         );
       },
     );
