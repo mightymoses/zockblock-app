@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'package:zockblock_app/core/routing/app_router.dart';
 
 void main() {
-  runApp(const ZockblockApp());
+  runApp(const ProviderScope(child: ZockblockApp()));
 }
 
 class ZockblockApp extends StatelessWidget {

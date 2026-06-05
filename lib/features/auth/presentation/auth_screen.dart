@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'auth_background.dart';
+import 'auth_viewmodel.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen>
-    with SingleTickerProviderStateMixin {
+class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -45,8 +45,25 @@ class _AuthScreenState extends State<AuthScreen>
       body: Stack(
         children: [
           AuthBackground(controller: _controller),
-          Center(
-            child: Container(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 64),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final authState = ref.watch(authViewModelProvider);
+                  return authState.isLoading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: () => ref.read(authViewModelProvider.notifier).login(),
+                          child: Text(
+                            'ANmeLdeN',
+                            style: TextStyle(fontFamily: 'ComradeBold'),
+                          ),
+                        );
+                },
+              ),
+            ),
           ),
         ],
       ),

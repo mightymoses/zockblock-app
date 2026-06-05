@@ -17,4 +17,11 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> logout() async {
     await _authService.logout();
   }
+
+  @override
+  Future<AuthUser?> getExistingSession() async {
+    final credentials = await _authService.getExistingSession();
+    if (credentials == null) return null;
+    return AuthUser.fromCredentials(credentials);
+  }
 }

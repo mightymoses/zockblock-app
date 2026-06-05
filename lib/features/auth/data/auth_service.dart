@@ -11,4 +11,8 @@ class AuthService {
   Future<void> logout() async {
     await auth0.webAuthentication().logout(useHTTPS: true);
   }
+
+  Future<Credentials?> getExistingSession() async {
+    return await auth0.credentialsManager.credentials();
+  }
 }
