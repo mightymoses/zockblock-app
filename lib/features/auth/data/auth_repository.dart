@@ -1,4 +1,6 @@
+import 'auth_user.dart';
+
 abstract class AuthRepository {
-  Future<void> login();
+  Future<AuthUser> login();
   Future<void> logout();
 }

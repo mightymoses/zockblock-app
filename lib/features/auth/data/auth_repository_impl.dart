@@ -1,6 +1,6 @@
-import 'package:auth0_flutter/auth0_flutter.dart';
 import 'auth_repository.dart';
 import 'auth_service.dart';
+import 'auth_user.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService;
@@ -8,8 +8,9 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authService);
   
   @override
-  Future<Credentials> login() async {
-    return await _authService.login();
+  Future<AuthUser> login() async {
+    final credentials = await _authService.login();
+    return AuthUser.fromCredentials(credentials);
   }
 
   @override
