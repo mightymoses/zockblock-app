@@ -24,7 +24,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         // Auth0
-        manifestPlaceholders += [auth0Domain: "zockblock.eu.auth0.com", auth0Scheme: "https"]
+        manifestPlaceholders += mapOf("auth0Domain" to "zockblock.eu.auth0.com", "auth0Scheme" to "https")
     }
 
     buildTypes {
