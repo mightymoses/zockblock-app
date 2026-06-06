@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class MarqueeRow extends StatelessWidget {
   final String asset;
-  final AnimationController controller;
+  final CurvedAnimation marqueAnimation;
   final bool reverse;
   final Color color;
   final double height;
@@ -14,7 +14,7 @@ class MarqueeRow extends StatelessWidget {
   const MarqueeRow({
     super.key,
     required this.asset,
-    required this.controller,
+    required this.marqueAnimation,
     required this.reverse,
     required this.color,
     required this.height,
@@ -30,9 +30,9 @@ class MarqueeRow extends StatelessWidget {
           maxWidth: double.infinity,
           alignment: Alignment.centerLeft,
           child: AnimatedBuilder(
-            animation: controller,
+            animation: marqueAnimation,
             builder: (context, child) {
-              final progress = reverse ? (1 - controller.value) : controller.value;
+              final progress = reverse ? (1 - marqueAnimation.value) : marqueAnimation.value;
               final offset = -(progress * _itemWidth * speedMultiplier) - (height * 0.1);
               return Transform.translate(
                 offset: Offset(offset, 0),
