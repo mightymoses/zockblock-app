@@ -1,1 +1,1 @@
-enum AuthMode { running, spinning, done }
+enum AuthMode { running, spinning, pausing }

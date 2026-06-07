@@ -97,6 +97,12 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('en'),
   ];
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGIN'**
+  String get signIn;
 }
 
 class _AppLocalizationsDelegate
