@@ -1,12 +1,25 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'auth_repository.dart';
 import 'auth_service.dart';
 import 'auth_user.dart';
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepositoryImpl(AuthService());
+});
+
+final onAuthStateChangedProvider = StreamProvider<bool>((ref) {
+  return ref.read(authRepositoryProvider).onAuthStateChanged;
+});
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService;
 
   AuthRepositoryImpl(this._authService);
-  
+
+  @override
+  Stream<bool> get onAuthStateChanged => _authService.authStateChanges;
+
   @override
   Future<AuthUser> login() async {
     final credentials = await _authService.login();
@@ -31,3 +44,4 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 }
+

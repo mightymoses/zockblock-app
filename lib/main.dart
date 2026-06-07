@@ -2,36 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/features/auth/data/auth_repository_impl.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'package:zockblock_app/core/routing/app_router.dart';
 
-import 'features/auth/presentation/auth_viewmodel.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final container = ProviderContainer();
-  final existingUser = await container.read(authRepositoryProvider).getExistingSession();
-  // Später noch prüfen, ob Onboarding abgeschlossen ist, um initialRoute entsprechend zu setzen
-
-  container.dispose();
-
-  runApp(ProviderScope(child: ZockblockApp(initialRoute: existingUser != null ? '/home' : '/auth')));
+  runApp(ProviderScope(child: ZockblockApp()));
 }
 
-class ZockblockApp extends StatelessWidget {
-  final String initialRoute;
-
-  const ZockblockApp({super.key, required this.initialRoute});
+class ZockblockApp extends ConsumerWidget {
+  const ZockblockApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(routerProvider);
+    ref.listen(onAuthStateChangedProvider, (previous, next) {
+      router.refresh();
+    });
+
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
 
         return MaterialApp.router(
-          routerConfig: createRouter(initialRoute),
+          routerConfig: router,
           title: 'Zockblock',
           // i18n
           localizationsDelegates: const [
@@ -40,10 +36,7 @@ class ZockblockApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('de'),
-            Locale('en'),
-          ],
+          supportedLocales: const [Locale('de'), Locale('en')],
           // Theme
           theme: lightDynamic != null
               ? ThemeData(useMaterial3: true, colorScheme: lightDynamic)
@@ -57,3 +50,4 @@ class ZockblockApp extends StatelessWidget {
     );
   }
 }
+
