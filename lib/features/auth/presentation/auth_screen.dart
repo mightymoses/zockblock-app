@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'auth_mode.dart';
 import 'auth_viewmodel.dart';
 import 'dart:math';
@@ -14,30 +15,23 @@ class AuthScreen extends ConsumerStatefulWidget {
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStateMixin {
-  late AnimationController _marqueeController;
-  late AnimationController _spinController;
-  late CurvedAnimation _spinAnimation;
-  late CurvedAnimation _marqueeAnimation;
-  AuthMode _mode = AuthMode.running;
+class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late CurvedAnimation _animation;
+  final _random = Random();
+  late AuthMode _mode;
 
   @override
   void initState() {
     super.initState();
-    _marqueeController = AnimationController(
+    _mode = AuthMode.values[_random.nextInt(AuthMode.values.length)];
+    print('Initial mode: $_mode');
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 3),
     );
-    _spinController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-    _spinAnimation = CurvedAnimation(
-      parent: _spinController,
-      curve: Curves.easeInOut,
-    );
-    _marqueeAnimation = CurvedAnimation(
-      parent: _marqueeController,
+    _animation = CurvedAnimation(
+      parent: _controller,
       curve: Curves.easeInOut,
     );
     _startLoop();
@@ -45,44 +39,17 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
   @override
   void dispose() {
-    _marqueeController.dispose();
-    _spinController.dispose();
-    _spinAnimation.dispose();
-    _marqueeAnimation.dispose();
+    _controller.dispose();
+    _animation.dispose();
     super.dispose();
   }
 
   Future<void> _startLoop() async {
     await Future.delayed(const Duration(milliseconds: 500));
     while (mounted) {
-      if (_checkAuthAndTransition()) break;
-
-      setState(() => _mode = AuthMode.running);
-      await _marqueeController.forward(from: 0);
-      if (!mounted) break;
-
-      if (_checkAuthAndTransition()) break;
-
-      setState(() => _mode = AuthMode.spinning);
-      await _spinController.forward(from: 0);
-
-      if (!mounted) break;
-
-      if (_checkAuthAndTransition()) break;
+      await _controller.forward(from: 0);
+      setState(() => _mode = AuthMode.values[_random.nextInt(AuthMode.values.length)]);
     }
-
-    while (mounted) {
-      await _marqueeController.forward(from: 0);
-    }
-  }
-
-  bool _checkAuthAndTransition() {
-    final authState = ref.read(authViewModelProvider);
-    if (!authState.isLoading) {
-      setState(() => _mode = AuthMode.done);
-      return true;
-    }
-    return false;
   }
 
   @override
@@ -101,8 +68,10 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
 
     final halfSmall = smallRowCount ~/ 2;
     final middleOfBottom = halfSmall + 2 + (halfSmall ~/ 2);
+    final firstLargeRowIndex = totalRows ~/ 2 - 1;
 
-    final random = Random();
+    final randomDirection = _random.nextInt(2);
+    final stopSmallRows = _random.nextBool();
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -114,14 +83,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(totalRows, (rowIndex) {
-                    final isEven = rowIndex % 2 == 0;
-                    final isFirstLargeRow = rowIndex == totalRows ~/ 2 - 1;
-                    final isSecondLargeRow = rowIndex == totalRows ~/ 2;
+                    final isZock = ((rowIndex % 2 == 0) == (firstLargeRowIndex % 2 == 0)) == (rowIndex <= middleOfBottom);
+                    final direction = (rowIndex % 2 == randomDirection) == (rowIndex <= middleOfBottom);
+                    final isFirstLargeRow = rowIndex == firstLargeRowIndex;
+                    final isSecondLargeRow = rowIndex == firstLargeRowIndex + 1;
                     final isLargeRow = isFirstLargeRow || isSecondLargeRow;
 
                     return Stack(
                       children: [
-                        _mode == AuthMode.done && rowIndex == middleOfBottom 
+                        rowIndex == middleOfBottom 
                             ? SizedBox(
                                 height: smallHeight,
                                 child: Row(
@@ -140,7 +110,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                                     TextButton(
                                       onPressed: () => ref.read(authViewModelProvider.notifier).login(),
                                       child: Text(
-                                        'ANmeLdeN',
+                                        AppLocalizations.of(context)!.signIn,
                                         style: TextStyle(fontFamily: 'ComradeBold'),
                                       ),
                                     ),
@@ -158,33 +128,33 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with TickerProviderStat
                                 ),
                               )
                             : MarqueeRow(
-                                asset: isEven && !isSecondLargeRow || isFirstLargeRow
+                                asset: isZock
                                     ? 'assets/graphics/zock.svg'
                                     : 'assets/graphics/block.svg',
-                                marqueAnimation: _marqueeAnimation,
-                                reverse: !isEven,
+                                marqueAnimation: _animation,
+                                reverse: direction,
                                 color: color,
                                 height: isLargeRow ? largeHeight : smallHeight,
-                                speedMultiplier: _mode == AuthMode.done && isLargeRow ? 0 : (isLargeRow ? random.nextInt(2) + 1 : random.nextInt(3) + 3),
+                                speedMultiplier: (_mode != AuthMode.running && isLargeRow) || (stopSmallRows && !isLargeRow) ? 0 : (isLargeRow ? _random.nextInt(2) + 1 : _random.nextInt(3) + 2),
                               ),
                         if (_mode == AuthMode.spinning && isLargeRow) 
                           Row (
                             children: [
                               SpinningCircle(
-                                spinAnimation: _spinAnimation,
+                                spinAnimation: _animation,
                                 size: largeHeight,
                                 isDark: isDark,
                                 assetName: isFirstLargeRow ? 'Zock-Links' : 'Block-Links',
-                                speedMultiplier: random.nextInt(3) + 1,
-                                reverse: random.nextBool(),
+                                speedMultiplier: _random.nextInt(4) + 1,
+                                reverse: _random.nextBool(),
                               ),
                               SpinningCircle(
-                                spinAnimation: _spinAnimation,
+                                spinAnimation: _animation,
                                 size: largeHeight,
                                 isDark: isDark,
                                 assetName: isFirstLargeRow ? 'Zock-Rechts' : 'Block-Rechts',
-                                speedMultiplier: random.nextInt(3) + 1,
-                                reverse: random.nextBool(),
+                                speedMultiplier: _random.nextInt(4) + 1,
+                                reverse: _random.nextBool(),
                               ),
                             ],
                           )
