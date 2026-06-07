@@ -12,7 +12,11 @@ class AuthService {
     await auth0.webAuthentication().logout(useHTTPS: true);
   }
 
-  Future<Credentials?> getExistingSession() async {
+  Future<bool> hasValidCredentials() async {
+    return await auth0.credentialsManager.hasValidCredentials();
+  }
+
+  Future<Credentials?> getCredentials() async {
     return await auth0.credentialsManager.credentials();
   }
 }

@@ -6,12 +6,23 @@ import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
 import 'package:zockblock_app/core/routing/app_router.dart';
 
-void main() {
-  runApp(const ProviderScope(child: ZockblockApp()));
+import 'features/auth/presentation/auth_viewmodel.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final container = ProviderContainer();
+  final existingUser = await container.read(authRepositoryProvider).getExistingSession();
+  // Später noch prüfen, ob Onboarding abgeschlossen ist, um initialRoute entsprechend zu setzen
+
+  container.dispose();
+
+  runApp(ProviderScope(child: ZockblockApp(initialRoute: existingUser != null ? '/home' : '/auth')));
 }
 
 class ZockblockApp extends StatelessWidget {
-  const ZockblockApp({super.key});
+  final String initialRoute;
+
+  const ZockblockApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +31,7 @@ class ZockblockApp extends StatelessWidget {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
 
         return MaterialApp.router(
-          routerConfig: appRouter,
+          routerConfig: createRouter(initialRoute),
           title: 'Zockblock',
           // i18n
           localizationsDelegates: const [

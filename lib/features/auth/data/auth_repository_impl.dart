@@ -20,8 +20,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthUser?> getExistingSession() async {
-    final credentials = await _authService.getExistingSession();
-    if (credentials == null) return null;
-    return AuthUser.fromCredentials(credentials);
+    try {
+      final hasValid = await _authService.hasValidCredentials();
+      if (!hasValid) return null;
+      final credentials = await _authService.getCredentials();
+      if (credentials == null) return null;
+      return AuthUser.fromCredentials(credentials);
+    } catch (e) {
+      return null;
+    }
   }
 }
