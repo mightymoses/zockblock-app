@@ -1,16 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/auth_repository_impl.dart';
-import '../data/auth_user.dart';
+import '../data/auth_session.dart';
 
-final authViewModelProvider = AsyncNotifierProvider<AuthViewModel, AuthUser?>(
-  () {
-    return AuthViewModel();
-  },
-);
+final authViewModelProvider =
+    AsyncNotifierProvider<AuthViewModel, AuthSession?>(() {
+      return AuthViewModel();
+    });
 
-class AuthViewModel extends AsyncNotifier<AuthUser?> {
+class AuthViewModel extends AsyncNotifier<AuthSession?> {
   @override
-  Future<AuthUser?> build() async {
+  Future<AuthSession?> build() async {
     return await ref.read(authRepositoryProvider).getExistingSession();
   }
 
@@ -21,4 +20,3 @@ class AuthViewModel extends AsyncNotifier<AuthUser?> {
     );
   }
 }
-

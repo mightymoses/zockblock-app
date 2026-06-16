@@ -1,9 +1,8 @@
-import 'auth_user.dart';
+import 'auth_session.dart';
 
 abstract class AuthRepository {
   Stream<bool> get onAuthStateChanged;
-  Future<AuthUser> login();
+  Future<AuthSession> login();
   Future<void> logout();
-  Future<AuthUser?> getExistingSession();
+  Future<AuthSession?> getExistingSession();
 }
-

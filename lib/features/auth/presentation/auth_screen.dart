@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'auth_mode.dart';
 import 'auth_viewmodel.dart';
@@ -15,7 +16,8 @@ class AuthScreen extends ConsumerStatefulWidget {
   ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProviderStateMixin {
+class _AuthScreenState extends ConsumerState<AuthScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late CurvedAnimation _animation;
   final _random = Random();
@@ -25,15 +27,11 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
   void initState() {
     super.initState();
     _mode = AuthMode.values[_random.nextInt(AuthMode.values.length)];
-    print('Initial mode: $_mode');
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
     );
-    _animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _startLoop();
   }
 
@@ -48,7 +46,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
     await Future.delayed(const Duration(milliseconds: 500));
     while (mounted) {
       await _controller.forward(from: 0);
-      setState(() => _mode = AuthMode.values[_random.nextInt(AuthMode.values.length)]);
+      setState(
+        () => _mode = AuthMode.values[_random.nextInt(AuthMode.values.length)],
+      );
     }
   }
 
@@ -60,8 +60,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = isDark ? Colors.white : Colors.black;
 
-    final smallHeight = screenWidth / 8.6; // 4 SVGs nebeneinander mit dazwischen jeweils 0.2 * height Abstand
-    final largeHeight = screenWidth / 2; // 1 SVG (Da Seitenverhältnisse der SVGs genau 1:2 sind)
+    final smallHeight =
+        screenWidth /
+        8.6; // 4 SVGs nebeneinander mit dazwischen jeweils 0.2 * height Abstand
+    final largeHeight =
+        screenWidth /
+        2; // 1 SVG (Da Seitenverhältnisse der SVGs genau 1:2 sind)
     final heightAfterLarge = screenHeight - (largeHeight * 2);
     final smallRowCount = ((heightAfterLarge / smallHeight).floor() ~/ 2) * 2;
     final totalRows = smallRowCount + 2;
@@ -76,22 +80,27 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: ClipRect(
-      child: SizedBox.expand(
+        child: SizedBox.expand(
           child: Column(
             children: [
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(totalRows, (rowIndex) {
-                    final isZock = ((rowIndex % 2 == 0) == (firstLargeRowIndex % 2 == 0)) == (rowIndex <= middleOfBottom);
-                    final direction = (rowIndex % 2 == randomDirection) == (rowIndex <= middleOfBottom);
+                    final isZock =
+                        ((rowIndex % 2 == 0) ==
+                            (firstLargeRowIndex % 2 == 0)) ==
+                        (rowIndex <= middleOfBottom);
+                    final direction =
+                        (rowIndex % 2 == randomDirection) ==
+                        (rowIndex <= middleOfBottom);
                     final isFirstLargeRow = rowIndex == firstLargeRowIndex;
                     final isSecondLargeRow = rowIndex == firstLargeRowIndex + 1;
                     final isLargeRow = isFirstLargeRow || isSecondLargeRow;
 
                     return Stack(
                       children: [
-                        rowIndex == middleOfBottom 
+                        rowIndex == middleOfBottom
                             ? SizedBox(
                                 height: smallHeight,
                                 child: Row(
@@ -103,15 +112,22 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                                         child: SvgPicture.asset(
                                           'assets/graphics/Pfeil-Links.svg',
                                           height: smallHeight,
-                                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                                        )
-                                      )
+                                          colorFilter: ColorFilter.mode(
+                                            color,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     TextButton(
-                                      onPressed: () => ref.read(authViewModelProvider.notifier).login(),
+                                      onPressed: () => ref
+                                          .read(authSessionProvider.notifier)
+                                          .login(),
                                       child: Text(
                                         AppLocalizations.of(context)!.signIn,
-                                        style: TextStyle(fontFamily: 'ComradeBold'),
+                                        style: TextStyle(
+                                          fontFamily: 'ComradeBold',
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -120,9 +136,12 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                                         child: SvgPicture.asset(
                                           'assets/graphics/Pfeil-Rechts.svg',
                                           height: smallHeight,
-                                          colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                                        )
-                                      )
+                                          colorFilter: ColorFilter.mode(
+                                            color,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -135,16 +154,24 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                                 reverse: direction,
                                 color: color,
                                 height: isLargeRow ? largeHeight : smallHeight,
-                                speedMultiplier: (_mode != AuthMode.running && isLargeRow) || (stopSmallRows && !isLargeRow) ? 0 : (isLargeRow ? _random.nextInt(2) + 1 : _random.nextInt(3) + 2),
+                                speedMultiplier:
+                                    (_mode != AuthMode.running && isLargeRow) ||
+                                        (stopSmallRows && !isLargeRow)
+                                    ? 0
+                                    : (isLargeRow
+                                          ? _random.nextInt(2) + 1
+                                          : _random.nextInt(3) + 2),
                               ),
-                        if (_mode == AuthMode.spinning && isLargeRow) 
-                          Row (
+                        if (_mode == AuthMode.spinning && isLargeRow)
+                          Row(
                             children: [
                               SpinningCircle(
                                 spinAnimation: _animation,
                                 size: largeHeight,
                                 isDark: isDark,
-                                assetName: isFirstLargeRow ? 'Zock-Links' : 'Block-Links',
+                                assetName: isFirstLargeRow
+                                    ? 'Zock-Links'
+                                    : 'Block-Links',
                                 speedMultiplier: _random.nextInt(4) + 1,
                                 reverse: _random.nextBool(),
                               ),
@@ -152,13 +179,15 @@ class _AuthScreenState extends ConsumerState<AuthScreen> with SingleTickerProvid
                                 spinAnimation: _animation,
                                 size: largeHeight,
                                 isDark: isDark,
-                                assetName: isFirstLargeRow ? 'Zock-Rechts' : 'Block-Rechts',
+                                assetName: isFirstLargeRow
+                                    ? 'Zock-Rechts'
+                                    : 'Block-Rechts',
                                 speedMultiplier: _random.nextInt(4) + 1,
                                 reverse: _random.nextBool(),
                               ),
                             ],
-                          )
-                      ]
+                          ),
+                      ],
                     );
                   }),
                 ),

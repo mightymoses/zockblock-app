@@ -1,11 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'auth_repository.dart';
 import 'auth_service.dart';
-import 'auth_user.dart';
+import 'auth_session.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepositoryImpl(AuthService());
+  final authService = ref.watch(authServiceProvider);
+  return AuthRepositoryImpl(authService);
 });
 
 final onAuthStateChangedProvider = StreamProvider<bool>((ref) {
@@ -13,35 +16,46 @@ final onAuthStateChangedProvider = StreamProvider<bool>((ref) {
 });
 
 class AuthRepositoryImpl implements AuthRepository {
-  final AuthService _authService;
-
   AuthRepositoryImpl(this._authService);
 
-  @override
-  Stream<bool> get onAuthStateChanged => _authService.authStateChanges;
+  final AuthService _authService;
+  final _authStatusController = StreamController<bool>.broadcast();
 
   @override
-  Future<AuthUser> login() async {
+  Stream<bool> get onAuthStateChanged => _authStatusController.stream;
+
+  @override
+  Future<AuthSession> login() async {
     final credentials = await _authService.login();
-    return AuthUser.fromCredentials(credentials);
+    final authSession = AuthSession.fromCredentials(credentials);
+
+    _authStatusController.add(true);
+    return authSession;
   }
 
   @override
   Future<void> logout() async {
     await _authService.logout();
+    _authStatusController.add(false);
   }
 
   @override
-  Future<AuthUser?> getExistingSession() async {
+  Future<AuthSession?> getExistingSession() async {
     try {
       final hasValid = await _authService.hasValidCredentials();
-      if (!hasValid) return null;
+      if (!hasValid) {
+        _authStatusController.add(false);
+        return null;
+      }
+
       final credentials = await _authService.getCredentials();
-      if (credentials == null) return null;
-      return AuthUser.fromCredentials(credentials);
+      final authSession = AuthSession.fromCredentials(credentials);
+
+      _authStatusController.add(true);
+      return authSession;
     } catch (e) {
+      _authStatusController.add(false);
       return null;
     }
   }
 }
-
