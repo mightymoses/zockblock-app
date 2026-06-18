@@ -103,6 +103,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'LOGIN'**
   String get signIn;
+
+  /// No description provided for @kniffelFieldOnes.
+  ///
+  /// In en, this message translates to:
+  /// **'Aces'**
+  String get kniffelFieldOnes;
+
+  /// No description provided for @kniffelFieldTwos.
+  ///
+  /// In en, this message translates to:
+  /// **'Twos'**
+  String get kniffelFieldTwos;
+
+  /// No description provided for @kniffelFieldThrees.
+  ///
+  /// In en, this message translates to:
+  /// **'Threes'**
+  String get kniffelFieldThrees;
+
+  /// No description provided for @kniffelFieldFours.
+  ///
+  /// In en, this message translates to:
+  /// **'Fours'**
+  String get kniffelFieldFours;
+
+  /// No description provided for @kniffelFieldFives.
+  ///
+  /// In en, this message translates to:
+  /// **'Fives'**
+  String get kniffelFieldFives;
+
+  /// No description provided for @kniffelFieldSixes.
+  ///
+  /// In en, this message translates to:
+  /// **'Sixes'**
+  String get kniffelFieldSixes;
+
+  /// No description provided for @kniffelFieldThreeOfAKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Three of a kind'**
+  String get kniffelFieldThreeOfAKind;
+
+  /// No description provided for @kniffelFieldFourOfAKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Four of a kind'**
+  String get kniffelFieldFourOfAKind;
+
+  /// No description provided for @kniffelFieldFullHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Full House'**
+  String get kniffelFieldFullHouse;
+
+  /// No description provided for @kniffelFieldSmallStraight.
+  ///
+  /// In en, this message translates to:
+  /// **'Small Straight'**
+  String get kniffelFieldSmallStraight;
+
+  /// No description provided for @kniffelFieldLargeStraight.
+  ///
+  /// In en, this message translates to:
+  /// **'Large Straight'**
+  String get kniffelFieldLargeStraight;
+
+  /// No description provided for @kniffelFieldKniffel.
+  ///
+  /// In en, this message translates to:
+  /// **'Yahtzee'**
+  String get kniffelFieldKniffel;
+
+  /// No description provided for @kniffelFieldChance.
+  ///
+  /// In en, this message translates to:
+  /// **'Chance'**
+  String get kniffelFieldChance;
+
+  /// No description provided for @kniffelTotalUpperSum.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper sum'**
+  String get kniffelTotalUpperSum;
+
+  /// No description provided for @kniffelTotalDifference.
+  ///
+  /// In en, this message translates to:
+  /// **'Difference'**
+  String get kniffelTotalDifference;
+
+  /// No description provided for @kniffelTotalBonus.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonus'**
+  String get kniffelTotalBonus;
+
+  /// No description provided for @kniffelTotalUpperTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper total'**
+  String get kniffelTotalUpperTotal;
+
+  /// No description provided for @kniffelTotalLowerTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower total'**
+  String get kniffelTotalLowerTotal;
+
+  /// No description provided for @kniffelTotalExtraKniffel.
+  ///
+  /// In en, this message translates to:
+  /// **'Extra Kniffel'**
+  String get kniffelTotalExtraKniffel;
+
+  /// No description provided for @kniffelTotalGrandTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get kniffelTotalGrandTotal;
+
+  /// No description provided for @kniffelSectionUpper.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper block'**
+  String get kniffelSectionUpper;
+
+  /// No description provided for @kniffelSectionLower.
+  ///
+  /// In en, this message translates to:
+  /// **'Lower block'**
+  String get kniffelSectionLower;
+
+  /// No description provided for @kniffelSectionTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Scores'**
+  String get kniffelSectionTotals;
 }
 
 class _AppLocalizationsDelegate

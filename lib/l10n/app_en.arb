@@ -1,4 +1,27 @@
 {
   "@@locale": "en",
-  "signIn": "LOGIN"
+  "signIn": "LOGIN",
+  "kniffelFieldOnes": "Aces",
+  "kniffelFieldTwos": "Twos",
+  "kniffelFieldThrees": "Threes",
+  "kniffelFieldFours": "Fours",
+  "kniffelFieldFives": "Fives",
+  "kniffelFieldSixes": "Sixes",
+  "kniffelFieldThreeOfAKind": "Three of a kind",
+  "kniffelFieldFourOfAKind": "Four of a kind",
+  "kniffelFieldFullHouse": "Full House",
+  "kniffelFieldSmallStraight": "Small Straight",
+  "kniffelFieldLargeStraight": "Large Straight",
+  "kniffelFieldKniffel": "Yahtzee",
+  "kniffelFieldChance": "Chance",
+  "kniffelTotalUpperSum": "Upper sum",
+  "kniffelTotalDifference": "Difference",
+  "kniffelTotalBonus": "Bonus",
+  "kniffelTotalUpperTotal": "Upper total",
+  "kniffelTotalLowerTotal": "Lower total",
+  "kniffelTotalExtraKniffel": "Extra Kniffel",
+  "kniffelTotalGrandTotal": "Total",
+  "kniffelSectionUpper": "Upper block",
+  "kniffelSectionLower": "Lower block",
+  "kniffelSectionTotals": "Scores"
 }

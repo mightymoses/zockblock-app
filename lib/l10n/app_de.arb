@@ -1,4 +1,27 @@
 {
   "@@locale": "de",
-  "signIn": "ANmeLdeN"
+  "signIn": "ANmeLdeN",
+  "kniffelFieldOnes": "Einer",
+  "kniffelFieldTwos": "Zweier",
+  "kniffelFieldThrees": "Dreier",
+  "kniffelFieldFours": "Vierer",
+  "kniffelFieldFives": "Fünfer",
+  "kniffelFieldSixes": "Sechser",
+  "kniffelFieldThreeOfAKind": "Dreierpasch",
+  "kniffelFieldFourOfAKind": "Viererpasch",
+  "kniffelFieldFullHouse": "Full House",
+  "kniffelFieldSmallStraight": "Kleine Straße",
+  "kniffelFieldLargeStraight": "Große Straße",
+  "kniffelFieldKniffel": "Kniffel",
+  "kniffelFieldChance": "Chance",
+  "kniffelTotalUpperSum": "Summe oben",
+  "kniffelTotalDifference": "Differenz",
+  "kniffelTotalBonus": "Bonus",
+  "kniffelTotalUpperTotal": "Gesamt oben",
+  "kniffelTotalLowerTotal": "Gesamt unten",
+  "kniffelTotalExtraKniffel": "Zusatz-Kniffel",
+  "kniffelTotalGrandTotal": "Gesamt",
+  "kniffelSectionUpper": "Oberer Block",
+  "kniffelSectionLower": "Unterer Block",
+  "kniffelSectionTotals": "Spielstände"
 }
