@@ -5,6 +5,7 @@ import 'kniffel_layout.dart';
 
 class ExpansionRow extends StatelessWidget {
   const ExpansionRow({
+    super.key, 
     required this.values,
     this.onValueSelected,
   });

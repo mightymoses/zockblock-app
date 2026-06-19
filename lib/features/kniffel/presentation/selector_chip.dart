@@ -26,7 +26,7 @@ class SelectorChip extends StatelessWidget {
       onTap: cell.isEmpty ? onSelect : null,
       onLongPress: cell.isEmpty ? onCross : null, // oberer Block immer streichbar
       isActive: isActive,
-      child: KniffelCellContent(cell, style: textStyle),
+      child: KniffelCellContent(cell: cell, style: textStyle),
     );
   }
 }

@@ -129,7 +129,7 @@ class _KniffelInputChipState extends State<KniffelInputChip>
       isActive: widget.isActive,
       child: widget.isActive
           ? _buildField()
-          : KniffelCellContent(widget.cell, style: widget.textStyle),
+          : KniffelCellContent(cell: widget.cell, style: widget.textStyle),
     );
   }
 

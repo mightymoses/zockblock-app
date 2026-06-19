@@ -28,7 +28,7 @@ class FixedValueChip extends StatelessWidget {
       onTap: cell.isEmpty ? () => onScore(value) : null,
       onLongPress:
           (field.canCross && cell.isEmpty) ? onCross : null,
-      child: KniffelCellContent(cell, style: textStyle),
+      child: KniffelCellContent(cell: cell, style: textStyle),
     );
   }
 }

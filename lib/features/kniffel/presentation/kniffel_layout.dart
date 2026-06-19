@@ -14,7 +14,8 @@ abstract final class KniffelLayout {
   static const double horizontalPadding = AppSpacing.md;
   static const double verticalPadding = AppSpacing.sm;
   static const double rowHeight = chipHeight + verticalPadding * 2;
-  static const double totalsRowHeight = 24;
+  static const double labelAndTitleHeight = 24;
+  static const double totalsRowHeight = labelAndTitleHeight;
   static const double titleRowHeight = avatarRadius * 2 + AppSpacing.md * 2;
   static const double chipRadius = AppRadius.sm;
   static const double bottomSpacing = AppSpacing.xxxl;

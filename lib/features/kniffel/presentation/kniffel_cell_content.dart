@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import '../kniffel_cell.dart';
 
 class KniffelCellContent extends StatelessWidget {
-  const KniffelCellContent(this.cell, {super.key, required this.style});
+  const KniffelCellContent({
+    super.key, 
+    required this.cell,
+    required this.style
+    });
 
   final KniffelCell cell;
   final TextStyle style;

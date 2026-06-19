@@ -13,6 +13,7 @@ import 'selector_chip.dart';
 
 class SheetRow extends StatelessWidget {
   const SheetRow({
+    super.key, 
     required this.field,
     required this.controller,
     required this.playerCount,

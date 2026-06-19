@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class ScrollableColumns extends StatelessWidget {
   const ScrollableColumns({
+    super.key, 
     required this.controller,
     required this.child,
   });
