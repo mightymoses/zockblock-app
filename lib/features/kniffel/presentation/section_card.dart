@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'kniffel_layout.dart';
-import 'section_title.dart';
 
 class SectionCard extends StatelessWidget {
   const SectionCard({
