@@ -129,7 +129,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
         measureMaxTextWidth(context,
             [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
             sectionTitleStyle),
-      ].reduce(max) + KniffelLayout.labelPadding + 32; // TODO: Mit der 32 rumspielen (Und dann im Layout als Kontante festlegen)
+      ].reduce(max) + 32; // TODO: Mit der 32 rumspielen (Und dann im Layout als Kontante festlegen)
 
     return Scaffold(
       appBar: AppBar(title: const Text('Test')),
@@ -192,15 +192,12 @@ class _KniffelScreenState extends State<KniffelScreen> {
                                   height: KniffelLayout.totalsRowHeight, 
                                   child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
-                                      child: Text(
-                                        total.label(l10n),
-                                        style: total.isEmphasized
-                                            ? emphasizedStyle
-                                            : labelStyle,
-                                        ),
-                                    )
+                                    child: Text(
+                                      total.label(l10n),
+                                      style: total.isEmphasized
+                                          ? emphasizedStyle
+                                          : labelStyle,
+                                      ),
                                   ),
                                 ),
                             ],
@@ -225,6 +222,9 @@ class _KniffelScreenState extends State<KniffelScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  SizedBox(
+                    height: KniffelLayout.bottomSpacing,
                   ),
                 ],
               ),

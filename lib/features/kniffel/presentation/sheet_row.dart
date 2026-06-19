@@ -55,10 +55,7 @@ class SheetRow extends StatelessWidget {
         children: [
           SizedBox(
             width: labelWidth,
-            child: Padding(
-              padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
-              child: Text(label, style: labelStyle),
-            ),
+            child: Text(label, style: labelStyle),
           ),
           Expanded(
             child: ScrollableColumns(

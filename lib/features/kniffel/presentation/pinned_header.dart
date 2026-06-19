@@ -25,11 +25,11 @@ class PinnedHeader extends StatelessWidget {
     return SizedBox(
       height: KniffelLayout.titleRowHeight,
       child: Padding(
-        padding: const EdgeInsets.only(left: KniffelLayout.cardMargin, right: KniffelLayout.cardMargin + KniffelLayout.labelPadding),
+        padding: const EdgeInsets.only(left: KniffelLayout.cardMargin, right: KniffelLayout.cardMargin + KniffelLayout.horizontalPadding),
         child: Row(
           children: [
             SizedBox(
-              width: labelWidth,
+              width: labelWidth + KniffelLayout.horizontalPadding,
               child: Text(
                   title,
                   style: sectionTitleStyle,

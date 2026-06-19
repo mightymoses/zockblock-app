@@ -16,26 +16,23 @@ class ExpansionRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: KniffelLayout.rowHeight,
-      child: Padding(
-        padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
-        child: ColumnsRow(
-          count: values.length,
-          cellBuilder: (index) {
-            final value = values[index];
-            return GestureDetector(
-              onTap: () => onValueSelected?.call(value),
-              child: Container(
-                width: KniffelLayout.chipWidth,
-                height: KniffelLayout.chipHeight,
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade200,
-                  borderRadius: BorderRadius.circular(KniffelLayout.chipRadius),
-                ),
-                child: Center(child: Text('$value')),
+      child: ColumnsRow(
+        count: values.length,
+        cellBuilder: (index) {
+          final value = values[index];
+          return GestureDetector(
+            onTap: () => onValueSelected?.call(value),
+            child: Container(
+              width: KniffelLayout.chipWidth,
+              height: KniffelLayout.chipHeight,
+              decoration: BoxDecoration(
+                color: Colors.orange.shade200,
+                borderRadius: BorderRadius.circular(KniffelLayout.chipRadius),
               ),
-            );
-          },
-        )
+              child: Center(child: Text('$value')),
+            ),
+          );
+        },
       ),
     );
   }

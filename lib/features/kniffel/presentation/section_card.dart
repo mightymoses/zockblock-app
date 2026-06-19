@@ -21,7 +21,7 @@ class SectionCard extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: KniffelLayout.cardMargin),
           clipBehavior: Clip.antiAlias,
           child: Padding(
-            padding: EdgeInsetsGeometry.only(top: KniffelLayout.verticalPadding, bottom: KniffelLayout.verticalPadding, right: KniffelLayout.labelPadding),
+            padding: EdgeInsetsGeometry.symmetric(vertical: KniffelLayout.verticalPadding, horizontal: KniffelLayout.horizontalPadding),
             child: child
           ),
         ),
