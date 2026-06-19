@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'kniffel_layout.dart';
+
 class ChipShell extends StatelessWidget {
   const ChipShell({
     super.key,
@@ -26,12 +28,12 @@ class ChipShell extends StatelessWidget {
           onLongPress!();
       },
       child: Container(
-        width: 56,
-        height: 36,
+        width: KniffelLayout.chipWidth,
+        height: KniffelLayout.chipHeight,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.orange.shade300,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(KniffelLayout.chipRadius),
           border: isActive
               ? Border.all(width: 2, color: Colors.orange.shade900)
               : null,

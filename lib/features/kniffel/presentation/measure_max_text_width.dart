@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Breite des breitesten Strings in [texts], gerendert mit [style].
 double measureMaxTextWidth(
   BuildContext context,
   List<String> texts,

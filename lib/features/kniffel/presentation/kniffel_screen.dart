@@ -8,12 +8,15 @@ import 'package:zockblock_app/l10n/app_localizations.dart';
 import '../kniffel_field.dart';
 import '../kniffel_total.dart';
 import '../kniffel_cell.dart';
+import 'columns_row.dart';
 import 'expansion_row.dart';
 import 'kniffel_labels.dart';
+import 'kniffel_layout.dart';
 import 'pinned_header.dart';
 import 'scrollable_columns.dart';
 import 'section_title.dart';
 import 'sheet_row.dart';
+import 'section_card.dart';
 
 /// Gerüst für den Kniffel-Scoresheet-Screen.
 /// Nur Layout + Scroll-Sync, alles Dummy: keine echten Chips, kein State.
@@ -30,10 +33,6 @@ class _KniffelScreenState extends State<KniffelScreen> {
   
   // --- Dummy-Daten -------------------------------------------------------
   static const _players = ['Moritz', 'Lisa', 'Tim', 'Anna', 'Max', 'Sophie'];
-
-  // --- Maße (später ggf. in Konstanten-Datei / dynamisch) ----------------
-  static const double _rowHeight = 56;
-  static const double _columnWidth = 72;
 
   // --- Scroll-Sync -------------------------------------------------------
   final _scrollGroup = LinkedScrollControllerGroup();
@@ -131,7 +130,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
         measureMaxTextWidth(context,
             [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
             sectionTitleStyle),
-      ].reduce(max) + 16 + 32;
+      ].reduce(max) + KniffelLayout.labelPadding + 32; // TODO: Mit der 32 rumspielen (Und dann im Layout als Kontante festlegen)
 
     return Scaffold(
       appBar: AppBar(title: const Text('Test')),
@@ -143,7 +142,6 @@ class _KniffelScreenState extends State<KniffelScreen> {
             controller: _headerController,
             players: _players,
             labelWidth: labelWidth,
-            columnWidth: _columnWidth,
             sectionTitleStyle: sectionTitleStyle,
           ),
           Expanded(
@@ -151,70 +149,83 @@ class _KniffelScreenState extends State<KniffelScreen> {
               controller: _verticalController,
               child: Column(
                 children: [
-                  for (final field in _upperFields) ...[
-                    _buildRow(field, labelStyle, labelWidth, chipStyle),
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeInOut,
-                      child: _activeCell?.$1 == field
-                          ? ExpansionRow(
-                              values: field.selectorValues!,
-                              onValueSelected: (value) => _setValue(field, _activeCell!.$2, value),
-                            )
-                          : const SizedBox.shrink(),
-                    ),
-                  ],
-                  SectionTitle(l10n.kniffelSectionLower, sectionTitleStyle),
-                  for (final field in _lowerFields)
-                    _buildRow(field, labelStyle, labelWidth, chipStyle),
-                  SectionTitle(l10n.kniffelSectionTotals, sectionTitleStyle),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: labelWidth,
-                        child: Column(
-                          children: [
-                            for (final total in KniffelTotal.values)
-                              SizedBox(
-                                height: 32, // Totals-Zeilen kompakter als Feld-Zeilen
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 16),
-                                    child: Text(
-                                      total.label(l10n),
-                                      style: total.isEmphasized
-                                          ? emphasizedStyle
-                                          : labelStyle,
-                                      ),
+                  SectionCard(
+                    child: Column(
+                      children: [
+                        for (final field in _upperFields) ...[
+                          _buildRow(field, labelStyle, labelWidth, chipStyle),
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                            child: _activeCell?.$1 == field
+                                ? ExpansionRow(
+                                    values: field.selectorValues!,
+                                    onValueSelected: (value) => _setValue(field, _activeCell!.$2, value),
                                   )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
+                      ]
+                    )
+                  ),
+                  SectionCard(
+                    title: l10n.kniffelSectionLower,
+                    titleStyle: sectionTitleStyle,
+                    child: Column(
+                      children: [
+                        for (final field in _lowerFields)
+                          _buildRow(field, labelStyle, labelWidth, chipStyle),
+                      ]
+                    )
+                  ),
+                  SectionCard(
+                    title: l10n.kniffelSectionTotals,
+                    titleStyle: sectionTitleStyle,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: labelWidth,
+                          child: Column(
+                            children: [
+                              for (final total in KniffelTotal.values)
+                                SizedBox(
+                                  height: KniffelLayout.totalsRowHeight, 
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
+                                      child: Text(
+                                        total.label(l10n),
+                                        style: total.isEmphasized
+                                            ? emphasizedStyle
+                                            : labelStyle,
+                                        ),
+                                    )
+                                  ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: ScrollableColumns(
-                          controller: _totalsController, // der headerController
-                          children: [
-                            for (final _ in _players)
-                              SizedBox(
-                                width: _columnWidth,
-                                child: Column(
-                                  children: [
-                                    for (final _ in KniffelTotal.values)
-                                      const SizedBox(
-                                        height: 32,
-                                        child: Center(child: Text('0')), // Dummy
-                                      ),
-                                  ],
-                                ),
-                              ),
-                          ],
+                        Expanded(
+                          child: ScrollableColumns(
+                            controller: _totalsController, 
+                            child: ColumnsRow(
+                              count: _players.length,
+                              cellBuilder: (_) => Column(
+                                children: [
+                                  for (final _ in KniffelTotal.values)
+                                    const SizedBox(
+                                      height: KniffelLayout.totalsRowHeight,
+                                      child: Center(child: Text('0')), // Dummy
+                                    )
+                                ]
+                              )
+                            )
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -237,9 +248,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
       onEditStart: _onEditStart,
       onEditEnd: _onEditEnd,
       activePlayer: _activeCell?.$1 == field ? _activeCell!.$2 : null,
-      rowHeight: _rowHeight,
       labelWidth: labelWidth,
-      columnWidth: _columnWidth,
       labelStyle: labelStyle,
       chipStyle: chipStyle,
       onActivate: (player) => _activate(field, player),

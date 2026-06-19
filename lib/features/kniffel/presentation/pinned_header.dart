@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:zockblock_app/features/kniffel/presentation/kniffel_layout.dart';
 
+import 'columns_row.dart';
 import 'scrollable_columns.dart';
 
 class PinnedHeader extends StatelessWidget {
@@ -8,7 +10,6 @@ class PinnedHeader extends StatelessWidget {
     required this.controller,
     required this.players,
     required this.labelWidth,
-    required this.columnWidth,
     required this.sectionTitleStyle,
   });
 
@@ -16,45 +17,39 @@ class PinnedHeader extends StatelessWidget {
   final ScrollController controller;
   final List<String> players;
   final double labelWidth;
-  final double columnWidth;
 
   final TextStyle sectionTitleStyle;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 64,
-      child: Row(
-        children: [
-          SizedBox(
-            width: labelWidth,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16),
+      height: KniffelLayout.titleRowHeight,
+      child: Padding(
+        padding: const EdgeInsets.only(left: KniffelLayout.cardMargin, right: KniffelLayout.cardMargin + KniffelLayout.labelPadding),
+        child: Row(
+          children: [
+            SizedBox(
+              width: labelWidth,
               child: Text(
-                title,
-                style: sectionTitleStyle,
+                  title,
+                  style: sectionTitleStyle,
+                ),
+            ),
+            Expanded(
+              child: ScrollableColumns(
+                controller: controller,
+                child: ColumnsRow(
+                  count: players.length,
+                  cellBuilder: (index) => CircleAvatar(
+                      radius: KniffelLayout.avatarRadius,
+                      child: Text(players[index].substring(0, 1)),
+                    ),
+                )
               ),
             ),
-          ),
-          Expanded(
-            child: ScrollableColumns(
-              controller: controller, // der headerController
-              children: [
-                for (final player in players)
-                  SizedBox(
-                    width: columnWidth,
-                    child: Center(
-                      child: CircleAvatar(
-                        radius: 20,
-                        child: Text(player.substring(0, 1)),
-                      )
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

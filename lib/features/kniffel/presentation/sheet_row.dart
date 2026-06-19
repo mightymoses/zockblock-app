@@ -4,10 +4,12 @@ import 'package:zockblock_app/l10n/app_localizations.dart';
 import '../kniffel_cell.dart';
 import '../kniffel_field.dart';
 import 'chip_shell.dart';
+import 'columns_row.dart';
 import 'fixed_value_chip.dart';
 import 'input_chip.dart';
 import 'kniffel_cell_content.dart';
 import 'kniffel_labels.dart';
+import 'kniffel_layout.dart';
 import 'scrollable_columns.dart';
 import 'selector_chip.dart';
 
@@ -22,9 +24,7 @@ class SheetRow extends StatelessWidget {
     required this.onSelect,       // (player) – öffnet die Expansion
     required this.onEditStart,    // () – Expansion öffnet sich, InputChip wird sichtbar
     required this.onEditEnd,      // () – Expansion schließt sich, InputChip wird
-    required this.rowHeight,
     required this.labelWidth,
-    required this.columnWidth,
     required this.labelStyle,
     required this.chipStyle,
     required this.activePlayer,
@@ -41,9 +41,7 @@ class SheetRow extends StatelessWidget {
   final void Function(int player) onSelect;
   final VoidCallback onEditStart;
   final VoidCallback onEditEnd;
-  final double rowHeight;
   final double labelWidth;
-  final double columnWidth;
   final TextStyle labelStyle;
   final TextStyle chipStyle;
   final int? activePlayer;
@@ -54,26 +52,23 @@ class SheetRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = field.label(AppLocalizations.of(context)!);
     return SizedBox(
-      height: rowHeight,
+      height: KniffelLayout.rowHeight,
       child: Row(
         children: [
           SizedBox(
             width: labelWidth,
             child: Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
               child: Text(label, style: labelStyle),
             ),
           ),
           Expanded(
             child: ScrollableColumns(
               controller: controller,
-              children: [
-                for (var player = 0; player < playerCount; player++)
-                  SizedBox(
-                    width: columnWidth,
-                    child: Center(child: _chipFor(player)),
-                  ),
-              ],
+              child: ColumnsRow(
+                count: playerCount,
+                cellBuilder: (player) => _chipFor(player),
+              )
             ),
           ),
         ],
@@ -109,7 +104,6 @@ class SheetRow extends StatelessWidget {
         onCross: () => onCross(player),
         onEditStart: onEditStart,
         onEditEnd: onEditEnd,
-        columnWidth: columnWidth,
         textStyle: chipStyle,
       ),
     };

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'columns_row.dart';
+import 'kniffel_layout.dart';
+
 class ExpansionRow extends StatelessWidget {
   const ExpansionRow({
     required this.values,
@@ -12,28 +15,27 @@ class ExpansionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56,
+      height: KniffelLayout.rowHeight,
       child: Padding(
-        padding: const EdgeInsets.only(left: 16),
-        child: Row(
-          children: [
-            for (final value in values) ...[
-              GestureDetector(
-                onTap: () => onValueSelected?.call(value),
-                child: Container(
-                  width: 44,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade200,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(child: Text('$value')),
+        padding: const EdgeInsets.only(left: KniffelLayout.labelPadding),
+        child: ColumnsRow(
+          count: values.length,
+          cellBuilder: (index) {
+            final value = values[index];
+            return GestureDetector(
+              onTap: () => onValueSelected?.call(value),
+              child: Container(
+                width: KniffelLayout.chipWidth,
+                height: KniffelLayout.chipHeight,
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade200,
+                  borderRadius: BorderRadius.circular(KniffelLayout.chipRadius),
                 ),
+                child: Center(child: Text('$value')),
               ),
-              const SizedBox(width: 8),
-            ],
-          ],
-        ),
+            );
+          },
+        )
       ),
     );
   }

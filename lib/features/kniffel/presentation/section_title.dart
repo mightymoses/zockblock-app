@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'kniffel_layout.dart';
+
 class SectionTitle extends StatelessWidget {
   const SectionTitle(this.title, this.sectionTitleStyle);
 
@@ -9,11 +11,11 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48,
+      height: KniffelLayout.titleRowHeight,
       child: Align(
         alignment: Alignment.centerLeft,
         child: Padding(
-          padding: const EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: KniffelLayout.cardMargin),
           child: Text(
             title,
             style: sectionTitleStyle,

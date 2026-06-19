@@ -5,6 +5,7 @@ import '../kniffel_cell.dart';
 import '../kniffel_field.dart';
 import 'chip_shell.dart';
 import 'kniffel_cell_content.dart';
+import 'kniffel_layout.dart';
 import 'measure_max_text_width.dart';
 
 class KniffelInputChip extends StatefulWidget {
@@ -17,7 +18,6 @@ class KniffelInputChip extends StatefulWidget {
     required this.onScore,         // Commit: Screen setzt Wert + deaktiviert
     required this.onCancel,        // NEU: Zurück/ungültig → deaktivieren ohne Wert
     required this.onCross,
-    required this.columnWidth,
     required this.onEditStart,
     required this.onEditEnd,
     required this.textStyle,
@@ -30,7 +30,6 @@ class KniffelInputChip extends StatefulWidget {
   final ValueChanged<int> onScore;
   final VoidCallback onCancel;
   final VoidCallback onCross;
-  final double columnWidth;
   final VoidCallback onEditStart;
   final VoidCallback onEditEnd;
   final TextStyle textStyle;
@@ -138,7 +137,7 @@ class _KniffelInputChipState extends State<KniffelInputChip>
     final textWidth = measureMaxTextWidth(context, [_controller.text], widget.textStyle);
     return TextField(
       scrollPadding: EdgeInsets.symmetric(
-        horizontal: widget.columnWidth / 2 - textWidth / 2,
+        horizontal: KniffelLayout.columnWidth / 2 - textWidth / 2,
         vertical: 20,
       ),
       controller: _controller,
