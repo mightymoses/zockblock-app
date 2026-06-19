@@ -14,7 +14,6 @@ import 'kniffel_labels.dart';
 import 'kniffel_layout.dart';
 import 'pinned_header.dart';
 import 'scrollable_columns.dart';
-import 'section_title.dart';
 import 'sheet_row.dart';
 import 'section_card.dart';
 
