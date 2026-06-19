@@ -17,6 +17,7 @@ class ZockblockApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     final router = ref.watch(routerProvider);
     ref.listen(onAuthStateChangedProvider, (previous, next) {
       router.refresh();
@@ -25,6 +26,12 @@ class ZockblockApp extends ConsumerWidget {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
+        final lightScheme = lightDynamic != null
+            ? ColorScheme.fromSeed(seedColor: lightDynamic.primary, brightness: Brightness.light)
+            : MaterialTheme.lightScheme();
+        final darkScheme = darkDynamic != null
+            ? ColorScheme.fromSeed(seedColor: darkDynamic.primary, brightness: Brightness.dark)
+            : MaterialTheme.darkScheme();
 
         return MaterialApp.router(
           routerConfig: router,
@@ -38,12 +45,8 @@ class ZockblockApp extends ConsumerWidget {
           ],
           supportedLocales: const [Locale('de'), Locale('en')],
           // Theme
-          theme: lightDynamic != null
-              ? ThemeData(useMaterial3: true, colorScheme: lightDynamic)
-              : materialTheme.light(),
-          darkTheme: darkDynamic != null
-              ? ThemeData(useMaterial3: true, colorScheme: darkDynamic)
-              : materialTheme.dark(),
+          theme: materialTheme.theme(lightScheme),
+          darkTheme: materialTheme.theme(darkScheme),
           themeMode: ThemeMode.system,
         );
       },
