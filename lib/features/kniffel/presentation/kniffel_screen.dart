@@ -12,6 +12,7 @@ import 'columns_row.dart';
 import 'expansion_row.dart';
 import 'kniffel_labels.dart';
 import 'kniffel_layout.dart';
+import 'num_pad.dart';
 import 'pinned_header.dart';
 import 'scrollable_columns.dart';
 import 'section_title.dart';
@@ -19,8 +20,6 @@ import 'section_title_switcher.dart';
 import 'sheet_row.dart';
 import 'section_card.dart';
 
-/// Gerüst für den Kniffel-Scoresheet-Screen.
-/// Nur Layout + Scroll-Sync, alles Dummy: keine echten Chips, kein State.
 class KniffelScreen extends StatefulWidget {
   const KniffelScreen({super.key});
 
@@ -32,10 +31,8 @@ class _KniffelScreenState extends State<KniffelScreen> {
   static final _upperFields = KniffelField.values.where((f) => f.isUpper).toList();
   static final _lowerFields = KniffelField.values.where((f) => !f.isUpper).toList();
   
-  // --- Dummy-Daten -------------------------------------------------------
   static const _players = ['Moritz', 'Lisa', 'Tim', 'Anna', 'Max', 'Sophie'];
 
-  // --- Scroll-Sync -------------------------------------------------------
   final _scrollGroup = LinkedScrollControllerGroup();
   late final ScrollController _headerController;
   late final List<ScrollController> _rowControllers;
@@ -102,13 +99,12 @@ class _KniffelScreenState extends State<KniffelScreen> {
   }
 
   void _onEditStart() {
-    // Nur beim ersten Feld merken – bei Wechsel nicht überschreiben.
     _savedScrollOffset ??= _verticalController.offset;
   }
 
   void _onEditEnd() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_activeCell != null) return; // noch was aktiv (Wechsel) → nicht zurückscrollen
+      if (_activeCell != null) return;
       final offset = _savedScrollOffset;
       _savedScrollOffset = null;
       if (offset == null || !_verticalController.hasClients) return;
@@ -135,7 +131,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
         measureMaxTextWidth(context,
             [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
             sectionTitleStyle),
-      ].reduce(max) + 32; // TODO: Mit der 32 rumspielen (Und dann im Layout als Kontante festlegen)
+      ].reduce(max) + KniffelLayout.labelToChipSpacing;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Test')),
@@ -243,7 +239,6 @@ class _KniffelScreenState extends State<KniffelScreen> {
             left: 0,
             right: 0,
             child: PinnedHeader(
-              // TODO: Titel später dynamisch aus vertikalem Scroll-Offset.
               controller: _headerController,
               players: _players,
               labelWidth: labelWidth,
@@ -255,7 +250,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
                 style: sectionTitleStyle,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

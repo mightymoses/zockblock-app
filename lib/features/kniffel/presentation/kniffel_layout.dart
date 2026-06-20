@@ -19,4 +19,7 @@ abstract final class KniffelLayout {
   static const double titleRowHeight = avatarRadius * 2 + AppSpacing.md * 2;
   static const double chipRadius = AppRadius.sm;
   static const double bottomSpacing = AppSpacing.xxxl;
+  static const double labelToChipSpacing = AppSpacing.xxl;
+  static const double numPadTopRowHeight = 48;
+  static const double numPadHeight = 256 + numPadTopRowHeight;
 }
