@@ -21,14 +21,12 @@ class SheetRow extends StatelessWidget {
     required this.onScore,        // (player, value)
     required this.onCross,        // (player)
     required this.onSelect,       // (player) – öffnet die Expansion
-    required this.onEditStart,    // () – Expansion öffnet sich, InputChip wird sichtbar
-    required this.onEditEnd,      // () – Expansion schließt sich, InputChip wird
     required this.labelWidth,
     required this.labelStyle,
     required this.chipStyle,
     required this.activePlayer,
     required this.onActivate,
-    required this.onCancel,
+    required this.inputBuffer,
   });
 
   final KniffelField field;
@@ -38,14 +36,12 @@ class SheetRow extends StatelessWidget {
   final void Function(int player, int value) onScore;
   final void Function(int player) onCross;
   final void Function(int player) onSelect;
-  final VoidCallback onEditStart;
-  final VoidCallback onEditEnd;
   final double labelWidth;
   final TextStyle labelStyle;
   final TextStyle chipStyle;
   final int? activePlayer;
   final void Function(int player) onActivate;
-  final VoidCallback onCancel;
+  final String inputBuffer;
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +91,9 @@ class SheetRow extends StatelessWidget {
         cell: cell,
         isActive: activePlayer == player,        // NEU
         onActivate: () => onActivate(player),     // NEU
-        onScore: (v) => onScore(player, v),       // Commit
-        onCancel: onCancel,                       // NEU
         onCross: () => onCross(player),
-        onEditStart: onEditStart,
-        onEditEnd: onEditEnd,
         textStyle: chipStyle,
+        buffer: inputBuffer,
       ),
     };
   }

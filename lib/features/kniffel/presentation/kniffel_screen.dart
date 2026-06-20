@@ -47,8 +47,12 @@ class _KniffelScreenState extends State<KniffelScreen> {
 
   (KniffelField, int player)? _activeCell;
 
-  void _activate(KniffelField field, int player) =>
-    setState(() => _activeCell = (field, player));
+  void _activate(KniffelField field, int player) {
+    setState(() {
+      _activeCell = (field, player);
+      _inputBuffer = '';
+    });
+  }
 
   void _deactivate() => setState(() => _activeCell = null);
 
@@ -78,6 +82,8 @@ class _KniffelScreenState extends State<KniffelScreen> {
     _cells[(field, player)] ?? const EmptyCell();
 
   double? _savedScrollOffset;
+
+  String _inputBuffer = '';
 
   @override
   void initState() {
@@ -111,6 +117,28 @@ class _KniffelScreenState extends State<KniffelScreen> {
       _verticalController.animateTo(offset,
           duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
     });
+  }
+
+  void _onDigit(int d) {
+    if (_inputBuffer.length >= 2) return;
+    setState(() => _inputBuffer += '$d');
+  }
+
+  void _onDelete() {
+    if (_inputBuffer.isEmpty) return;
+    setState(() => _inputBuffer = _inputBuffer.substring(0, _inputBuffer.length - 1));
+  }
+
+  void _onEnter() {
+    final active = _activeCell;
+    if (active == null) return;
+    final (field, player) = active;
+    final value = int.tryParse(_inputBuffer);
+    if (value != null && field.isValidManualValue(value)) {
+      _setValue(field, player, value);
+    } else {
+      _deactivate();
+    }
   }
 
   @override
@@ -251,6 +279,21 @@ class _KniffelScreenState extends State<KniffelScreen> {
               ),
             ),
           ),
+          if (_activeCell != null && _activeCell!.$1.chipKind == ChipKind.manualInput)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: NumPad(
+                height: KniffelLayout.numPadHeight,
+                topRowHeight: KniffelLayout.numPadTopRowHeight,
+                title: _activeCell!.$1.label(l10n),
+                onDigit: _onDigit,
+                onEnter: _onEnter,
+                onCollapse: _deactivate,
+                onDelete: _onDelete,
+              )
+            )
         ],
       ),
     );
@@ -265,14 +308,12 @@ class _KniffelScreenState extends State<KniffelScreen> {
       onScore: (player, value) => _setValue(field, player, value),
       onCross: (player) => _crossOut(field, player),
       onSelect: (player) => _toggleSelector(field, player),
-      onEditStart: _onEditStart,
-      onEditEnd: _onEditEnd,
       activePlayer: _activeCell?.$1 == field ? _activeCell!.$2 : null,
       labelWidth: labelWidth,
       labelStyle: labelStyle,
       chipStyle: chipStyle,
       onActivate: (player) => _activate(field, player),
-      onCancel: _deactivate,
+      inputBuffer: _inputBuffer,
     );
   }
 }
