@@ -27,6 +27,7 @@ class SheetRow extends StatelessWidget {
     required this.activePlayer,
     required this.onActivate,
     required this.inputBuffer,
+    required this.activeChipKey,
   });
 
   final KniffelField field;
@@ -42,6 +43,7 @@ class SheetRow extends StatelessWidget {
   final int? activePlayer;
   final void Function(int player) onActivate;
   final String inputBuffer;
+  final GlobalKey activeChipKey;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +89,7 @@ class SheetRow extends StatelessWidget {
           textStyle: chipStyle,
         ),
       ChipKind.manualInput => KniffelInputChip(
+        key: activePlayer == player ? activeChipKey : null,
         field: field,
         cell: cell,
         isActive: activePlayer == player,        // NEU

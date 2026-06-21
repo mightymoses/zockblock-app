@@ -42,32 +42,46 @@ class _KniffelScreenState extends State<KniffelScreen> {
   final _viewportKey = GlobalKey();
   final _sectionKeys = [GlobalKey(), GlobalKey(), GlobalKey()];
 
-
   int get _rowCount => _upperFields.length + _lowerFields.length;
+
+  double _labelWidth = 0;
 
   (KniffelField, int player)? _activeCell;
 
   void _activate(KniffelField field, int player) {
+    _savedScrollOffset ??= _verticalController.offset;
     setState(() {
       _activeCell = (field, player);
       _inputBuffer = '';
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollActiveIntoView());
   }
 
-  void _deactivate() => setState(() => _activeCell = null);
+  void _deactivate() {
+    setState(() {
+      _activeCell = null;
+      _inputBuffer = '';
+    });
+    _onEditEnd();
+  }
 
   void _toggleSelector(KniffelField field, int player) {
+    final target = (field, player);
     setState(() {
-      final target = (field, player);
       _activeCell = (_activeCell == target) ? null : target;
     });
+    if (_activeCell == target) {
+      _onEditEnd();
+    }
   }
 
   void _setValue(KniffelField field, int player, int value) {
     setState(() {
       _cells[(field, player)] = ScoredCell(value);
       _activeCell = null;
+      _inputBuffer = '';
     });
+    _onEditEnd();
   }
 
   void _crossOut(KniffelField field, int player) {
@@ -75,6 +89,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
       _cells[(field, player)] = const CrossedCell();
       _activeCell = null;
     });
+    _onEditEnd();
   }
 
   final Map<(KniffelField, int player), KniffelCell> _cells = {};
@@ -84,6 +99,9 @@ class _KniffelScreenState extends State<KniffelScreen> {
   double? _savedScrollOffset;
 
   String _inputBuffer = '';
+  final _rowKeys = {for (final f in KniffelField.values) f: GlobalKey()};
+  final _activeChipKey = GlobalKey();
+  double get _padTotalHeight => KniffelLayout.numPadHeight + MediaQuery.viewPaddingOf(context).bottom;
 
   @override
   void initState() {
@@ -104,11 +122,8 @@ class _KniffelScreenState extends State<KniffelScreen> {
     super.dispose();
   }
 
-  void _onEditStart() {
-    _savedScrollOffset ??= _verticalController.offset;
-  }
-
   void _onEditEnd() {
+    if (_savedScrollOffset == null) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_activeCell != null) return;
       final offset = _savedScrollOffset;
@@ -122,11 +137,13 @@ class _KniffelScreenState extends State<KniffelScreen> {
   void _onDigit(int d) {
     if (_inputBuffer.length >= 2) return;
     setState(() => _inputBuffer += '$d');
+    _scrollActiveIntoView();
   }
 
   void _onDelete() {
     if (_inputBuffer.isEmpty) return;
     setState(() => _inputBuffer = _inputBuffer.substring(0, _inputBuffer.length - 1));
+    _scrollActiveIntoView();
   }
 
   void _onEnter() {
@@ -141,9 +158,58 @@ class _KniffelScreenState extends State<KniffelScreen> {
     }
   }
 
+  void _scrollActiveIntoView() {
+    // Vertikal:
+    final rowBox = _rowKeys[_activeCell?.$1]?.currentContext?.findRenderObject() as RenderBox?;
+    final viewportBox = _viewportKey.currentContext?.findRenderObject() as RenderBox?;
+    if (rowBox == null || viewportBox == null || !rowBox.hasSize || !viewportBox.hasSize) return;
+
+    final rowTop = rowBox.localToGlobal(Offset.zero, ancestor: viewportBox).dy; // relativ zum Viewport-Top
+    final rowBottom = rowTop + rowBox.size.height;
+
+    final visibleTop = KniffelLayout.titleRowHeight;                              // unter dem Header
+    final visibleBottom = viewportBox.size.height - _padTotalHeight;              // über dem Pad
+
+    double dv = 0;
+    if (rowBottom > visibleBottom) {
+      dv = rowBottom - visibleBottom;   // Zeile zu weit unten → Offset erhöhen (Inhalt hoch)
+    } else if (rowTop < visibleTop) {
+      dv = rowTop - visibleTop;         // Zeile hinterm Header → Offset verringern (Inhalt runter)
+    }
+    if (dv != 0) {
+      final pos = _verticalController.position;
+      final target = (_verticalController.offset + dv).clamp(pos.minScrollExtent, pos.maxScrollExtent);
+      _verticalController.animateTo(target, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+    }
+
+    // Horizontal:
+    final chipBox = _activeChipKey.currentContext?.findRenderObject() as RenderBox?;
+    if (chipBox == null || !chipBox.hasSize) return;
+
+    final chipLeft = chipBox.localToGlobal(Offset.zero, ancestor: rowBox).dx; // relativ zur Zeile
+    final chipRight = chipLeft + chipBox.size.width;
+
+    final visibleLeft = _labelWidth;          // links beginnt der scrollbare Bereich
+    final visibleRight = rowBox.size.width;    // rechts endet die Zeile
+
+    double dh = 0;
+    if (chipRight > visibleRight) {
+      dh = chipRight - visibleRight;   // Chip rechts raus → Gruppe nach rechts (Offset erhöhen)
+    } else if (chipLeft < visibleLeft) {
+      dh = chipLeft - visibleLeft;     // Chip links hinter der Label-Spalte → Offset verringern
+    }
+    if (dh != 0) {
+      _scrollGroup.animateTo(
+        _scrollGroup.offset + dh,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final _l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
     final labelStyle = theme.textTheme.bodyLarge!;
@@ -151,15 +217,18 @@ class _KniffelScreenState extends State<KniffelScreen> {
     final sectionTitleStyle = theme.textTheme.titleMedium!;
     final chipStyle = theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
 
-    final labelWidth = [
-        measureMaxTextWidth(context,
-            [for (final f in KniffelField.values) f.label(l10n)], labelStyle),
-        measureMaxTextWidth(context,
-            [for (final t in KniffelTotal.values) t.label(l10n)], emphasizedStyle),
-        measureMaxTextWidth(context,
-            [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
-            sectionTitleStyle),
-      ].reduce(max) + KniffelLayout.labelToChipSpacing;
+    _labelWidth = [
+      measureMaxTextWidth(context,
+          [for (final f in KniffelField.values) f.label(_l10n)], labelStyle),
+      measureMaxTextWidth(context,
+          [for (final t in KniffelTotal.values) t.label(_l10n)], emphasizedStyle),
+      measureMaxTextWidth(context,
+          [_l10n.kniffelSectionUpper, _l10n.kniffelSectionLower, _l10n.kniffelSectionTotals],
+          sectionTitleStyle),
+    ].reduce(max) + KniffelLayout.labelToChipSpacing;
+
+    final padOpen = _activeCell != null && _activeCell!.$1.chipKind == ChipKind.manualInput;
+    
 
     return Scaffold(
       appBar: AppBar(title: const Text('Test')),
@@ -168,18 +237,21 @@ class _KniffelScreenState extends State<KniffelScreen> {
           SingleChildScrollView(
             key: _viewportKey,
             controller: _verticalController,
+            padding: EdgeInsets.only(
+              bottom: padOpen ? _padTotalHeight : 0
+            ),
             child: Column(
               children: [
                 SectionTitle(
                   key: _sectionKeys[0],
-                  title: l10n.kniffelSectionUpper,
+                  title: _l10n.kniffelSectionUpper,
                   sectionTitleStyle: sectionTitleStyle,
                 ),
                 SectionCard(
                   child: Column(
                     children: [
                       for (final field in _upperFields) ...[
-                        _buildRow(field, labelStyle, labelWidth, chipStyle),
+                        _buildRow(field, labelStyle, _labelWidth, chipStyle),
                         AnimatedSize(
                           duration: const Duration(milliseconds: 200),
                           curve: Curves.easeInOut,
@@ -196,20 +268,20 @@ class _KniffelScreenState extends State<KniffelScreen> {
                 ),
                 SectionTitle(
                   key: _sectionKeys[1],
-                  title: l10n.kniffelSectionLower,
+                  title: _l10n.kniffelSectionLower,
                   sectionTitleStyle: sectionTitleStyle,
                 ),
                 SectionCard(
                   child: Column(
                     children: [
                       for (final field in _lowerFields)
-                        _buildRow(field, labelStyle, labelWidth, chipStyle),
+                        _buildRow(field, labelStyle, _labelWidth, chipStyle),
                     ]
                   )
                 ),
                 SectionTitle(
                   key: _sectionKeys[2],
-                  title: l10n.kniffelSectionTotals,
+                  title: _l10n.kniffelSectionTotals,
                   sectionTitleStyle: sectionTitleStyle,
                 ),
                 SectionCard(
@@ -217,7 +289,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: labelWidth,
+                        width: _labelWidth,
                         child: Column(
                           children: [
                             for (final total in KniffelTotal.values)
@@ -226,7 +298,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    total.label(l10n),
+                                    total.label(_l10n),
                                     style: total.isEmphasized
                                         ? emphasizedStyle
                                         : labelStyle,
@@ -269,17 +341,17 @@ class _KniffelScreenState extends State<KniffelScreen> {
             child: PinnedHeader(
               controller: _headerController,
               players: _players,
-              labelWidth: labelWidth,
+              labelWidth: _labelWidth,
               titleArea: SectionTitleSwitcher(
                 scrollController: _verticalController,
                 viewportKey: _viewportKey,
                 sectionKeys: _sectionKeys,
-                titles: [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
+                titles: [_l10n.kniffelSectionUpper, _l10n.kniffelSectionLower, _l10n.kniffelSectionTotals],
                 style: sectionTitleStyle,
               ),
             ),
           ),
-          if (_activeCell != null && _activeCell!.$1.chipKind == ChipKind.manualInput)
+          if (padOpen)
             Positioned(
               left: 0,
               right: 0,
@@ -287,7 +359,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
               child: NumPad(
                 height: KniffelLayout.numPadHeight,
                 topRowHeight: KniffelLayout.numPadTopRowHeight,
-                title: _activeCell!.$1.label(l10n),
+                title: _activeCell!.$1.label(_l10n),
                 onDigit: _onDigit,
                 onEnter: _onEnter,
                 onCollapse: _deactivate,
@@ -301,6 +373,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
 
   Widget _buildRow(KniffelField field, TextStyle labelStyle, double labelWidth, TextStyle chipStyle) {
     return SheetRow(
+      key: _rowKeys[field],
       field: field,
       controller: _rowControllers[field.index], // 1 Controller pro Feld
       playerCount: _players.length,
@@ -314,6 +387,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
       chipStyle: chipStyle,
       onActivate: (player) => _activate(field, player),
       inputBuffer: _inputBuffer,
+      activeChipKey: _activeChipKey
     );
   }
 }
