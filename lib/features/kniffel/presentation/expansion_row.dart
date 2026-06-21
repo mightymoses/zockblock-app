@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zockblock_app/features/kniffel/presentation/chip_shell.dart';
 
-import 'columns_row.dart';
 import 'kniffel_layout.dart';
 
 class ExpansionRow extends StatelessWidget {
@@ -8,32 +8,26 @@ class ExpansionRow extends StatelessWidget {
     super.key, 
     required this.values,
     this.onValueSelected,
+    required this.chipStyle,
   });
 
   final List<int> values;
   final ValueChanged<int>? onValueSelected;
+  final TextStyle chipStyle;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: KniffelLayout.rowHeight,
-      child: ColumnsRow(
-        count: values.length,
-        cellBuilder: (index) {
-          final value = values[index];
-          return GestureDetector(
-            onTap: () => onValueSelected?.call(value),
-            child: Container(
-              width: KniffelLayout.chipWidth,
-              height: KniffelLayout.chipHeight,
-              decoration: BoxDecoration(
-                color: Colors.orange.shade200,
-                borderRadius: BorderRadius.circular(KniffelLayout.chipRadius),
-              ),
-              child: Center(child: Text('$value')),
-            ),
-          );
-        },
+      child: Row(
+        spacing: KniffelLayout.horizontalPadding,
+        children: [
+          for (final value in values)
+            ChipShell(
+              child: Text('$value', style: chipStyle),
+              onTap: () => onValueSelected?.call(value),
+            )
+        ]
       ),
     );
   }

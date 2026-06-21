@@ -209,7 +209,7 @@ class _KniffelScreenState extends State<KniffelScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
 
     final theme = Theme.of(context);
     final labelStyle = theme.textTheme.bodyLarge!;
@@ -219,154 +219,166 @@ class _KniffelScreenState extends State<KniffelScreen> {
 
     _labelWidth = [
       measureMaxTextWidth(context,
-          [for (final f in KniffelField.values) f.label(_l10n)], labelStyle),
+          [for (final f in KniffelField.values) f.label(l10n)], labelStyle),
       measureMaxTextWidth(context,
-          [for (final t in KniffelTotal.values) t.label(_l10n)], emphasizedStyle),
+          [for (final t in KniffelTotal.values) t.label(l10n)], emphasizedStyle),
       measureMaxTextWidth(context,
-          [_l10n.kniffelSectionUpper, _l10n.kniffelSectionLower, _l10n.kniffelSectionTotals],
+          [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
           sectionTitleStyle),
     ].reduce(max) + KniffelLayout.labelToChipSpacing;
 
     final padOpen = _activeCell != null && _activeCell!.$1.chipKind == ChipKind.manualInput;
     
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Test')),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            key: _viewportKey,
-            controller: _verticalController,
-            padding: EdgeInsets.only(
-              bottom: padOpen ? _padTotalHeight : 0
-            ),
-            child: Column(
-              children: [
-                SectionTitle(
-                  key: _sectionKeys[0],
-                  title: _l10n.kniffelSectionUpper,
-                  sectionTitleStyle: sectionTitleStyle,
-                ),
-                SectionCard(
-                  child: Column(
-                    children: [
-                      for (final field in _upperFields) ...[
-                        _buildRow(field, labelStyle, _labelWidth, chipStyle),
-                        AnimatedSize(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeInOut,
-                          child: _activeCell?.$1 == field
-                              ? ExpansionRow(
-                                  values: field.selectorValues!,
-                                  onValueSelected: (value) => _setValue(field, _activeCell!.$2, value),
-                                )
-                              : const SizedBox.shrink(),
+    return PopScope(
+      canPop: _activeCell == null,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        _deactivate();
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Test')),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              key: _viewportKey,
+              controller: _verticalController,
+              padding: EdgeInsets.only(
+                bottom: padOpen ? _padTotalHeight : 0
+              ),
+              child: Column(
+                children: [
+                  SectionTitle(
+                    key: _sectionKeys[0],
+                    title: l10n.kniffelSectionUpper,
+                    sectionTitleStyle: sectionTitleStyle,
+                  ),
+                  SectionCard(
+                    child: Column(
+                      children: [
+                        for (final field in _upperFields) ...[
+                          _buildRow(field, labelStyle, _labelWidth, chipStyle),
+                          AnimatedSize(
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.easeInOut,
+                            child: _activeCell?.$1 == field
+                                ? ExpansionRow(
+                                    values: field.selectorValues!,
+                                    onValueSelected: (value) => _setValue(field, _activeCell!.$2, value),
+                                    chipStyle: chipStyle,
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        ],
+                      ]
+                    )
+                  ),
+                  SectionTitle(
+                    key: _sectionKeys[1],
+                    title: l10n.kniffelSectionLower,
+                    sectionTitleStyle: sectionTitleStyle,
+                  ),
+                  SectionCard(
+                    child: Column(
+                      children: [
+                        for (final field in _lowerFields)
+                          _buildRow(field, labelStyle, _labelWidth, chipStyle),
+                      ]
+                    )
+                  ),
+                  SectionTitle(
+                    key: _sectionKeys[2],
+                    title: l10n.kniffelSectionTotals,
+                    sectionTitleStyle: sectionTitleStyle,
+                  ),
+                  SectionCard(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: _labelWidth,
+                          child: Column(
+                            children: [
+                              for (final total in KniffelTotal.values)
+                                SizedBox(
+                                  height: KniffelLayout.totalsRowHeight, 
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      total.label(l10n),
+                                      style: total.isEmphasized
+                                          ? emphasizedStyle
+                                          : labelStyle,
+                                      ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: ScrollableColumns(
+                            controller: _totalsController, 
+                            child: ColumnsRow(
+                              count: _players.length,
+                              cellBuilder: (_) => Column(
+                                children: [
+                                  for (final _ in KniffelTotal.values)
+                                    const SizedBox(
+                                      height: KniffelLayout.totalsRowHeight,
+                                      child: Center(child: Text('0')), // Dummy
+                                    )
+                                ]
+                              )
+                            )
+                          ),
                         ),
                       ],
-                    ]
-                  )
-                ),
-                SectionTitle(
-                  key: _sectionKeys[1],
-                  title: _l10n.kniffelSectionLower,
-                  sectionTitleStyle: sectionTitleStyle,
-                ),
-                SectionCard(
-                  child: Column(
-                    children: [
-                      for (final field in _lowerFields)
-                        _buildRow(field, labelStyle, _labelWidth, chipStyle),
-                    ]
-                  )
-                ),
-                SectionTitle(
-                  key: _sectionKeys[2],
-                  title: _l10n.kniffelSectionTotals,
-                  sectionTitleStyle: sectionTitleStyle,
-                ),
-                SectionCard(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: _labelWidth,
-                        child: Column(
-                          children: [
-                            for (final total in KniffelTotal.values)
-                              SizedBox(
-                                height: KniffelLayout.totalsRowHeight, 
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    total.label(_l10n),
-                                    style: total.isEmphasized
-                                        ? emphasizedStyle
-                                        : labelStyle,
-                                    ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: ScrollableColumns(
-                          controller: _totalsController, 
-                          child: ColumnsRow(
-                            count: _players.length,
-                            cellBuilder: (_) => Column(
-                              children: [
-                                for (final _ in KniffelTotal.values)
-                                  const SizedBox(
-                                    height: KniffelLayout.totalsRowHeight,
-                                    child: Center(child: Text('0')), // Dummy
-                                  )
-                              ]
-                            )
-                          )
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: KniffelLayout.bottomSpacing,
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: PinnedHeader(
-              controller: _headerController,
-              players: _players,
-              labelWidth: _labelWidth,
-              titleArea: SectionTitleSwitcher(
-                scrollController: _verticalController,
-                viewportKey: _viewportKey,
-                sectionKeys: _sectionKeys,
-                titles: [_l10n.kniffelSectionUpper, _l10n.kniffelSectionLower, _l10n.kniffelSectionTotals],
-                style: sectionTitleStyle,
+                  SizedBox(
+                    height: KniffelLayout.bottomSpacing,
+                  ),
+                ],
               ),
             ),
-          ),
-          if (padOpen)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: PinnedHeader(
+                controller: _headerController,
+                players: _players,
+                labelWidth: _labelWidth,
+                titleArea: SectionTitleSwitcher(
+                  scrollController: _verticalController,
+                  viewportKey: _viewportKey,
+                  sectionKeys: _sectionKeys,
+                  titles: [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
+                  style: sectionTitleStyle,
+                ),
+              ),
+            ),
             Positioned(
               left: 0,
               right: 0,
               bottom: 0,
-              child: NumPad(
-                height: KniffelLayout.numPadHeight,
-                topRowHeight: KniffelLayout.numPadTopRowHeight,
-                title: _activeCell!.$1.label(_l10n),
-                onDigit: _onDigit,
-                onEnter: _onEnter,
-                onCollapse: _deactivate,
-                onDelete: _onDelete,
+              child: AnimatedSlide(
+                duration: const Duration(milliseconds: 200),
+                curve: Curves.easeOut,
+                offset: padOpen ? Offset.zero : const Offset(0, 1),
+                child: NumPad(
+                  height: KniffelLayout.numPadHeight,
+                  topRowHeight: KniffelLayout.numPadTopRowHeight,
+                  title: _activeCell?.$1.label(l10n) ?? '',
+                  onDigit: _onDigit,
+                  onEnter: _onEnter,
+                  onCollapse: _deactivate,
+                  onDelete: _onDelete,
+                ),
               )
             )
-        ],
+          ],
+        ),
       ),
     );
   }

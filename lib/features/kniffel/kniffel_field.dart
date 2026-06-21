@@ -8,7 +8,7 @@ enum KniffelField {
   int? get faceValue => isUpper ? index + 1 : null;
 
   List<int>? get selectorValues =>
-      isUpper ? List.generate(6, (n) => n * faceValue!) : null;
+    isUpper ? List.generate(5, (n) => (n + 1) * faceValue!) : null;
 
   int? get fixedScore => switch (this) {
         fullHouse => 25,
