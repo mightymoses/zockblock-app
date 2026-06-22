@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 
-class NumPad extends StatelessWidget {
-  const NumPad({
+class KniffelNumPad extends StatelessWidget {
+  const KniffelNumPad({
     super.key,
     required this.onDigit,
     required this.onDelete,

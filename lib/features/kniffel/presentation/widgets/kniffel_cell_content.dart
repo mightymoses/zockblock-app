@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../kniffel_cell.dart';
+import '../../domain/kniffel_cell.dart';
 
 class KniffelCellContent extends StatelessWidget {
   const KniffelCellContent({

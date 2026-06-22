@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class SectionTitle extends StatelessWidget {
-  const SectionTitle({
+class KniffelSectionTitle extends StatelessWidget {
+  const KniffelSectionTitle({
     super.key,
     required this.title,
     required this.sectionTitleStyle

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-class ScrollableColumns extends StatelessWidget {
-  const ScrollableColumns({
+class KniffelScrollableColumns extends StatelessWidget {
+  const KniffelScrollableColumns({
     super.key, 
     required this.controller,
     required this.child,

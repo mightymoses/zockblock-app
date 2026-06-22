@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 
-import '../kniffel_cell.dart';
-import '../kniffel_field.dart';
-import 'columns_row.dart';
-import 'fixed_value_chip.dart';
-import 'input_chip.dart';
-import 'kniffel_labels.dart';
-import 'kniffel_layout.dart';
-import 'scrollable_columns.dart';
-import 'selector_chip.dart';
+import '../../domain/kniffel_cell.dart';
+import '../../domain/kniffel_field.dart';
+import 'kniffel_columns_row.dart';
+import 'kniffel_fixed_value_chip.dart';
+import 'kniffel_input_chip.dart';
+import '../support/kniffel_field_labels.dart';
+import '../support/kniffel_layout.dart';
+import 'kniffel_scrollable_columns.dart';
+import 'kniffel_selector_chip.dart';
 
-class SheetRow extends StatelessWidget {
-  const SheetRow({
+class KniffelSheetRow extends StatelessWidget {
+  const KniffelSheetRow({
     super.key, 
     required this.field,
     required this.controller,
@@ -57,9 +57,9 @@ class SheetRow extends StatelessWidget {
             child: Text(label, style: labelStyle),
           ),
           Expanded(
-            child: ScrollableColumns(
+            child: KniffelScrollableColumns(
               controller: controller,
-              child: ColumnsRow(
+              child: KniffelColumnsRow(
                 count: playerCount,
                 cellBuilder: (player) => _chipFor(player),
               )
@@ -73,7 +73,7 @@ class SheetRow extends StatelessWidget {
   Widget _chipFor(int player) {
     final cell = cellFor(player);
     return switch (field.chipKind) {
-      ChipKind.fixedValue => FixedValueChip(
+      ChipKind.fixedValue => KniffelFixedValueChip(
           field: field,
           cell: cell,
           onScore: (v) => onScore(player, v),
@@ -81,7 +81,7 @@ class SheetRow extends StatelessWidget {
           textStyle: chipStyle,
         ),
       // Platzhalter bis SelectorChip / InputChip gebaut sind:
-      ChipKind.selector => SelectorChip(
+      ChipKind.selector => KniffelSelectorChip(
           cell: cell,
           onSelect: () => onSelect(player),
           onCross: () => onCross(player),

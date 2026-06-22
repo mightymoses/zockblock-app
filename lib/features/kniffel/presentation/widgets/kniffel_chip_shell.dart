@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class ChipShell extends StatelessWidget {
-  const ChipShell({
+class KniffelChipShell extends StatelessWidget {
+  const KniffelChipShell({
     super.key,
     required this.child,
     this.onTap,

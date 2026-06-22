@@ -1,8 +1,7 @@
 import 'package:zockblock_app/l10n/app_localizations.dart';
 
-import '../kniffel_field.dart';
-import '../kniffel_total.dart';
-// + Import eures generierten AppLocalizations
+import '../../domain/kniffel_field.dart';
+import '../../domain/kniffel_total.dart';
 
 extension KniffelFieldLabels on KniffelField {
   String label(AppLocalizations l10n) => switch (this) {

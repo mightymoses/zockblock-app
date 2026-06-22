@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class SectionCard extends StatelessWidget {
-  const SectionCard({
+class KniffelSectionCard extends StatelessWidget {
+  const KniffelSectionCard({
     super.key, 
     required this.child
   });

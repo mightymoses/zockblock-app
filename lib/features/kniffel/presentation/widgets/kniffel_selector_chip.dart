@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../kniffel_cell.dart';
-import 'chip_shell.dart';
+import '../../domain/kniffel_cell.dart';
+import 'kniffel_chip_shell.dart';
 import 'kniffel_cell_content.dart';
 
-class SelectorChip extends StatelessWidget {
-  const SelectorChip({
+class KniffelSelectorChip extends StatelessWidget {
+  const KniffelSelectorChip({
     super.key,
     required this.cell,
     required this.onSelect,
@@ -22,7 +22,7 @@ class SelectorChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChipShell(
+    return KniffelChipShell(
       onTap: cell.isEmpty ? onSelect : null,
       onLongPress: cell.isEmpty ? onCross : null, // oberer Block immer streichbar
       isActive: isActive,

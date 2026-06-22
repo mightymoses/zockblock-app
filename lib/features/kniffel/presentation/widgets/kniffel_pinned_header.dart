@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:zockblock_app/features/kniffel/presentation/kniffel_layout.dart';
+import 'package:zockblock_app/features/kniffel/presentation/support/kniffel_layout.dart';
 
-import 'columns_row.dart';
-import 'scrollable_columns.dart';
+import 'kniffel_columns_row.dart';
+import 'kniffel_scrollable_columns.dart';
 
-class PinnedHeader extends StatelessWidget {
-  const PinnedHeader({
+class KniffelPinnedHeader extends StatelessWidget {
+  const KniffelPinnedHeader({
     super.key, 
     required this.controller,
     required this.players,
@@ -33,9 +33,9 @@ class PinnedHeader extends StatelessWidget {
                 child: titleArea,
               ),
               Expanded(
-                child: ScrollableColumns(
+                child: KniffelScrollableColumns(
                   controller: controller,
-                  child: ColumnsRow(
+                  child: KniffelColumnsRow(
                     count: players.length,
                     cellBuilder: (index) => CircleAvatar(
                         radius: KniffelLayout.avatarRadius,

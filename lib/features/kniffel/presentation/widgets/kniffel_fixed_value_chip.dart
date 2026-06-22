@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../kniffel_cell.dart';
-import '../kniffel_field.dart';
-import 'chip_shell.dart';
+import '../../domain/kniffel_cell.dart';
+import '../../domain/kniffel_field.dart';
+import 'kniffel_chip_shell.dart';
 import 'kniffel_cell_content.dart';
 
-class FixedValueChip extends StatelessWidget {
-  const FixedValueChip({
+class KniffelFixedValueChip extends StatelessWidget {
+  const KniffelFixedValueChip({
     super.key,
     required this.field,
     required this.cell,
@@ -24,7 +24,7 @@ class FixedValueChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final value = field.fixedScore!;
 
-    return ChipShell(
+    return KniffelChipShell(
       onTap: cell.isEmpty ? () => onScore(value) : null,
       onLongPress:
           (field.canCross && cell.isEmpty) ? onCross : null,

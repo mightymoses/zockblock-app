@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class ColumnsRow extends StatelessWidget {
-  const ColumnsRow({
+class KniffelColumnsRow extends StatelessWidget {
+  const KniffelColumnsRow({
     super.key,
     required this.count,
     required this.cellBuilder,

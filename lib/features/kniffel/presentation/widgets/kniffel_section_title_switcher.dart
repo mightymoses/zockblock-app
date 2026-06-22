@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class SectionTitleSwitcher extends StatelessWidget {
-  const SectionTitleSwitcher({
+class KniffelSectionTitleSwitcher extends StatelessWidget {
+  const KniffelSectionTitleSwitcher({
     super.key,
     required this.scrollController,
     required this.viewportKey,

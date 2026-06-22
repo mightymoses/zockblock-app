@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:zockblock_app/features/kniffel/presentation/chip_shell.dart';
+import 'package:zockblock_app/features/kniffel/presentation/widgets/kniffel_chip_shell.dart';
 
-import 'kniffel_layout.dart';
+import '../support/kniffel_layout.dart';
 
-class ExpansionRow extends StatelessWidget {
-  const ExpansionRow({
+class KniffelExpansionRow extends StatelessWidget {
+  const KniffelExpansionRow({
     super.key, 
     required this.values,
     this.onValueSelected,
@@ -23,7 +23,7 @@ class ExpansionRow extends StatelessWidget {
         spacing: KniffelLayout.horizontalPadding,
         children: [
           for (final value in values)
-            ChipShell(
+            KniffelChipShell(
               child: Text('$value', style: chipStyle),
               onTap: () => onValueSelected?.call(value),
             )

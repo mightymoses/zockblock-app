@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../kniffel_cell.dart';
-import '../kniffel_field.dart';
-import 'chip_shell.dart';
+import '../../domain/kniffel_cell.dart';
+import '../../domain/kniffel_field.dart';
+import 'kniffel_chip_shell.dart';
 import 'kniffel_cell_content.dart';
 
 class KniffelInputChip extends StatelessWidget {
@@ -27,7 +27,7 @@ class KniffelInputChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChipShell(
+    return KniffelChipShell(
       onTap: cell.isEmpty && !isActive ? onActivate : null,
       onLongPress: (field.canCross && cell.isEmpty && !isActive)
           ? onCross
