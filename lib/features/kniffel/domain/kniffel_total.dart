@@ -5,4 +5,7 @@ enum KniffelTotal {
 
   bool get isEmphasized =>
       this == upperTotal || this == lowerTotal || this == grandTotal;
+  
+  bool get followedByDivider =>
+      this == upperTotal || this == lowerTotal || this == extraKniffel;
 }

@@ -60,7 +60,7 @@ class KniffelNumPad extends StatelessWidget {
                         if (title != null) Text(title!, style: Theme.of(context).textTheme.titleMedium),
                         Spacer(),
                         _EnterButton(onPressed: onEnter)
-                    ]
+                      ]
                     ),
                   )
                 ),

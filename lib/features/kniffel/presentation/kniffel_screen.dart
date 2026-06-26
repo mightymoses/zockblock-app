@@ -129,7 +129,8 @@ class _KniffelScreenState extends State<KniffelScreen> {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final labelStyle = theme.textTheme.bodyLarge!;
-    final emphasizedStyle = labelStyle.copyWith(fontWeight: FontWeight.bold);
+    final totalStyle = theme.textTheme.bodyMedium!;
+    final totalEmphasizedStyle = totalStyle.copyWith(fontWeight: FontWeight.bold);
     final sectionTitleStyle = theme.textTheme.titleMedium!;
     final chipStyle = theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold);
     
@@ -137,7 +138,9 @@ class _KniffelScreenState extends State<KniffelScreen> {
       measureMaxTextWidth(context,
           [for (final f in KniffelField.values) f.label(l10n)], labelStyle),
       measureMaxTextWidth(context,
-          [for (final t in KniffelTotal.values) t.label(l10n)], emphasizedStyle),
+          [for (final t in KniffelTotal.values) if (!t.isEmphasized) t.label(l10n)], totalStyle),
+      measureMaxTextWidth(context,
+          [for (final t in KniffelTotal.values) if (t.isEmphasized) t.label(l10n)], totalEmphasizedStyle),
       measureMaxTextWidth(context,
           [l10n.kniffelSectionUpper, l10n.kniffelSectionLower, l10n.kniffelSectionTotals],
           sectionTitleStyle),
@@ -191,8 +194,8 @@ class _KniffelScreenState extends State<KniffelScreen> {
                   ),
                   KniffelTotalsSection(
                     labelWidth: _labelWidth,
-                    labelStyle: labelStyle,
-                    emphasizedStyle: emphasizedStyle,
+                    style: totalStyle,
+                    emphasizedStyle: totalEmphasizedStyle,
                     players: _players,
                     totalsController: _scroll.totalsController,
                   ),

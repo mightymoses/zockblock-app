@@ -26,12 +26,14 @@ class ZockblockApp extends ConsumerWidget {
     return DynamicColorBuilder(
       builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
-        final lightScheme = lightDynamic != null
-            ? ColorScheme.fromSeed(seedColor: lightDynamic.primary, brightness: Brightness.light)
-            : MaterialTheme.lightScheme();
-        final darkScheme = darkDynamic != null
-            ? ColorScheme.fromSeed(seedColor: darkDynamic.primary, brightness: Brightness.dark)
-            : MaterialTheme.darkScheme();
+        // final lightScheme = lightDynamic != null
+        //     ? ColorScheme.fromSeed(seedColor: lightDynamic.primary, brightness: Brightness.light)
+        //     : MaterialTheme.lightScheme();
+        // final darkScheme = darkDynamic != null
+        //     ? ColorScheme.fromSeed(seedColor: darkDynamic.primary, brightness: Brightness.dark)
+        //     : MaterialTheme.darkScheme();
+        final lightScheme = MaterialTheme.lightScheme(); // Zum Testen des appeigenen FarbThemas
+        final darkScheme = MaterialTheme.darkScheme(); // Zum Testen des appeigenen FarbThemas
 
         return MaterialApp.router(
           routerConfig: router,
