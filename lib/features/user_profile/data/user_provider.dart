@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/features/user_profile/data/user.dart';
 import 'package:zockblock_app/features/user_profile/data/user_repository_impl.dart';
 
-final userProvider = AsyncNotifierProvider(UserNotifier.new);
+final AsyncNotifierProvider<UserNotifier, User?> userProvider =
+    AsyncNotifierProvider(UserNotifier.new);
 
 class UserNotifier extends AsyncNotifier<User?> {
   @override
@@ -16,7 +17,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     state = const AsyncLoading();
 
     state = await AsyncValue.guard(() async {
-      return await ref.read(userRepositoryProvider).createUser(user);
+      return ref.read(userRepositoryProvider).createUser(user);
     });
   }
 }

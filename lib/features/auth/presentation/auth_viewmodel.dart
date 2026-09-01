@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/auth_repository_impl.dart';
-import '../data/auth_session.dart';
+import 'package:zockblock_app/features/auth/data/auth_repository_impl.dart';
+import 'package:zockblock_app/features/auth/data/auth_session.dart';
 
 final authViewModelProvider =
     AsyncNotifierProvider<AuthViewModel, AuthSession?>(() {
@@ -10,7 +10,7 @@ final authViewModelProvider =
 class AuthViewModel extends AsyncNotifier<AuthSession?> {
   @override
   Future<AuthSession?> build() async {
-    return await ref.read(authRepositoryProvider).getExistingSession();
+    return ref.read(authRepositoryProvider).getExistingSession();
   }
 
   Future<void> login() async {

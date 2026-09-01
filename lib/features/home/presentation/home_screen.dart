@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/routing/app_router.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/routing/app_router.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -13,7 +13,7 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Home',
             style: TextStyle(
@@ -35,13 +35,12 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Spacer(flex: 1),
+                const Spacer(),
                 Consumer(
                   builder: (context, ref, _) {
                     final asyncUser = ref.watch(userProvider);
@@ -52,7 +51,7 @@ class HomeScreen extends ConsumerWidget {
                           return Text(
                             'Herzlich Willkommen, ${user.username}!',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'ComradeBold',
                               fontSize: 28,
                             ),
@@ -60,27 +59,25 @@ class HomeScreen extends ConsumerWidget {
                         }
                         return Container();
                       },
-                      orElse: () => Container(),
+                      orElse: Container.new,
                     );
                   },
                 ),
-                Spacer(flex: 1),
+                const Spacer(),
                 FilledButton(
                   onPressed: () => router.go('/user-profile'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    shape: const RoundedRectangleBorder(),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Zum Nutzerprofil',
                     style: TextStyle(fontFamily: 'ComradeBold', fontSize: 22),
                   ),
                 ),
-                SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),

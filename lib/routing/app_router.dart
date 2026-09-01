@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
@@ -22,7 +21,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const UserProfileScreen(),
       ),
     ],
-    redirect: (BuildContext context, GoRouterState state) {
+    redirect: (context, state) {
       final authSessionAsyncValue = ref.read(authSessionProvider);
       final userAsyncValue = ref.read(userProvider);
 

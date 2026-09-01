@@ -1,16 +1,16 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/core/theme/app_theme.dart';
 import 'package:zockblock_app/features/auth/data/auth_repository_impl.dart';
 import 'package:zockblock_app/features/user_profile/data/user_repository_impl.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
-import 'core/theme/app_theme.dart';
 import 'package:zockblock_app/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(ProviderScope(child: ZockblockApp()));
+  runApp(const ProviderScope(child: ZockblockApp()));
 }
 
 class ZockblockApp extends ConsumerWidget {
@@ -27,7 +27,7 @@ class ZockblockApp extends ConsumerWidget {
     });
 
     return DynamicColorBuilder(
-      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      builder: (lightDynamic, darkDynamic) {
         final materialTheme = MaterialTheme(Theme.of(context).textTheme);
 
         return MaterialApp.router(
@@ -49,7 +49,6 @@ class ZockblockApp extends ConsumerWidget {
           darkTheme: darkDynamic != null
               ? ThemeData(useMaterial3: true, colorScheme: darkDynamic)
               : materialTheme.dark(),
-          themeMode: ThemeMode.system,
         );
       },
     );

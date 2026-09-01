@@ -14,7 +14,7 @@ class ProfileSetupScreen extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Willkommen',
             style: TextStyle(
@@ -36,13 +36,13 @@ class ProfileSetupScreen extends HookConsumerWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Spacer(flex: 1),
-                Text(
+                const Spacer(),
+                const Text(
                   'Bevor du loslegen kannst musst du ein Nutzerprofil erstellen!',
                   style: TextStyle(
                     color: Colors.white,
@@ -50,7 +50,7 @@ class ProfileSetupScreen extends HookConsumerWidget {
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
                 TextField(
                   controller: usernameController,
                   onChanged: ref
@@ -58,7 +58,7 @@ class ProfileSetupScreen extends HookConsumerWidget {
                       .updateUsername,
                   decoration: InputDecoration(
                     labelText: 'Nutzername',
-                    labelStyle: TextStyle(
+                    labelStyle: const TextStyle(
                       color: Colors.white,
                       fontFamily: 'ComradeBold',
                       fontSize: 16,
@@ -66,28 +66,28 @@ class ProfileSetupScreen extends HookConsumerWidget {
                     errorText: formState.showErrors
                         ? formState.usernameError
                         : null,
-                    errorStyle: TextStyle(color: Colors.red),
+                    errorStyle: const TextStyle(color: Colors.red),
                     filled: true,
                     fillColor: Colors.black,
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                       borderSide: BorderSide(color: Colors.white, width: 4),
                     ),
-                    errorBorder: OutlineInputBorder(
+                    errorBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                       borderSide: BorderSide(color: Colors.red, width: 2),
                     ),
-                    focusedErrorBorder: OutlineInputBorder(
+                    focusedErrorBorder: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.zero),
                       borderSide: BorderSide(color: Colors.red, width: 4),
                     ),
                   ),
                 ),
-                Spacer(flex: 1),
+                const Spacer(),
                 FilledButton(
                   onPressed: ref
                       .read(profileSetupViewModelProvider.notifier)
@@ -96,12 +96,10 @@ class ProfileSetupScreen extends HookConsumerWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    shape: const RoundedRectangleBorder(),
                   ),
                   child: formState.isLoading
-                      ? SizedBox(
+                      ? const SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
@@ -109,7 +107,7 @@ class ProfileSetupScreen extends HookConsumerWidget {
                             strokeWidth: 4,
                           ),
                         )
-                      : Text(
+                      : const Text(
                           'Erstellen',
                           style: TextStyle(
                             fontFamily: 'ComradeBold',
@@ -117,7 +115,7 @@ class ProfileSetupScreen extends HookConsumerWidget {
                           ),
                         ),
                 ),
-                SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),

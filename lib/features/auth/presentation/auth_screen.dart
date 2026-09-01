@@ -1,12 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
+import 'package:zockblock_app/features/auth/presentation/auth_mode.dart';
+import 'package:zockblock_app/features/auth/presentation/marquee_row.dart';
+import 'package:zockblock_app/features/auth/presentation/spinning_circle.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
-import 'auth_mode.dart';
-import 'dart:math';
-import 'marquee_row.dart';
-import 'spinning_circle.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -99,68 +100,67 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
 
                     return Stack(
                       children: [
-                        rowIndex == middleOfBottom
-                            ? SizedBox(
-                                height: smallHeight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Expanded(
-                                      child: FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: SvgPicture.asset(
-                                          'assets/graphics/Pfeil-Links.svg',
-                                          height: smallHeight,
-                                          colorFilter: ColorFilter.mode(
-                                            color,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
+                        if (rowIndex == middleOfBottom)
+                          SizedBox(
+                            height: smallHeight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: FittedBox(
+                                    child: SvgPicture.asset(
+                                      'assets/graphics/Pfeil-Links.svg',
+                                      height: smallHeight,
+                                      colorFilter: ColorFilter.mode(
+                                        color,
+                                        BlendMode.srcIn,
                                       ),
                                     ),
-                                    TextButton(
-                                      onPressed: () => ref
-                                          .read(authSessionProvider.notifier)
-                                          .login(),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.signIn,
-                                        style: TextStyle(
-                                          fontFamily: 'ComradeBold',
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: SvgPicture.asset(
-                                          'assets/graphics/Pfeil-Rechts.svg',
-                                          height: smallHeight,
-                                          colorFilter: ColorFilter.mode(
-                                            color,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              )
-                            : MarqueeRow(
-                                asset: isZock
-                                    ? 'assets/graphics/zock.svg'
-                                    : 'assets/graphics/block.svg',
-                                marqueAnimation: _animation,
-                                reverse: direction,
-                                color: color,
-                                height: isLargeRow ? largeHeight : smallHeight,
-                                speedMultiplier:
-                                    (_mode != AuthMode.running && isLargeRow) ||
-                                        (stopSmallRows && !isLargeRow)
-                                    ? 0
-                                    : (isLargeRow
-                                          ? _random.nextInt(2) + 1
-                                          : _random.nextInt(3) + 2),
-                              ),
+                                TextButton(
+                                  onPressed: () => ref
+                                      .read(authSessionProvider.notifier)
+                                      .login(),
+                                  child: Text(
+                                    AppLocalizations.of(context)!.signIn,
+                                    style: const TextStyle(
+                                      fontFamily: 'ComradeBold',
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: FittedBox(
+                                    child: SvgPicture.asset(
+                                      'assets/graphics/Pfeil-Rechts.svg',
+                                      height: smallHeight,
+                                      colorFilter: ColorFilter.mode(
+                                        color,
+                                        BlendMode.srcIn,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        else
+                          MarqueeRow(
+                            asset: isZock
+                                ? 'assets/graphics/zock.svg'
+                                : 'assets/graphics/block.svg',
+                            marqueAnimation: _animation,
+                            reverse: direction,
+                            color: color,
+                            height: isLargeRow ? largeHeight : smallHeight,
+                            speedMultiplier:
+                                (_mode != AuthMode.running && isLargeRow) ||
+                                    (stopSmallRows && !isLargeRow)
+                                ? 0
+                                : (isLargeRow
+                                      ? _random.nextInt(2) + 1
+                                      : _random.nextInt(3) + 2),
+                          ),
                         if (_mode == AuthMode.spinning && isLargeRow)
                           Row(
                             children: [

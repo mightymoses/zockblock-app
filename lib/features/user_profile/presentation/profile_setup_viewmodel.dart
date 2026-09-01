@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/features/user_profile/data/user.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
 
-final profileSetupViewModelProvider =
+final NotifierProvider<ProfileSetupViewModel, ProfileSetup>
+profileSetupViewModelProvider =
     NotifierProvider.autoDispose<ProfileSetupViewModel, ProfileSetup>(() {
       return ProfileSetupViewModel();
     });
@@ -18,7 +19,7 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
   }
 
   Future<bool> submitForm() async {
-    String? error = _validate(state.username);
+    final error = _validate(state.username);
     if (error != null) {
       state = state.copyWith(usernameError: error, showErrors: true);
       return false;
@@ -45,17 +46,16 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
 }
 
 class ProfileSetup {
-  final String username;
-  final String? usernameError;
-  final bool showErrors;
-  final bool isLoading;
-
   ProfileSetup({
     this.username = '',
     this.usernameError,
     this.showErrors = false,
     this.isLoading = false,
   });
+  final String username;
+  final String? usernameError;
+  final bool showErrors;
+  final bool isLoading;
 
   ProfileSetup copyWith({
     String? username,

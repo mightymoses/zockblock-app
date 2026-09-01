@@ -55,20 +55,18 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ---
 
-## K) Tooling/Doku-Abgleich
+## K) Tooling/Doku-Abgleich ✅
 
-- [ ] `import_lint` als Dev-Dependency ergänzen, Basis-Regeln in
-      `analysis_options.yaml` gemäß Architektur-Tabelle aus `CLAUDE.local.md`
-      (Abhängigkeitsrichtung `core` ← `shared` ← `features` ← `pages` ← `routing`)
-      – Feinschliff der Regeln erst nachdem `pages/`-Umbau (E) steht
-- [ ] Diskrepanz `very_good_analysis` (dokumentiert) vs. `flutter_lints`
-      (tatsächlich verwendet) klären: entweder Doku korrigieren oder Package
-      wechseln
-- [ ] `test/widget_test.dart` prüfen – vermutlich noch Flutter-Default-Template
-      (Counter-App-Test), nicht mehr zutreffend → entfernen oder ersetzen
-- [ ] `fvm` ist laut `CLAUDE.local.md` gesetztes Tool (projekt-lokal gepinnte
-      Flutter-Version), im Repo aber nirgends konfiguriert (kein
-      `.fvmrc`/`.fvm/fvm_config.json`) – einrichten oder Doku korrigieren
+- [x] `import_lint` eingerichtet: Regeln für core/shared/features-Richtung,
+      pages/routing folgen mit Punkt E
+- [x] `fvm` eingerichtet, Flutter 3.44.2 gepinnt (`.fvmrc`)
+- [x] Lint-Preset auf `very_good_analysis` umgestellt (inkl.
+      `public_member_api_docs`); bestehende Findings via `dart fix --apply`
+      + `dart format` großteils behoben (307 → 168), Rest (v. a. fehlende
+      Doc-Comments) wird graduell beim Anfassen der jeweiligen Datei in
+      B/C/E nachgezogen, kein separater Cleanup-Task
+- [x] `CLAUDE.local.md` entsprechend aktualisiert (Lint-Zeile, Doc-Comment-Stil)
+- [x] `test/widget_test.dart` (veralteter Default-Test) entfernt
 
 ---
 

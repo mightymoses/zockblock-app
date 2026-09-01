@@ -1,4 +1,4 @@
-import 'auth_session.dart';
+import 'package:zockblock_app/features/auth/data/auth_session.dart';
 
 abstract class AuthRepository {
   Stream<bool> get onAuthStateChanged;

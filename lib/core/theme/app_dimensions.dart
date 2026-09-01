@@ -50,12 +50,24 @@ class AppRadius {
   static const double full = 999;
 
   // Border Radius Objekte für direkte Verwendung in Widgets
-  static const BorderRadius xsBorderRadius = BorderRadius.all(Radius.circular(xs));
-  static const BorderRadius smBorderRadius = BorderRadius.all(Radius.circular(sm));
-  static const BorderRadius mdBorderRadius = BorderRadius.all(Radius.circular(md));
-  static const BorderRadius lgBorderRadius = BorderRadius.all(Radius.circular(lg));
-  static const BorderRadius xlBorderRadius = BorderRadius.all(Radius.circular(xl));
-  static const BorderRadius fullBorderRadius = BorderRadius.all(Radius.circular(full));
+  static const BorderRadius xsBorderRadius = BorderRadius.all(
+    Radius.circular(xs),
+  );
+  static const BorderRadius smBorderRadius = BorderRadius.all(
+    Radius.circular(sm),
+  );
+  static const BorderRadius mdBorderRadius = BorderRadius.all(
+    Radius.circular(md),
+  );
+  static const BorderRadius lgBorderRadius = BorderRadius.all(
+    Radius.circular(lg),
+  );
+  static const BorderRadius xlBorderRadius = BorderRadius.all(
+    Radius.circular(xl),
+  );
+  static const BorderRadius fullBorderRadius = BorderRadius.all(
+    Radius.circular(full),
+  );
 }
 
 /// Elevation-Stufen (Material 3)

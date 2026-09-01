@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/routing/app_router.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/routing/app_router.dart';
 
 class UserProfileScreen extends ConsumerWidget {
   const UserProfileScreen({super.key});
@@ -14,7 +14,7 @@ class UserProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Center(
+        title: const Center(
           child: Text(
             'Nuzterprofil',
             style: TextStyle(
@@ -36,12 +36,12 @@ class UserProfileScreen extends ConsumerWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(24),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Spacer(flex: 1),
+                const Spacer(),
                 Consumer(
                   builder: (context, ref, _) {
                     final asyncAuthSession = ref.watch(authSessionProvider);
@@ -52,7 +52,7 @@ class UserProfileScreen extends ConsumerWidget {
                           return Text(
                             'Auth Id:\n${authSession.externalAuthId}',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'ComradeBold',
                               fontSize: 16,
                             ),
@@ -60,7 +60,7 @@ class UserProfileScreen extends ConsumerWidget {
                         }
                         return Container();
                       },
-                      orElse: () => Container(),
+                      orElse: Container.new,
                     );
                   },
                 ),
@@ -73,20 +73,20 @@ class UserProfileScreen extends ConsumerWidget {
                         if (user != null) {
                           return Column(
                             children: [
-                              SizedBox(height: AppSpacing.lg),
+                              const SizedBox(height: AppSpacing.lg),
                               Text(
                                 'User Id:\n${user.id}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'ComradeBold',
                                   fontSize: 16,
                                 ),
                               ),
-                              SizedBox(height: AppSpacing.lg),
+                              const SizedBox(height: AppSpacing.lg),
                               Text(
                                 'Nutzername:\n${user.username}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'ComradeBold',
                                   fontSize: 16,
                                 ),
@@ -96,11 +96,11 @@ class UserProfileScreen extends ConsumerWidget {
                         }
                         return Container();
                       },
-                      orElse: () => Container(),
+                      orElse: Container.new,
                     );
                   },
                 ),
-                Spacer(flex: 1),
+                const Spacer(),
                 FilledButton(
                   onPressed: () =>
                       ref.read(authSessionProvider.notifier).logout(),
@@ -108,32 +108,28 @@ class UserProfileScreen extends ConsumerWidget {
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    shape: const RoundedRectangleBorder(),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Abmelden',
                     style: TextStyle(fontFamily: 'ComradeBold', fontSize: 22),
                   ),
                 ),
-                SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
                 FilledButton(
                   onPressed: () => router.go('/'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: Colors.black,
                     minimumSize: const Size.fromHeight(50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
+                    shape: const RoundedRectangleBorder(),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Zum Homescreen',
                     style: TextStyle(fontFamily: 'ComradeBold', fontSize: 22),
                   ),
                 ),
-                SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.xl),
               ],
             ),
           ),

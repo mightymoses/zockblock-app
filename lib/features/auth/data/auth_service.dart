@@ -26,10 +26,10 @@ class AuthService {
   }
 
   Future<bool> hasValidCredentials() async {
-    return await _auth0.credentialsManager.hasValidCredentials();
+    return _auth0.credentialsManager.hasValidCredentials();
   }
 
   Future<Credentials> getCredentials() async {
-    return await _auth0.credentialsManager.credentials();
+    return _auth0.credentialsManager.credentials();
   }
 }

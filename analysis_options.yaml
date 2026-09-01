@@ -7,7 +7,47 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
-include: package:flutter_lints/flutter.yaml
+include: package:very_good_analysis/analysis_options.yaml
+
+plugins:
+  import_lint: 2.0.0
+
+# Erzwingt die Abhängigkeitsrichtung aus CLAUDE.local.md:
+# core -> (nur core) | shared -> core | features -> core, shared
+# | pages -> core, shared, features (Sections) | routing -> core, pages
+#
+# pages/ und routing/ sind noch nicht als eigene Regeln erfasst, da die
+# pages/-Schicht erst mit Checklisten-Punkt E entsteht (vorher würden diese
+# Regeln bekannte, noch offene Verstöße melden).
+import_lint:
+  severity: "error"
+  rules:
+    # core darf nur core importieren
+    core_must_not_depend_on_outer_layers:
+      target: "package:zockblock_app/core/**.dart"
+      from: "package:zockblock_app/**.dart"
+      except:
+        - "package:zockblock_app/core/**.dart"
+        - "package:zockblock_app/l10n/**.dart"
+    # shared darf core + sich selbst importieren
+    shared_must_not_depend_on_outer_layers:
+      target: "package:zockblock_app/shared/**.dart"
+      from: "package:zockblock_app/**.dart"
+      except:
+        - "package:zockblock_app/core/**.dart"
+        - "package:zockblock_app/shared/**.dart"
+        - "package:zockblock_app/l10n/**.dart"
+    # features dürfen core, shared und (noch ungeprüft, siehe Hinweis oben)
+    # beliebige andere features/ importieren - nur pages/ und routing/ sind
+    # tabu
+    features_must_not_depend_on_pages_or_routing:
+      target: "package:zockblock_app/features/**.dart"
+      from: "package:zockblock_app/**.dart"
+      except:
+        - "package:zockblock_app/core/**.dart"
+        - "package:zockblock_app/shared/**.dart"
+        - "package:zockblock_app/features/**.dart"
+        - "package:zockblock_app/l10n/**.dart"
 
 linter:
   # The lint rules applied to this project can be customized in the
@@ -22,7 +62,6 @@ linter:
   # producing the lint.
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
