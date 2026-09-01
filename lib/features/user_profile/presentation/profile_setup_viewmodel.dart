@@ -24,14 +24,11 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
 
   /// Validiert und legt bei Erfolg das Profil an. Gibt `true` bei Erfolg
   /// zurück, `false` bei Validierungs- oder Server-Fehler (siehe
-  /// [ProfileSetup.usernameError]/[ProfileSetup.submitError]).
+  /// [ProfileSetup.usernameError]/[ProfileSetup.hasSubmitError]).
   Future<bool> submitForm() async {
     final error = Username.validate(state.username);
     if (error != null) {
-      state = state.copyWith(
-        usernameError: _usernameErrorMessage(error),
-        showErrors: true,
-      );
+      state = state.copyWith(usernameError: error, showErrors: true);
       return false;
     }
 
@@ -41,29 +38,17 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
         .createUser(User(username: state.username));
 
     final hasError = ref.read(userProvider).hasError;
-    state = state.copyWith(
-      isLoading: false,
-      submitError: hasError
-          ? 'Profil konnte nicht angelegt werden. Bitte versuch es erneut.'
-          : null,
-    );
+    state = state.copyWith(isLoading: false, hasSubmitError: hasError);
 
     return !hasError;
-  }
-
-  /// Übersetzt einen [UsernameValidationError] in einen Anzeigetext.
-  // TODO(mightymoses): Auf AppLocalizations umstellen (Checklisten-Punkt E).
-  String _usernameErrorMessage(UsernameValidationError error) {
-    return switch (error) {
-      UsernameValidationError.empty => 'Bitte gib einen Nutzernamen an.',
-      UsernameValidationError.tooShort =>
-        'Der Nutzername muss mindestens ${Username.minLength} Zeichen '
-            'enthalten.',
-    };
   }
 }
 
 /// UI-Zustand des Profil-Anlegen-Formulars.
+///
+/// Hält bewusst nur Fehler*typen*, keine fertigen Texte: Notifier haben keinen
+/// `BuildContext` und kommen damit nicht an `AppLocalizations`. Die Übersetzung
+/// passiert in der Section.
 class ProfileSetup {
   /// Anfangszustand: leeres Formular, kein Fehler, nicht ladend.
   ProfileSetup({
@@ -71,14 +56,14 @@ class ProfileSetup {
     this.usernameError,
     this.showErrors = false,
     this.isLoading = false,
-    this.submitError,
+    this.hasSubmitError = false,
   });
 
   /// Aktuell eingegebener Nutzername.
   final String username;
 
   /// Validierungsfehler zu [username], nur sichtbar wenn [showErrors].
-  final String? usernameError;
+  final UsernameValidationError? usernameError;
 
   /// Ob [usernameError] angezeigt werden soll (erst nach einem Submit-Versuch).
   final bool showErrors;
@@ -86,25 +71,25 @@ class ProfileSetup {
   /// Ob gerade ein `createUser`-Request läuft.
   final bool isLoading;
 
-  /// Fehlermeldung, wenn das Anlegen des Profils fehlgeschlagen ist.
-  final String? submitError;
+  /// Ob das Anlegen des Profils zuletzt fehlgeschlagen ist.
+  final bool hasSubmitError;
 
-  /// Erstellt eine Kopie mit einzelnen geänderten Feldern. Wie
-  /// `usernameError` wird auch `submitError` bei jedem Aufruf überschrieben
-  /// (Default `null`), nicht nur wenn explizit gesetzt.
+  /// Erstellt eine Kopie mit einzelnen geänderten Feldern. [usernameError] und
+  /// [hasSubmitError] werden bei jedem Aufruf zurückgesetzt, wenn sie nicht
+  /// explizit übergeben werden – ein alter Fehler soll nie stehen bleiben.
   ProfileSetup copyWith({
     String? username,
-    String? usernameError,
+    UsernameValidationError? usernameError,
     bool? showErrors,
     bool? isLoading,
-    String? submitError,
+    bool? hasSubmitError,
   }) {
     return ProfileSetup(
       username: username ?? this.username,
       usernameError: usernameError,
       showErrors: showErrors ?? this.showErrors,
       isLoading: isLoading ?? this.isLoading,
-      submitError: submitError,
+      hasSubmitError: hasSubmitError ?? false,
     );
   }
 }

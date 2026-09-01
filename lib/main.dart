@@ -11,7 +11,9 @@ void main() async {
   runApp(const ProviderScope(child: ZockblockApp()));
 }
 
+/// Wurzel-Widget: verdrahtet Router, Lokalisierung und Theme.
 class ZockblockApp extends ConsumerWidget {
+  /// Erstellt die App.
   const ZockblockApp({super.key});
 
   @override

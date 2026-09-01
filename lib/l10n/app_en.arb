@@ -1,4 +1,49 @@
 {
-  "@@locale": "en",
-  "signIn": "LOGIN"
+    "@@locale": "en",
+
+    "signIn": "LOGIN",
+    "signOut": "Sign out",
+
+    "homeTitle": "Home",
+    "homeGreeting": "Welcome, {username}!",
+    "@homeGreeting": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toUserProfile": "To user profile",
+
+    "profileSetupTitle": "Welcome",
+    "profileSetupIntro": "Before you can get started, you need to create a user profile!",
+    "profileSetupSubmitError": "Could not create the profile. Please try again.",
+    "usernameLabel": "Username",
+    "usernameErrorEmpty": "Please enter a username.",
+    "usernameErrorTooShort": "The username must contain at least {minLength} characters.",
+    "@usernameErrorTooShort": {
+        "placeholders": {
+            "minLength": { "type": "int" }
+        }
+    },
+    "create": "Create",
+
+    "userProfileTitle": "User profile",
+    "authIdValue": "Auth Id:\n{id}",
+    "@authIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "userIdValue": "User Id:\n{id}",
+    "@userIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "usernameValue": "Username:\n{username}",
+    "@usernameValue": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toHome": "To home screen"
 }

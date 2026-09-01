@@ -138,32 +138,47 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ---
 
-## E) `pages/`-Schicht einführen
+## E) `pages/`-Schicht einführen ✅
 
-Router soll ausschließlich aus `pages/` importieren. Pro bestehendem
-`*_screen.dart`: Scaffold-Chrome → `lib/pages/<name>_page.dart`, Inhalt →
-`features/<feature>/presentation/<name>_section.dart`. Folgende Cleanups aus
-dem Review werden beim jeweiligen Screen direkt mit erledigt (nicht separat).
+Alle vier `*_screen.dart` in Page (Chrome) + Section (Inhalt) zerlegt, alte
+Screen-Dateien gelöscht.
 
-- [ ] **auth:** `AuthScreen` → `pages/auth_page.dart` + `features/auth/presentation/auth_section.dart`
-- [ ] **home:** `HomeScreen` → `pages/home_page.dart` + `features/home/presentation/home_section.dart`
-  - dabei: `ref.watch(routerProvider).go(...)` → `context.go(...)`
-  - dabei: hardcodierte Farben/Fonts → Theme-Tokens bzw. neuer
-    `shared/widgets/atoms`-Baustein (z. B. `AppFilledButton` für den
-    wiederholten Button-Style)
-  - dabei: hardcodierte deutsche Strings → `AppLocalizations`
-- [ ] **profile-setup:** `ProfileSetupScreen` → `pages/profile_setup_page.dart` + `features/user_profile/presentation/profile_setup_section.dart`
-- [ ] **user-profile:** `UserProfileScreen` → `pages/user_profile_page.dart` + `features/user_profile/presentation/user_profile_section.dart`
-  - dabei: `context.go(...)` statt `ref.watch(routerProvider).go(...)`
-  - dabei: hardcodierte Farben/Fonts → Theme-Tokens / `AppFilledButton`
-  - dabei: hardcodierte Strings → `AppLocalizations` (inkl. Tippfehler "Nuzterprofil")
-- [ ] `lib/routing/app_router.dart` (siehe D): Importe auf `pages/*` umstellen
+- [x] `pages/{auth,home,profile_setup,user_profile}_page.dart` angelegt
+- [x] Sections: `features/auth/presentation/auth_section.dart`,
+      `features/home/presentation/home_section.dart`,
+      `features/user_profile/presentation/{profile_setup,user_profile}_section.dart`
+- [x] Neu `shared/widgets/organisms/app_page_scaffold.dart`: AppBar +
+      Hintergrundgrafik + Padding, war 3× dupliziert
+- [x] Neu `shared/widgets/atoms/app_filled_button.dart`: der 4× duplizierte
+      Button-Style. Farben bleiben bewusst hart verdrahtet (weiß/schwarz),
+      solange nicht entschieden ist, ob die App bei Dynamic Colors bleibt –
+      diese Datei ist dann die einzige Änderungsstelle
+- [x] `ref.watch(routerProvider).go(...)` → `context.go(...)`
+- [x] Alle hardcodierten Strings nach `l10n/app_{de,en}.arb` (inkl. Tippfehler
+      "Nuzterprofil"); `ProfileSetup` hält jetzt `UsernameValidationError?` +
+      `hasSubmitError` statt fertiger Texte, die Übersetzung passiert in der
+      Section (Notifier haben keinen `BuildContext`) – löst das TODO aus C
+- [x] `app_router.dart`: Route-Ziele kommen aus `pages/`
+- [x] import_lint-Regeln für `pages` und `routing` aktiviert
+- [x] Doc-Comments in den zuletzt noch offenen Dateien nachgezogen
+      (`auth_mode`, `marquee_row`, `spinning_circle`, `user`, `user_provider`,
+      `main`, `app_colors`, `app_dimensions`, `env`); `app_theme.dart` ist
+      generiert und per `ignore_for_file` ausgenommen
+- [x] `pubspec.yaml`: Dependencies sortiert, ungenutztes `flutter_lints`
+      entfernt (Preset ist `very_good_analysis`)
+
+**Offener Punkt (bewusst nicht hier entschieden):** `app_router.dart` und
+`home_section.dart` greifen für das Profil-Gate bzw. die Begrüßung auf
+`features/user_profile/data/user_provider.dart` zu – ein routing→features- und
+ein features→fremdes-feature/data-Verstoß. Naheliegende Lösung analog zu
+`core/auth/`: den Zustand des aktuellen Nutzers nach `core/user/` ziehen. Bis
+dahin steht in `analysis_options.yaml` eine benannte, kommentierte Ausnahme.
 
 ---
 
 ## Abschluss
 
-- [ ] `fvm flutter analyze`
-- [ ] `fvm dart run import_lint`
-- [ ] `fvm flutter test`
-- [ ] Kurze Erklärung der wichtigsten Entscheidungen (wie im Workflow vorgesehen)
+- [x] `fvm flutter analyze` – keine Findings
+- [x] `fvm dart run import_lint` – keine Findings
+- [x] `fvm flutter test` – keine Testdateien vorhanden (Tests folgen separat)
+- [x] Kurze Erklärung der wichtigsten Entscheidungen (wie im Workflow vorgesehen)

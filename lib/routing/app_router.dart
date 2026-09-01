@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
-import 'package:zockblock_app/features/auth/presentation/auth_screen.dart';
-import 'package:zockblock_app/features/home/presentation/home_screen.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
-import 'package:zockblock_app/features/user_profile/presentation/profile_setup_screen.dart';
-import 'package:zockblock_app/features/user_profile/presentation/user_profile_screen.dart';
+import 'package:zockblock_app/pages/auth_page.dart';
+import 'package:zockblock_app/pages/home_page.dart';
+import 'package:zockblock_app/pages/profile_setup_page.dart';
+import 'package:zockblock_app/pages/user_profile_page.dart';
 
 /// GoRouter der App. `redirect` steuert das Auth-/Profil-Gate anhand von
 /// [authSessionProvider]/[userProvider], `refreshListenable` sorgt dafür,
@@ -18,15 +18,15 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     refreshListenable: refreshListenable,
     routes: [
-      GoRoute(path: '/', builder: (context, state) => const HomeScreen()),
-      GoRoute(path: '/auth', builder: (context, state) => const AuthScreen()),
+      GoRoute(path: '/', builder: (context, state) => const HomePage()),
+      GoRoute(path: '/auth', builder: (context, state) => const AuthPage()),
       GoRoute(
         path: '/profile-setup',
-        builder: (context, state) => const ProfileSetupScreen(),
+        builder: (context, state) => const ProfileSetupPage(),
       ),
       GoRoute(
         path: '/user-profile',
-        builder: (context, state) => const UserProfileScreen(),
+        builder: (context, state) => const UserProfilePage(),
       ),
     ],
     redirect: (context, state) {

@@ -1,4 +1,49 @@
 {
-  "@@locale": "de",
-  "signIn": "ANmeLdeN"
+    "@@locale": "de",
+
+    "signIn": "ANmeLdeN",
+    "signOut": "Abmelden",
+
+    "homeTitle": "Home",
+    "homeGreeting": "Herzlich Willkommen, {username}!",
+    "@homeGreeting": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toUserProfile": "Zum Nutzerprofil",
+
+    "profileSetupTitle": "Willkommen",
+    "profileSetupIntro": "Bevor du loslegen kannst, musst du ein Nutzerprofil erstellen!",
+    "profileSetupSubmitError": "Profil konnte nicht angelegt werden. Bitte versuch es erneut.",
+    "usernameLabel": "Nutzername",
+    "usernameErrorEmpty": "Bitte gib einen Nutzernamen an.",
+    "usernameErrorTooShort": "Der Nutzername muss mindestens {minLength} Zeichen enthalten.",
+    "@usernameErrorTooShort": {
+        "placeholders": {
+            "minLength": { "type": "int" }
+        }
+    },
+    "create": "Erstellen",
+
+    "userProfileTitle": "Nutzerprofil",
+    "authIdValue": "Auth Id:\n{id}",
+    "@authIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "userIdValue": "User Id:\n{id}",
+    "@userIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "usernameValue": "Nutzername:\n{username}",
+    "@usernameValue": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toHome": "Zum Homescreen"
 }

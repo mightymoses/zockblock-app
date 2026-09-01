@@ -15,10 +15,6 @@ plugins:
 # Erzwingt die Abhängigkeitsrichtung aus CLAUDE.local.md:
 # core -> (nur core) | shared -> core | features -> core, shared
 # | pages -> core, shared, features (Sections) | routing -> core, pages
-#
-# pages/ und routing/ sind noch nicht als eigene Regeln erfasst, da die
-# pages/-Schicht erst mit Checklisten-Punkt E entsteht (vorher würden diese
-# Regeln bekannte, noch offene Verstöße melden).
 import_lint:
   severity: "error"
   rules:
@@ -48,6 +44,28 @@ import_lint:
         - "package:zockblock_app/shared/**.dart"
         - "package:zockblock_app/features/**.dart"
         - "package:zockblock_app/l10n/**.dart"
+    # pages dürfen core, shared und features (Sections) importieren,
+    # aber nicht routing
+    pages_must_not_depend_on_routing:
+      target: "package:zockblock_app/pages/**.dart"
+      from: "package:zockblock_app/**.dart"
+      except:
+        - "package:zockblock_app/core/**.dart"
+        - "package:zockblock_app/shared/**.dart"
+        - "package:zockblock_app/features/**.dart"
+        - "package:zockblock_app/l10n/**.dart"
+    # routing darf nur core und pages importieren
+    routing_must_only_depend_on_core_and_pages:
+      target: "package:zockblock_app/routing/**.dart"
+      from: "package:zockblock_app/**.dart"
+      except:
+        - "package:zockblock_app/core/**.dart"
+        - "package:zockblock_app/pages/**.dart"
+        - "package:zockblock_app/l10n/**.dart"
+        # Offener Punkt: das Auth-/Profil-Gate im redirect braucht den Zustand
+        # des aktuellen Nutzers. Analog zu core/auth/ gehört der vermutlich
+        # nach core/ - bis das entschieden ist, bleibt diese Ausnahme stehen.
+        - "package:zockblock_app/features/user_profile/data/user_provider.dart"
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -1,3 +1,7 @@
+// Vom Material Theme Builder generiert - bewusst unverändert übernommen,
+// daher ohne Doc-Comments.
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 
 class MaterialTheme {
