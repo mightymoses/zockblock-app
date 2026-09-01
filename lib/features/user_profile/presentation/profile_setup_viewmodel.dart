@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/features/user_profile/data/user.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/features/user_profile/domain/username.dart';
 
 /// Formular-Zustand der Profil-Anlegen-Seite.
 final NotifierProvider<ProfileSetupViewModel, ProfileSetup>
@@ -25,9 +26,12 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
   /// zurück, `false` bei Validierungs- oder Server-Fehler (siehe
   /// [ProfileSetup.usernameError]/[ProfileSetup.submitError]).
   Future<bool> submitForm() async {
-    final error = _validate(state.username);
+    final error = Username.validate(state.username);
     if (error != null) {
-      state = state.copyWith(usernameError: error, showErrors: true);
+      state = state.copyWith(
+        usernameError: _usernameErrorMessage(error),
+        showErrors: true,
+      );
       return false;
     }
 
@@ -47,14 +51,15 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
     return !hasError;
   }
 
-  String? _validate(String value) {
-    if (value.trim().isEmpty) {
-      return 'Bitte gib einen Nutzernamen an.';
-    }
-    if (value.trim().length < 3) {
-      return 'Der Nutzername muss mindestens 3 Zeichen enthalten.';
-    }
-    return null;
+  /// Übersetzt einen [UsernameValidationError] in einen Anzeigetext.
+  // TODO(mightymoses): Auf AppLocalizations umstellen (Checklisten-Punkt E).
+  String _usernameErrorMessage(UsernameValidationError error) {
+    return switch (error) {
+      UsernameValidationError.empty => 'Bitte gib einen Nutzernamen an.',
+      UsernameValidationError.tooShort =>
+        'Der Nutzername muss mindestens ${Username.minLength} Zeichen '
+            'enthalten.',
+    };
   }
 }
 

@@ -110,15 +110,14 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ---
 
-## C) `domain/`-Layer nachziehen
+## C) `domain/`-Layer nachziehen ✅
 
-- [ ] `features/user_profile/domain/username.dart`: Validierungsregel aus
-      `profile_setup_viewmodel.dart` (`_validate`, Zeilen 36-44) hierher
-      verschieben (Value-Object oder reine Validierungsfunktion); ViewModel
-      ruft nur noch auf
-- [ ] `features/auth/domain/`: prüfen, ob es überhaupt fachliche Regeln gibt
-      (Login/Logout hat vermutlich keine) – kein Zwang, leer lassen falls
-      nicht zutreffend
+- [x] Neu `features/user_profile/domain/username.dart`: `Username`
+      (Value-Object) + `UsernameValidationError`-Enum. Domain liefert nur das
+      Ergebnis, keine Texte – `ProfileSetupViewModel._usernameErrorMessage()`
+      mappt Enum → String (TODO: auf `AppLocalizations` bei Punkt E)
+- [x] `features/auth/domain/`: keine fachlichen Regeln gefunden (Login/Logout
+      delegieren nur an Auth0) – bewusst nicht angelegt
 
 ---
 
