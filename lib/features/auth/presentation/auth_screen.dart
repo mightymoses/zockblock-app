@@ -147,8 +147,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                         else
                           MarqueeRow(
                             asset: isZock
-                                ? 'assets/graphics/zock.svg'
-                                : 'assets/graphics/block.svg',
+                                ? 'assets/images/zock.webp'
+                                : 'assets/images/block.webp',
                             marqueAnimation: _animation,
                             reverse: direction,
                             color: color,
@@ -169,8 +169,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                                 size: largeHeight,
                                 isDark: isDark,
                                 assetName: isFirstLargeRow
-                                    ? 'Zock-Links'
-                                    : 'Block-Links',
+                                    ? 'zock_links'
+                                    : 'block_links',
                                 speedMultiplier: _random.nextInt(4) + 1,
                                 reverse: _random.nextBool(),
                               ),
@@ -179,8 +179,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                                 size: largeHeight,
                                 isDark: isDark,
                                 assetName: isFirstLargeRow
-                                    ? 'Zock-Rechts'
-                                    : 'Block-Rechts',
+                                    ? 'zock_rechts'
+                                    : 'block_rechts',
                                 speedMultiplier: _random.nextInt(4) + 1,
                                 reverse: _random.nextBool(),
                               ),

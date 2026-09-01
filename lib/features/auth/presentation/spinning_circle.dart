@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class SpinningCircle extends StatelessWidget {
   const SpinningCircle({
@@ -34,10 +33,10 @@ class SpinningCircle extends StatelessWidget {
           child: child,
         );
       },
-      child: SvgPicture.asset(
+      child: Image.asset(
         isDark
-            ? 'assets/graphics/${assetName}_Dark.svg'
-            : 'assets/graphics/${assetName}_Bright.svg',
+            ? 'assets/images/${assetName}_dark.webp'
+            : 'assets/images/${assetName}_bright.webp',
         width: size,
         height: size,
       ),

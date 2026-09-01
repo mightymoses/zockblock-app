@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class MarqueeRow extends StatelessWidget {
   const MarqueeRow({
@@ -47,10 +46,11 @@ class MarqueeRow extends StatelessWidget {
                 12,
                 (_) => Padding(
                   padding: EdgeInsets.symmetric(horizontal: height * 0.1),
-                  child: SvgPicture.asset(
+                  child: Image.asset(
                     asset,
                     height: height,
-                    colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                    color: color,
+                    colorBlendMode: BlendMode.srcIn,
                   ),
                 ),
               ),

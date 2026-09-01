@@ -121,16 +121,20 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ---
 
-## F) SVG → WebP für animierte Grafiken
+## F) SVG → WebP für animierte Grafiken ✅ (Performance bestätigt)
 
-- [ ] `assets/graphics/zock.svg`, `block.svg` (in `MarqueeRow`) als WebP
-      exportieren; `SvgPicture.asset(..., colorFilter: ...)` →
-      `Image.asset(..., color: color, colorBlendMode: BlendMode.srcIn)`
-- [ ] `assets/graphics/{Zock,Block}-{Links,Rechts}_{Bright,Dark}.svg` (in
-      `SpinningCircle`) als WebP exportieren, `SvgPicture.asset` → `Image.asset`
-- [ ] `Pfeil-Links.svg`/`Pfeil-Rechts.svg` bleiben SVG (einmalig, nicht animiert)
-- [ ] Nach Umstellung: kurzer Performance-Check auf echtem Gerät (Auth-Screen,
-      Performance-Overlay), ob spürbar flüssiger
+- [x] `zock.svg`/`block.svg` als `assets/images/zock.webp`/`block.webp`
+      exportiert (1200×600); `MarqueeRow`: `SvgPicture.asset(...,
+      colorFilter: ...)` → `Image.asset(..., color: color, colorBlendMode:
+      BlendMode.srcIn)`
+- [x] Die 8 `{Zock,Block}-{Links,Rechts}_{Bright,Dark}.svg` als
+      `assets/images/{zock,block}_{links,rechts}_{bright,dark}.webp`
+      exportiert (1024×1024, lowercase_with_underscores statt der
+      inkonsistenten SVG-Namen); `SpinningCircle`: `SvgPicture.asset` →
+      `Image.asset`
+- [x] Alte SVGs entfernt, `Pfeil-Links.svg`/`Pfeil-Rechts.svg` unverändert
+      (einmalig, nicht animiert) – `flutter_svg`-Dependency bleibt dafür
+- [x] Performance-Check auf echtem Gerät durchgeführt, spürbar flüssiger
 
 ---
 
