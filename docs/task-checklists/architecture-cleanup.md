@@ -70,7 +70,7 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ---
 
-## B) Auth-Session-Architektur bereinigen
+## B) Auth-Session-Architektur bereinigen ✅
 
 - [x] Verschieben `features/auth/data/*` → `lib/core/auth/`, Importe anpassen,
       leeren `features/auth/data/`-Ordner löschen
@@ -95,15 +95,18 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
       `ProfileSetupViewModel.submitForm()`/`ProfileSetup` um `submitError`
       erweitert (aktuell `return true` unconditional, obwohl `createUser()`
       fehlschlagen kann), Screen zeigt den Fehler an
-- [ ] Router-Refresh-Fix: `onAuthStateChangedProvider`/
-      `onUserStateChangedProvider` + beide `StreamController<bool>` entfernen,
-      stattdessen `refreshListenable` in `app_router.dart` (Listenable auf
-      `authSessionProvider`+`userProvider`); manuelle
-      `ref.listen(...).router.refresh()` in `main.dart` entfernen
-- [ ] Router-Redirect: `userAsyncValue`-Zweig bei `error` nicht mehr erzwungen
+- [x] Router-Refresh-Fix: `onAuthStateChangedProvider`/
+      `onUserStateChangedProvider` + beide `StreamController<bool>` +
+      `onXStateChanged`-Interface-Member komplett entfernt, stattdessen
+      `_RouterRefreshListenable` (ChangeNotifier) in `app_router.dart` als
+      `refreshListenable`, lauscht auf `authSessionProvider`+`userProvider`;
+      manuelle `ref.listen(...).router.refresh()` in `main.dart` entfernt
+- [x] Router-Redirect: `userAsyncValue`-Zweig bei `error` nicht mehr erzwungen
       zu `/profile-setup` navigieren, sondern wie `loading` behandeln
       (`=> null`); `authSessionAsyncValue`-Zweig bleibt bei `error` → `/auth`
       (sicherer Fallback, unverändert)
+- [x] Nebenbei: `auth_screen.dart` Kleinfunde behoben (`Future<void>.delayed`,
+      `unawaited(_startLoop())`, `.isEven` statt `% 2 == 0`)
 
 ---
 

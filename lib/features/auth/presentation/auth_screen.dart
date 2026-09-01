@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
       duration: const Duration(seconds: 3),
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-    _startLoop();
+    unawaited(_startLoop());
   }
 
   @override
@@ -43,7 +44,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
   }
 
   Future<void> _startLoop() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     while (mounted) {
       await _controller.forward(from: 0);
       setState(
@@ -88,8 +89,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(totalRows, (rowIndex) {
                     final isZock =
-                        ((rowIndex % 2 == 0) ==
-                            (firstLargeRowIndex % 2 == 0)) ==
+                        (rowIndex.isEven == firstLargeRowIndex.isEven) ==
                         (rowIndex <= middleOfBottom);
                     final direction =
                         (rowIndex % 2 == randomDirection) ==
