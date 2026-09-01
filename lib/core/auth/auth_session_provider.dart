@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/features/auth/data/auth_repository_impl.dart';
-import 'package:zockblock_app/features/auth/data/auth_session.dart';
+import 'package:zockblock_app/core/auth/auth_repository_impl.dart';
+import 'package:zockblock_app/core/auth/auth_session.dart';
 
 final AsyncNotifierProvider<AuthSessionNotifier, AuthSession?>
 authSessionProvider = AsyncNotifierProvider(AuthSessionNotifier.new);
@@ -27,14 +27,6 @@ class AuthSessionNotifier extends AsyncNotifier<AuthSession?> {
     state = await AsyncValue.guard(() async {
       await ref.read(authRepositoryProvider).logout();
       return null;
-    });
-  }
-
-  Future<void> renewSession() async {
-    state = const AsyncLoading();
-
-    state = await AsyncValue.guard(() async {
-      return ref.read(authRepositoryProvider).getExistingSession();
     });
   }
 }

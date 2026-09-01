@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/core/config/env.dart';
-import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
+import 'package:zockblock_app/core/network/auth_interceptor.dart';
 
+/// Dio-Client für alle Backend-Requests, mit [AuthInterceptor] für den
+/// Auth0-Bearer-Token.
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
@@ -13,24 +15,7 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  dio.interceptors.add(
-    InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        await ref.read(authSessionProvider.notifier).renewSession();
-        final authSessionAsyncValue = ref.read(authSessionProvider);
-
-        authSessionAsyncValue.whenData((authSession) {
-          final token = authSession?.accessToken;
-
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
-          }
-        });
-
-        return handler.next(options);
-      },
-    ),
-  );
+  dio.interceptors.add(ref.watch(authInterceptorProvider));
 
   return dio;
 });

@@ -72,38 +72,36 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
 
 ## B) Auth-Session-Architektur bereinigen
 
-- [ ] Verschieben `features/auth/data/{auth_session.dart, auth_service.dart,
-      auth_repository.dart, auth_repository_impl.dart,
-      auth_session_provider.dart}` → `lib/core/auth/`
-- [ ] `features/auth/presentation/*` importiert die core-Provider direkt (kein
-      eigenes `data/` mehr nötig für den Login-Screen)
-- [ ] **Toter Code entfernen:** `features/auth/presentation/auth_viewmodel.dart`
-      (`AuthViewModel`/`authViewModelProvider`) – ungenutzte Dopplung von
-      `authSessionProvider`
-- [ ] Neu: `core/network/auth_interceptor.dart` – `AuthInterceptor extends
-      QueuedInterceptor`, `AuthService` per Konstruktor injiziert (kein Ref/
-      Riverpod in der Klasse selbst, nur in der Wiring-Provider-Funktion).
-      Liest Token direkt über `AuthService.getCredentials()` (Auth0 refresht
-      selbst), mutiert **nicht** mehr den `authSessionProvider`-State
-- [ ] `dio_provider.dart` verdrahtet nur noch den `AuthInterceptor`
-- [ ] `authSessionProvider` aktualisiert nur noch bei echten Auth-Events
-      (Login/Logout/App-Start), nicht mehr pro Request
-- [ ] **Router-Refresh-Fix:** `onAuthStateChangedProvider` (in
-      `auth_repository_impl.dart`) und `onUserStateChangedProvider` (in
-      `user_repository_impl.dart`) samt der beiden `StreamController<bool>`
-      entfernen. Stattdessen `refreshListenable` am `GoRouter` direkt aus
-      `authSessionProvider`/`userProvider` speisen (offizielles
-      Riverpod+go_router-Pattern, z. B. via `Raw<ValueNotifier<T>>` oder einer
-      Notifier-Klasse, die `Listenable` implementiert)
-- [ ] `main.dart`: manuelle `ref.listen(...).router.refresh()`-Aufrufe entfernen
-      (werden durch `refreshListenable` überflüssig)
-- [ ] **Fehlerbehandlung schärfen:** breites `catch (e)` in
-      `auth_repository_impl.dart` (`getExistingSession`) und
-      `user_repository_impl.dart` (`getCurrentUser`, `createUser`) – aktuell
-      wird jeder Fehler (auch Netzwerkfehler) still zu `null` degradiert, was
-      der Router als "kein Profil" fehlinterpretiert. Unterscheiden: echtes
-      "nicht vorhanden" vs. technischer Fehler (ggf. mit `logger`-Package
-      loggen statt zu schlucken)
+- [x] Verschieben `features/auth/data/*` → `lib/core/auth/`, Importe anpassen,
+      leeren `features/auth/data/`-Ordner löschen
+- [x] Toter Code raus: `features/auth/presentation/auth_viewmodel.dart`
+- [x] `AuthSessionNotifier`: `renewSession()` entfernen (wird nicht mehr gebraucht)
+- [x] Neu `core/network/auth_interceptor.dart`: `AuthInterceptor extends
+      QueuedInterceptor`, `AuthService` per Konstruktor injiziert, holt Token
+      direkt über `getCredentials()` (Auth0 refresht selbst), `on
+      CredentialsManagerException` → Request ohne Header raus. Mutiert
+      `authSessionProvider` nicht mehr
+- [x] `dio_provider.dart` verdrahtet nur noch `AuthInterceptor`
+- [ ] `AuthRepositoryImpl.getExistingSession()`: nur bei
+      `isNoCredentialsFound`/`isNoRefreshTokenFound` → `null`, sonst `rethrow`
+- [ ] `UserRepositoryImpl.getCurrentUser()`: nur `DioException` mit Status 404
+      → `null`, sonst `rethrow`
+- [ ] `UserService.getCurrentUser()`/`createUser()`: `_dio.get`/`.post` ohne
+      Typ-Parameter behoben (`dynamic`→`Map<String, Object?>`-Cast-Fund von
+      strict-casts), `<Map<String, Object?>>` explizit angeben
+- [ ] `UserRepositoryImpl.createUser()`: kein Catch-and-swallow mehr, Fehler
+      propagieren; `ProfileSetupViewModel.submitForm()` entsprechend anpassen
+      (aktuell `return true` unconditional, obwohl `createUser()` fehlschlagen
+      kann)
+- [ ] Router-Refresh-Fix: `onAuthStateChangedProvider`/
+      `onUserStateChangedProvider` + beide `StreamController<bool>` entfernen,
+      stattdessen `refreshListenable` in `app_router.dart` (Listenable auf
+      `authSessionProvider`+`userProvider`); manuelle
+      `ref.listen(...).router.refresh()` in `main.dart` entfernen
+- [ ] Router-Redirect: `userAsyncValue`-Zweig bei `error` nicht mehr erzwungen
+      zu `/profile-setup` navigieren, sondern wie `loading` behandeln
+      (`=> null`); `authSessionAsyncValue`-Zweig bleibt bei `error` → `/auth`
+      (sicherer Fallback, unverändert)
 
 ---
 

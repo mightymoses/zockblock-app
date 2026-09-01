@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
+import 'package:zockblock_app/core/auth/auth_session_provider.dart';
 import 'package:zockblock_app/features/auth/presentation/auth_mode.dart';
 import 'package:zockblock_app/features/auth/presentation/marquee_row.dart';
 import 'package:zockblock_app/features/auth/presentation/spinning_circle.dart';

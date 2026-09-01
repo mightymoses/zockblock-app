@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
+import 'package:zockblock_app/core/auth/auth_session_provider.dart';
 import 'package:zockblock_app/features/auth/presentation/auth_screen.dart';
 import 'package:zockblock_app/features/home/presentation/home_screen.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';

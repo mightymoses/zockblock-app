@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:zockblock_app/features/auth/data/auth_repository.dart';
-import 'package:zockblock_app/features/auth/data/auth_service.dart';
-import 'package:zockblock_app/features/auth/data/auth_session.dart';
+import 'package:zockblock_app/core/auth/auth_repository.dart';
+import 'package:zockblock_app/core/auth/auth_service.dart';
+import 'package:zockblock_app/core/auth/auth_session.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final authService = ref.watch(authServiceProvider);
