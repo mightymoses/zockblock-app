@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/core/dio/dio_provider.dart';
+import 'package:zockblock_app/core/network/dio_provider.dart';
 import 'package:zockblock_app/features/user_profile/data/user.dart';
 
 final userServiceProvider = Provider<UserService>((ref) {

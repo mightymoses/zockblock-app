@@ -43,10 +43,15 @@ Zusatzcode.
 
 ---
 
-## J) Aufräumen: leeres `core/network/`
+## J) Netzwerk-Ordner vereinheitlichen ✅
 
-- [ ] `lib/core/network/` (leer, Karteileiche aus initialem Scaffolding)
-      entfernen – aktiver Dio-Code liegt in `core/dio/`
+Entscheidung: generischer Name (`network`) statt library-spezifisch (`dio`) –
+zukunftssicherer, falls der HTTP-Client mal getauscht wird.
+
+- [x] `lib/core/dio/dio_provider.dart` → `lib/core/network/dio_provider.dart`
+      (Inhalt unverändert), `core/dio/` entfernt
+- [x] Import in `user_service.dart` angepasst
+- [x] `flutter analyze` – keine Findings
 
 ---
 
@@ -77,7 +82,7 @@ Zusatzcode.
 - [ ] **Toter Code entfernen:** `features/auth/presentation/auth_viewmodel.dart`
       (`AuthViewModel`/`authViewModelProvider`) – ungenutzte Dopplung von
       `authSessionProvider`
-- [ ] Neu: `core/dio/auth_interceptor.dart` – `AuthInterceptor extends
+- [ ] Neu: `core/network/auth_interceptor.dart` – `AuthInterceptor extends
       QueuedInterceptor`, `AuthService` per Konstruktor injiziert (kein Ref/
       Riverpod in der Klasse selbst, nur in der Wiring-Provider-Funktion).
       Liest Token direkt über `AuthService.getCredentials()` (Auth0 refresht
