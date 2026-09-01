@@ -1,21 +1,26 @@
 import 'dart:async';
 
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:zockblock_app/core/auth/auth_repository.dart';
 import 'package:zockblock_app/core/auth/auth_service.dart';
 import 'package:zockblock_app/core/auth/auth_session.dart';
 
+/// Stellt das [AuthRepository] bereit.
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
   final authService = ref.watch(authServiceProvider);
   return AuthRepositoryImpl(authService);
 });
 
+// TODO(router-refresh-fix): entfällt, sobald refreshListenable steht.
 final onAuthStateChangedProvider = StreamProvider<bool>((ref) {
   return ref.read(authRepositoryProvider).onAuthStateChanged;
 });
 
+/// Implementiert [AuthRepository] über [AuthService] (Auth0).
 class AuthRepositoryImpl implements AuthRepository {
+  /// Erstellt das Repository mit dem [AuthService], den es kapselt.
   AuthRepositoryImpl(this._authService);
 
   final AuthService _authService;
@@ -42,20 +47,17 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<AuthSession?> getExistingSession() async {
     try {
-      final hasValid = await _authService.hasValidCredentials();
-      if (!hasValid) {
-        _authStatusController.add(false);
-        return null;
-      }
-
       final credentials = await _authService.getCredentials();
       final authSession = AuthSession.fromCredentials(credentials);
 
       _authStatusController.add(true);
       return authSession;
-    } catch (e) {
-      _authStatusController.add(false);
-      return null;
+    } on CredentialsManagerException catch (e) {
+      if (e.isNoCredentialsFound || e.isNoRefreshTokenFound) {
+        _authStatusController.add(false);
+        return null;
+      }
+      rethrow;
     }
   }
 }

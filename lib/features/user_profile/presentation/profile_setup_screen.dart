@@ -4,7 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/features/user_profile/presentation/profile_setup_viewmodel.dart';
 
+/// Formular zum Anlegen des Nutzerprofils nach dem ersten Login.
 class ProfileSetupScreen extends HookConsumerWidget {
+  /// Erstellt den Screen.
   const ProfileSetupScreen({super.key});
 
   @override
@@ -43,7 +45,8 @@ class ProfileSetupScreen extends HookConsumerWidget {
               children: [
                 const Spacer(),
                 const Text(
-                  'Bevor du loslegen kannst musst du ein Nutzerprofil erstellen!',
+                  'Bevor du loslegen kannst musst du ein Nutzerprofil '
+                  'erstellen!',
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: 'ComradeBold',
@@ -70,23 +73,31 @@ class ProfileSetupScreen extends HookConsumerWidget {
                     filled: true,
                     fillColor: Colors.black,
                     enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.zero),
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(color: Colors.white, width: 2),
                     ),
                     focusedBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.zero),
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(color: Colors.white, width: 4),
                     ),
                     errorBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.zero),
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(color: Colors.red, width: 2),
                     ),
                     focusedErrorBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.zero),
+                      borderRadius: BorderRadius.zero,
                       borderSide: BorderSide(color: Colors.red, width: 4),
                     ),
                   ),
                 ),
+                if (formState.submitError != null) ...[
+                  Text(
+                    formState.submitError!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                ],
                 const Spacer(),
                 FilledButton(
                   onPressed: ref

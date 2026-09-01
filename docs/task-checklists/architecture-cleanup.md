@@ -82,17 +82,19 @@ zukunftssicherer, falls der HTTP-Client mal getauscht wird.
       CredentialsManagerException` → Request ohne Header raus. Mutiert
       `authSessionProvider` nicht mehr
 - [x] `dio_provider.dart` verdrahtet nur noch `AuthInterceptor`
-- [ ] `AuthRepositoryImpl.getExistingSession()`: nur bei
+- [x] `AuthRepositoryImpl.getExistingSession()`: nur bei
       `isNoCredentialsFound`/`isNoRefreshTokenFound` → `null`, sonst `rethrow`
-- [ ] `UserRepositoryImpl.getCurrentUser()`: nur `DioException` mit Status 404
+      (dabei auch `AuthService.hasValidCredentials()` entfernt, unbenutzt)
+- [x] `UserRepositoryImpl.getCurrentUser()`: nur `DioException` mit Status 404
       → `null`, sonst `rethrow`
-- [ ] `UserService.getCurrentUser()`/`createUser()`: `_dio.get`/`.post` ohne
+- [x] `UserService.getCurrentUser()`/`createUser()`: `_dio.get`/`.post` ohne
       Typ-Parameter behoben (`dynamic`→`Map<String, Object?>`-Cast-Fund von
       strict-casts), `<Map<String, Object?>>` explizit angeben
-- [ ] `UserRepositoryImpl.createUser()`: kein Catch-and-swallow mehr, Fehler
-      propagieren; `ProfileSetupViewModel.submitForm()` entsprechend anpassen
-      (aktuell `return true` unconditional, obwohl `createUser()` fehlschlagen
-      kann)
+- [x] `UserRepositoryImpl.createUser()`: kein Catch-and-swallow mehr,
+      Rückgabetyp `Future<User>` (kein Null-Fall mehr); Interface angepasst;
+      `ProfileSetupViewModel.submitForm()`/`ProfileSetup` um `submitError`
+      erweitert (aktuell `return true` unconditional, obwohl `createUser()`
+      fehlschlagen kann), Screen zeigt den Fehler an
 - [ ] Router-Refresh-Fix: `onAuthStateChangedProvider`/
       `onUserStateChangedProvider` + beide `StreamController<bool>` entfernen,
       stattdessen `refreshListenable` in `app_router.dart` (Listenable auf
