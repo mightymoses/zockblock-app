@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:zockblock_app/features/auth/data/auth_session_provider.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'auth_mode.dart';
-import 'auth_viewmodel.dart';
 import 'dart:math';
 import 'marquee_row.dart';
 import 'spinning_circle.dart';
