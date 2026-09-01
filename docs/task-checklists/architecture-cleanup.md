@@ -33,12 +33,13 @@ Zusatzcode.
 
 ---
 
-## D) `routing/` auf Top-Level verschieben
+## D) `routing/` auf Top-Level verschieben ✅
 
-- [ ] `lib/core/routing/app_router.dart` → `lib/routing/app_router.dart`
-- [ ] Import in `lib/main.dart` anpassen
-- [ ] Sonstige Importe von `core/routing/...` suchen & anpassen (`home_screen.dart`,
+- [x] `lib/core/routing/app_router.dart` → `lib/routing/app_router.dart`
+- [x] Import in `lib/main.dart` anpassen
+- [x] Sonstige Importe von `core/routing/...` angepasst (`home_screen.dart`,
       `user_profile_screen.dart` – fallen aber ohnehin unter Punkt E weg)
+- [x] `flutter analyze` – keine Findings
 
 ---
 
@@ -60,6 +61,9 @@ Zusatzcode.
       wechseln
 - [ ] `test/widget_test.dart` prüfen – vermutlich noch Flutter-Default-Template
       (Counter-App-Test), nicht mehr zutreffend → entfernen oder ersetzen
+- [ ] `fvm` ist laut `CLAUDE.local.md` gesetztes Tool (projekt-lokal gepinnte
+      Flutter-Version), im Repo aber nirgends konfiguriert (kein
+      `.fvmrc`/`.fvm/fvm_config.json`) – einrichten oder Doku korrigieren
 
 ---
 

@@ -6,7 +6,7 @@ import 'package:zockblock_app/features/auth/data/auth_repository_impl.dart';
 import 'package:zockblock_app/features/user_profile/data/user_repository_impl.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'core/theme/app_theme.dart';
-import 'package:zockblock_app/core/routing/app_router.dart';
+import 'package:zockblock_app/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

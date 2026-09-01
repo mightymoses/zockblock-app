@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/core/routing/app_router.dart';
+import 'package:zockblock_app/routing/app_router.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
 
