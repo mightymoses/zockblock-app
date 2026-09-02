@@ -176,9 +176,79 @@ dahin steht in `analysis_options.yaml` eine benannte, kommentierte Ausnahme.
 
 ---
 
+## G) Aktuellen Nutzer nach `core/user/` ziehen
+
+Löst die verbliebene import_lint-Ausnahme aus E. Zuerst, weil danach nichts
+mehr umzieht, was H/I sonst gleich mit anfassen müssten.
+
+- [ ] Zu klären vorab: Wandert nur `userProvider` (+ `User`, Repository,
+      Service) nach `core/user/`, oder bleibt ein `features/user_profile` für
+      Bearbeiten/Anzeigen bestehen? Analogie: `core/auth/` vs.
+      `features/auth/`
+- [ ] Verschieben + Importe anpassen (`app_router.dart`, `home_section.dart`,
+      `user_profile_section.dart`, `profile_setup_viewmodel.dart`)
+- [ ] Ausnahme in `analysis_options.yaml` wieder entfernen
+- [ ] `flutter analyze` + `import_lint`
+
+---
+
+## H) Fehlerbehandlung, Logging, Crash-Reporting
+
+Vor den Tests, weil hier noch Code entsteht/umgebaut wird, den I sonst
+doppelt abdecken müsste.
+
+- [ ] Zu klären vorab: Wie zeigen wir Fehler an? (SnackBar über einen
+      `core/`-Signal-Provider, Inline-Zustand pro Section, oder beides je nach
+      Fall) – aktuell verschwindet außerhalb des Profil-Formulars jeder
+      Fehler stillschweigend
+- [ ] Zu klären vorab: Eigene Fehler-Hierarchie in `core/error/` (z.B.
+      `AppException` mit Netzwerk-/Auth-/Server-Fällen) plus Mapping aus
+      `DioException`, oder reichen die Exceptions der Libraries?
+- [ ] `logger` einbinden, Provider in `core/`, sinnvolle Log-Punkte
+      (Interceptor, Repositories, ViewModels)
+- [ ] Firebase-Projekt anlegen + Crashlytics (`flutterfire configure`,
+      `google-services.json`/`GoogleService-Info.plist`, beide Dateien in
+      `.gitignore`?)
+- [ ] Uncaught-Errors an Crashlytics: `FlutterError.onError` +
+      `PlatformDispatcher.instance.onError` in `main.dart`
+
+---
+
+## I) Tests aufsetzen
+
+- [ ] `mocktail` als dev_dependency ergänzen (steht im Stack, fehlt noch)
+- [ ] Zu klären vorab: Welche Ebenen decken wir ab und wie tief? Vorschlag als
+      Startpunkt – Unit für `domain/` (`Username`) und `data/`
+      (Repository-Impls mit gemocktem Service), ViewModel-Tests für
+      `ProfileSetupViewModel` (Riverpod `ProviderContainer`), Widget-Tests für
+      die Sections
+- [ ] Zu klären vorab: Golden Tests jetzt schon (Auth-Animation ist dafür
+      heikel) oder erst wenn die UI steht?
+- [ ] Test-Ordnerstruktur spiegelt `lib/` (Konvention festhalten)
+- [ ] `integration_test` erst, wenn es einen durchgehenden Flow gibt
+
+---
+
+## L) CI (GitHub Actions)
+
+Zuletzt, damit die Pipeline gleich den vollständigen Satz inkl. Tests prüft.
+
+- [ ] Workflow `.github/workflows/ci.yml`: `fvm`-Version aus `.fvmrc`,
+      `flutter pub get`, `dart format --set-exit-if-changed`,
+      `flutter analyze`, `dart run import_lint`, `flutter test`
+- [ ] Zu klären vorab: Trigger (nur PRs auf `main` oder jeder Push?),
+      Caching, und ob Coverage hochgeladen werden soll
+- [ ] Zu klären vorab: Build-Jobs für Android/iOS-Artefakte schon jetzt oder
+      später – braucht Signing-Secrets und die Firebase-Configs aus H
+
+---
+
 ## Abschluss
 
-- [x] `fvm flutter analyze` – keine Findings
-- [x] `fvm dart run import_lint` – keine Findings
-- [x] `fvm flutter test` – keine Testdateien vorhanden (Tests folgen separat)
-- [x] Kurze Erklärung der wichtigsten Entscheidungen (wie im Workflow vorgesehen)
+Nach E waren alle Checks grün; am Ende noch einmal vollständig durchlaufen:
+
+- [ ] `fvm dart format .`
+- [ ] `fvm flutter analyze`
+- [ ] `fvm dart run import_lint`
+- [ ] `fvm flutter test`
+- [ ] `docs/architecture/feature-status.md` auf den Endstand bringen
