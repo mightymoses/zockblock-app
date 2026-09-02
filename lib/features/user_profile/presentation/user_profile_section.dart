@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
-import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/core/user/current_user_provider.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'package:zockblock_app/shared/widgets/atoms/app_filled_button.dart';
 
@@ -18,7 +18,7 @@ class UserProfileSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final asyncAuthSession = ref.watch(authSessionProvider);
-    final asyncUser = ref.watch(userProvider);
+    final asyncUser = ref.watch(currentUserProvider);
 
     return Column(
       children: [

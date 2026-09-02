@@ -1,4 +1,4 @@
-import 'package:zockblock_app/features/user_profile/data/user.dart';
+import 'package:zockblock_app/core/user/user.dart';
 
 /// Zugriff auf das Nutzerprofil im Backend.
 abstract class UserRepository {

@@ -2,14 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
-import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/core/user/current_user_provider.dart';
 import 'package:zockblock_app/pages/auth_page.dart';
 import 'package:zockblock_app/pages/home_page.dart';
 import 'package:zockblock_app/pages/profile_setup_page.dart';
 import 'package:zockblock_app/pages/user_profile_page.dart';
 
 /// GoRouter der App. `redirect` steuert das Auth-/Profil-Gate anhand von
-/// [authSessionProvider]/[userProvider], `refreshListenable` sorgt dafür,
+/// [authSessionProvider]/[currentUserProvider], `refreshListenable` sorgt dafür,
 /// dass `redirect` neu ausgewertet wird, sobald sich einer der beiden ändert.
 final routerProvider = Provider<GoRouter>((ref) {
   final refreshListenable = _RouterRefreshListenable(ref);
@@ -31,7 +31,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
     redirect: (context, state) {
       final authSessionAsyncValue = ref.read(authSessionProvider);
-      final userAsyncValue = ref.read(userProvider);
+      final userAsyncValue = ref.read(currentUserProvider);
 
       return authSessionAsyncValue.when(
         data: (authSession) {
@@ -67,11 +67,11 @@ final routerProvider = Provider<GoRouter>((ref) {
 });
 
 /// Löst einen [GoRouter]-Refresh aus, wenn sich [authSessionProvider] oder
-/// [userProvider] ändern, damit `redirect` neu ausgewertet wird.
+/// [currentUserProvider] ändern, damit `redirect` neu ausgewertet wird.
 class _RouterRefreshListenable extends ChangeNotifier {
   _RouterRefreshListenable(Ref ref) {
     ref
       ..listen(authSessionProvider, (_, _) => notifyListeners())
-      ..listen(userProvider, (_, _) => notifyListeners());
+      ..listen(currentUserProvider, (_, _) => notifyListeners());
   }
 }

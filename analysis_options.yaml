@@ -33,9 +33,11 @@ import_lint:
         - "package:zockblock_app/core/**.dart"
         - "package:zockblock_app/shared/**.dart"
         - "package:zockblock_app/l10n/**.dart"
-    # features dürfen core, shared und (noch ungeprüft, siehe Hinweis oben)
-    # beliebige andere features/ importieren - nur pages/ und routing/ sind
-    # tabu
+    # features dürfen core, shared und andere features importieren, nur
+    # pages/ und routing/ sind tabu. Dass ein Feature nur das domain/ eines
+    # anderen anfassen darf, ist mit Globs nicht ausdrückbar (bräuchte eine
+    # Regel pro Feature) - bewusst nicht erzwungen; falls nötig später über
+    # Barrel-Dateien (package:barrel_file_lints).
     features_must_not_depend_on_pages_or_routing:
       target: "package:zockblock_app/features/**.dart"
       from: "package:zockblock_app/**.dart"
@@ -62,10 +64,6 @@ import_lint:
         - "package:zockblock_app/core/**.dart"
         - "package:zockblock_app/pages/**.dart"
         - "package:zockblock_app/l10n/**.dart"
-        # Offener Punkt: das Auth-/Profil-Gate im redirect braucht den Zustand
-        # des aktuellen Nutzers. Analog zu core/auth/ gehört der vermutlich
-        # nach core/ - bis das entschieden ist, bleibt diese Ausnahme stehen.
-        - "package:zockblock_app/features/user_profile/data/user_provider.dart"
 
 linter:
   # The lint rules applied to this project can be customized in the

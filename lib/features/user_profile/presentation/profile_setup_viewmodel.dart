@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/features/user_profile/data/user.dart';
-import 'package:zockblock_app/features/user_profile/data/user_provider.dart';
+import 'package:zockblock_app/core/user/current_user_provider.dart';
+import 'package:zockblock_app/core/user/user.dart';
 import 'package:zockblock_app/features/user_profile/domain/username.dart';
 
 /// Formular-Zustand der Profil-Anlegen-Seite.
@@ -34,10 +34,10 @@ class ProfileSetupViewModel extends Notifier<ProfileSetup> {
 
     state = state.copyWith(isLoading: true);
     await ref
-        .read(userProvider.notifier)
+        .read(currentUserProvider.notifier)
         .createUser(User(username: state.username));
 
-    final hasError = ref.read(userProvider).hasError;
+    final hasError = ref.read(currentUserProvider).hasError;
     state = state.copyWith(isLoading: false, hasSubmitError: hasError);
 
     return !hasError;

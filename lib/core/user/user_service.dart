@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/core/network/dio_provider.dart';
-import 'package:zockblock_app/features/user_profile/data/user.dart';
+import 'package:zockblock_app/core/user/user.dart';
 
 /// Stellt den [UserService] bereit.
 final userServiceProvider = Provider<UserService>((ref) {

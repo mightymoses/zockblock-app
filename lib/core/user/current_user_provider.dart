@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zockblock_app/features/user_profile/data/user.dart';
-import 'package:zockblock_app/features/user_profile/data/user_repository_impl.dart';
+import 'package:zockblock_app/core/user/user.dart';
+import 'package:zockblock_app/core/user/user_repository_impl.dart';
 
 /// Profil des angemeldeten Nutzers, `null` wenn noch keines angelegt ist.
-final AsyncNotifierProvider<UserNotifier, User?> userProvider =
-    AsyncNotifierProvider(UserNotifier.new);
+final AsyncNotifierProvider<CurrentUserNotifier, User?> currentUserProvider =
+    AsyncNotifierProvider(CurrentUserNotifier.new);
 
 /// Lädt und erzeugt das Profil des angemeldeten Nutzers.
-class UserNotifier extends AsyncNotifier<User?> {
+class CurrentUserNotifier extends AsyncNotifier<User?> {
   @override
   FutureOr<User?> build() {
     return ref.watch(userRepositoryProvider).getCurrentUser();

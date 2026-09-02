@@ -176,19 +176,31 @@ dahin steht in `analysis_options.yaml` eine benannte, kommentierte Ausnahme.
 
 ---
 
-## G) Aktuellen Nutzer nach `core/user/` ziehen
+## G) Aktuellen Nutzer nach `core/user/` ziehen ✅
 
-Löst die verbliebene import_lint-Ausnahme aus E. Zuerst, weil danach nichts
-mehr umzieht, was H/I sonst gleich mit anfassen müssten.
+Entscheidung: der komplette Datenzugriff wandert, inkl. `createUser` –
+spiegelbildlich zu `core/auth/`. Die offizielle Flutter-Architektur-Empfehlung
+legt Repositories/Services ohnehin generell außerhalb der Feature-Ordner ab
+("aren't tied to a single feature"), wir tun es nur für diesen Fall.
 
-- [ ] Zu klären vorab: Wandert nur `userProvider` (+ `User`, Repository,
-      Service) nach `core/user/`, oder bleibt ein `features/user_profile` für
-      Bearbeiten/Anzeigen bestehen? Analogie: `core/auth/` vs.
-      `features/auth/`
-- [ ] Verschieben + Importe anpassen (`app_router.dart`, `home_section.dart`,
-      `user_profile_section.dart`, `profile_setup_viewmodel.dart`)
-- [ ] Ausnahme in `analysis_options.yaml` wieder entfernen
-- [ ] `flutter analyze` + `import_lint`
+- [x] `features/user_profile/data/*` → `core/user/` (`user.dart` + generierte
+      Dateien, `user_service`, `user_repository`, `user_repository_impl`);
+      `features/user_profile/` hat jetzt nur noch `domain/` + `presentation/`
+- [x] `user_provider.dart` → `core/user/current_user_provider.dart`,
+      `userProvider` → `currentUserProvider`, `UserNotifier` →
+      `CurrentUserNotifier` – der Name sagt jetzt "der angemeldete", nicht
+      "irgendein" Nutzer
+- [x] Importe in `app_router.dart`, `home_section.dart`,
+      `user_profile_section.dart`, `profile_setup_viewmodel.dart` angepasst
+- [x] Ausnahme in `analysis_options.yaml` entfernt
+- [x] `flutter analyze` + `import_lint` – keine Findings
+
+**Bewusst NICHT umgesetzt:** feingranulare import_lint-Regeln, die einem
+Feature nur das `domain/` eines anderen erlauben. Mit Globs nicht ausdrückbar
+(bräuchte eine Regel pro Feature), und eine beim nächsten Feature vergessene
+Regel meldet nichts, sondern erlaubt still alles. Falls es relevant wird:
+Barrel-Dateien pro Feature via `barrel_file_lints` – das Dart-Pendant zu Nx'
+`index.ts`, skaliert ohne Enumeration.
 
 ---
 
