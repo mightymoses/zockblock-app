@@ -501,17 +501,36 @@ anzeigen), die Pages (reine Komposition), `AuthSection` (`Random()`),
 
 ---
 
-## L) CI (GitHub Actions)
+## L) CI (GitHub Actions) ✅
 
 Zuletzt, damit die Pipeline gleich den vollständigen Satz inkl. Tests prüft.
 
-- [ ] Workflow `.github/workflows/ci.yml`: `fvm`-Version aus `.fvmrc`,
-      `flutter pub get`, `dart format --set-exit-if-changed`,
-      `flutter analyze`, `dart run import_lint`, `flutter test`
-- [ ] Zu klären vorab: Trigger (nur PRs auf `main` oder jeder Push?),
-      Caching, und ob Coverage hochgeladen werden soll
-- [ ] Zu klären vorab: Build-Jobs für Android/iOS-Artefakte schon jetzt oder
-      später – braucht Signing-Secrets und die Firebase-Configs aus H
+- [x] Workflow `.github/workflows/ci.yml`: Version via
+      `flutter-version-file: .fvmrc` – das unterstützt
+      `subosito/flutter-action@v2` direkt, also kein fvm auf dem Runner nötig
+      und die Pinnung gilt trotzdem. Dann `pub get`,
+      `dart format --set-exit-if-changed`, `flutter analyze`,
+      `dart run import_lint`, `flutter test`
+- [x] Alle Checks mit `if: ${{ !cancelled() }}` – sonst sieht man pro Push
+      nur das erste Problem
+- [x] Kein Java-/Android-SDK-Setup: ohne APK-Build braucht keiner der Checks
+      die Android-Toolchain, das spart Minuten pro Lauf
+- [x] `concurrency`-Gruppe: ältere Läufe desselben Branches werden abgebrochen
+- [x] Trigger: Push auf alle Branches + PRs auf `main`; SDK-Caching an.
+      Coverage bewusst nicht – bei einem Ein-Personen-Projekt vor allem eine
+      Zahl, die niemand liest
+- [x] Keine Build-Jobs. Ein signiertes Release-APK bräuchte Signing-Secrets;
+      lohnt erst, wenn wirklich verteilt wird
+
+**Beim ersten Lauf prüfen** (von lokal aus nicht testbar): ob die
+Action-Versionen passen (`actions/checkout@v4` – die flutter-action-README
+zeigt inzwischen `v6`) und ob der `.fvmrc`-Parser mit unserer Datei
+zurechtkommt. Fallback wäre `flutter-version: 3.44.2` direkt im Workflow,
+dann steht die Version aber doppelt.
+
+**Bewusst nicht drin:** ein Codegen-Check (`build_runner` + `git diff
+--exit-code`) wäre sinnvoll, weil die generierten Dateien eingecheckt sind
+und driften können – kostet aber knapp eine Minute pro Lauf. Nachrüstbar.
 
 ---
 
