@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
-import 'package:zockblock_app/core/consent/crash_report_consent.dart';
 import 'package:zockblock_app/core/consent/crash_report_consent_provider.dart';
 import 'package:zockblock_app/core/user/current_user_provider.dart';
 import 'package:zockblock_app/pages/auth_page.dart';
@@ -10,6 +9,7 @@ import 'package:zockblock_app/pages/consent_page.dart';
 import 'package:zockblock_app/pages/home_page.dart';
 import 'package:zockblock_app/pages/profile_setup_page.dart';
 import 'package:zockblock_app/pages/user_profile_page.dart';
+import 'package:zockblock_app/routing/redirect.dart';
 
 /// GoRouter der App. `redirect` steuert das Einwilligungs-, Auth- und
 /// Profil-Gate anhand von [crashReportConsentProvider], [authSessionProvider]
@@ -37,53 +37,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const UserProfilePage(),
       ),
     ],
-    redirect: (context, state) {
-      final consent = ref.read(crashReportConsentProvider).value;
-      final onConsentPage = state.matchedLocation == '/consent';
-
-      // Vor allem anderen: solange die Entscheidung aussteht, wird nur
-      // gefragt. `null` heisst noch am Laden - dann gar nicht umleiten.
-      if (consent == CrashReportConsent.notAsked) {
-        return onConsentPage ? null : '/consent';
-      }
-      if (consent != null && onConsentPage) {
-        // Beantwortet - raus hier, die Auth-Kette entscheidet, wohin.
-        return '/';
-      }
-
-      final authSessionAsyncValue = ref.read(authSessionProvider);
-      final userAsyncValue = ref.read(currentUserProvider);
-
-      return authSessionAsyncValue.when(
-        data: (authSession) {
-          if (authSession == null) {
-            return '/auth';
-          }
-
-          return userAsyncValue.when(
-            data: (user) {
-              if (user == null) {
-                return '/profile-setup';
-              }
-
-              if (state.matchedLocation == '/auth' ||
-                  state.matchedLocation == '/profile-setup') {
-                return '/';
-              }
-
-              return null;
-            },
-            loading: () => null,
-            // Echter Fehler (z.B. Netzwerk) - nicht erzwungen zu
-            // /profile-setup navigieren, sonst würde ein bereits
-            // eingerichteter Nutzer bei einem Wackler dorthin verschoben.
-            error: (_, _) => null,
-          );
-        },
-        loading: () => null,
-        error: (_, _) => '/auth',
-      );
-    },
+    redirect: (context, state) => resolveRedirect(
+      consent: ref.read(crashReportConsentProvider),
+      authSession: ref.read(authSessionProvider),
+      user: ref.read(currentUserProvider),
+      location: state.matchedLocation,
+    ),
   );
 });
 

@@ -5,7 +5,7 @@ import 'package:zockblock_app/core/user/user_repository.dart';
 import 'package:zockblock_app/core/user/user_service.dart';
 
 /// Stellt das [UserRepository] bereit.
-final userRepositoryProvider = Provider<UserRepositoryImpl>((ref) {
+final userRepositoryProvider = Provider<UserRepository>((ref) {
   final userService = ref.watch(userServiceProvider);
   return UserRepositoryImpl(userService);
 });

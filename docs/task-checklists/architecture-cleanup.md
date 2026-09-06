@@ -418,17 +418,85 @@ sowieso zusammen mit den offenen iOS-Punkten aus H2b
 ---
 
 
-## I) Tests aufsetzen
+## I) Tests aufsetzen ✅
 
-- [ ] `mocktail` als dev_dependency ergänzen (steht im Stack, fehlt noch)
-- [ ] Zu klären vorab: Welche Ebenen decken wir ab und wie tief? Vorschlag als
-      Startpunkt – Unit für `domain/` (`Username`) und `data/`
-      (Repository-Impls mit gemocktem Service), ViewModel-Tests für
-      `ProfileSetupViewModel` (Riverpod `ProviderContainer`), Widget-Tests für
-      die Sections
-- [ ] Zu klären vorab: Golden Tests jetzt schon (Auth-Animation ist dafür
-      heikel) oder erst wenn die UI steht?
-- [ ] Test-Ordnerstruktur spiegelt `lib/` (Konvention festhalten)
+Konventionen: `test/` spiegelt `lib/`. Unit-Tests ueber
+`ProviderContainer.test()` - der raeumt sich per `addTearDown` selbst auf und
+prueft am Testende, dass kein Container vergessen wurde. Dabei
+`retry: (_, _) => null` mitgeben, sonst wiederholt `appRetryPolicy` jeden
+Fehlerfall viermal mit Verzoegerung und die Tests werden langsam.
+
+**Golden Tests: bewusst nicht.** Der Auth-Screen ist wegen `Random()` nicht
+reproduzierbar, die UI ist noch im Fluss, und Goldens rendern
+plattformabhaengig leicht unterschiedlich (Fehlalarme in CI). Lohnt sich erst
+mit einem stabilen Design-System.
+
+- [x] `mocktail` als dev_dependency
+
+**Reine Logik** (kein Mocking noetig):
+
+- [x] `test/core/error/dio_error_mapper_test.dart` - tabellengetrieben ueber
+      Statuscodes und `DioExceptionType`, plus zwei Regeln, die die Tabelle
+      nicht abbildet: `cause` bleibt erhalten, und der Statuscode schlaegt den
+      Typ (ein 404 ist kein Netzwerkfehler)
+- [x] `test/core/error/retry_policy_test.dart` - 401/404 brechen ab, sonst
+      Backoff bis `_maxRetries`. Wartezeiten ausgeschrieben statt nachgerechnet,
+      sonst prueft der Test dieselbe Formel, die er absichern soll
+- [x] `test/features/user_profile/domain/username_test.dart` - leer ist
+      `empty` und nicht `tooShort` (Reihenfolge der Pruefungen), und gezaehlt
+      wird nach dem Trimmen
+
+**Redirect** (wertvollster Fall: drei Gates x laden/Fehler/Daten):
+
+- [x] Redirect-Closure aus `app_router.dart` in `lib/routing/redirect.dart`
+      ausgelagert. Nimmt `AsyncValue`s entgegen, nicht ausgepackte Werte -
+      "laedt noch" und "Fehler" fuehren zu anderem Verhalten als "Daten da".
+      Dabei fiel auf, dass die import_lint-Regel fuer `routing/` die eigene
+      Schicht nicht erlaubte; ergaenzt
+- [x] `test/routing/redirect_test.dart` - 15 Faelle, u. a. die
+      Redirect-Schleifen-Bremse, "Profil-Ladefehler schickt NICHT zum
+      Anlegen" und die Reihenfolge der drei Gates
+
+**Mit `mocktail`:**
+
+- [x] `test/core/user/user_repository_impl_test.dart` - 404 -> `null`, sonst
+      weiterwerfen. Fehler werden ueber `thenAnswer((_) async => throw ...)`
+      gemeldet: `thenThrow` wirft synchron, was `createUser` (reicht den
+      Future durch) anders trifft als die Realitaet
+- [x] `test/core/auth/auth_repository_impl_test.dart` -
+      `isNoCredentialsFound`/`isNoRefreshTokenFound` -> `null`, sonst
+      weiterwerfen. `CredentialsManagerException` wird echt gebaut, nicht
+      gemockt - die Getter pruefen `code`-Strings, ein Mock haette genau die
+      Zuordnung uebersprungen
+- [x] `test/features/user_profile/presentation/profile_setup_viewmodel_test.dart`
+      - gemockt wird das Repository, nicht der Notifier, damit die Kette
+      "Repository wirft -> AsyncError -> hasSubmitError" wirklich laeuft.
+      Dabei `userRepositoryProvider` von `Provider<UserRepositoryImpl>` auf
+      `Provider<UserRepository>` korrigiert (wie `authRepositoryProvider`)
+
+**Widget-Tests** - nur dort, wo Verhalten steckt. Reine Layout-Assertions
+("steht der Text da") brechen bei jeder Aenderung und finden nichts:
+
+- [x] `test/helpers/pump_app.dart` - `ProviderScope` + `MaterialApp` mit
+      `AppLocalizations`-Delegates. Locale fest auf Deutsch, sonst entscheidet
+      der ausfuehrende Rechner ueber die gerenderten Texte
+- [x] `AsyncValueView`: vorhandener Wert bleibt bei Fehler/Refresh stehen.
+      `copyWithPrevious` ist `@internal`, der Zustand entsteht im Test also
+      ueber einen echten Provider - naeher an der Realitaet als zusammengebaut
+- [x] `ProfileSetupSection`: Fehlertext erst nach Submit, Submit-Fehler
+      sichtbar. Prueft gegen echte Texte, damit die Kette Enum -> ARB ->
+      gerendert mit abgedeckt ist
+- [x] Consent-Schalter im `UserProfileSection`: spiegelt gespeicherten
+      Zustand, schreibt beim Umschalten tatsaechlich weg (sonst waere der
+      Widerruf nach dem naechsten Start weg), gesperrt waehrend des Schreibens
+
+Nicht abgedeckt und bewusst so: `HomeSection` (kein Verhalten ausser Text
+anzeigen), die Pages (reine Komposition), `AuthSection` (`Random()`),
+`app_provider_observer` (braucht initialisiertes Firebase).
+
+- [x] `flutter analyze`, `import_lint`, `dart format`, `flutter test` (77) -
+      alles gruen
+
 - [ ] `integration_test` erst, wenn es einen durchgehenden Flow gibt
 
 ---

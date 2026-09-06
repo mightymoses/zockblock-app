@@ -56,13 +56,14 @@ import_lint:
         - "package:zockblock_app/shared/**.dart"
         - "package:zockblock_app/features/**.dart"
         - "package:zockblock_app/l10n/**.dart"
-    # routing darf nur core und pages importieren
+    # routing darf core, pages und sich selbst importieren
     routing_must_only_depend_on_core_and_pages:
       target: "package:zockblock_app/routing/**.dart"
       from: "package:zockblock_app/**.dart"
       except:
         - "package:zockblock_app/core/**.dart"
         - "package:zockblock_app/pages/**.dart"
+        - "package:zockblock_app/routing/**.dart"
         - "package:zockblock_app/l10n/**.dart"
 
 linter:
