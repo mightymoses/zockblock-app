@@ -250,31 +250,106 @@ dort wie `loading` behandelt werden soll.
 
 ---
 
-## H2) Logging + Crash-Reporting
+## H2a) Logging
 
-Braucht ein neues Firebase-Projekt – dasselbe, das später das Backend für
-FCM nutzt, nicht zwei anlegen.
+`logger` schreibt nur lokal in die Konsole, es verlaesst das Geraet nicht.
+Level im Release auf `warning`, im Debug auf `debug`.
 
-Entscheidung: `logger` statt `talker` – der Mehrwert von `talker` wäre vor
-allem der In-App-Log-Viewer, der hier nicht gebraucht wird.
-
-- [ ] `logger` einbinden, Provider in `core/logging/`
+- [ ] `core/logging/logger_provider.dart`: `createAppLogger()` + `loggerProvider`
 - [ ] `core/logging/app_provider_observer.dart`: `ProviderObserver` mit
-      `providerDidFail(ProviderObserverContext, Object, StackTrace)` – dabei
-      `if (error is ProviderException) return;`, sonst wird derselbe Fehler
-      doppelt gemeldet, wenn ein Provider von einem kaputten abhängt
-- [ ] Firebase-Projekt anlegen, `flutter pub add firebase_crashlytics
-      firebase_analytics`, `flutterfire configure`
-- [ ] `google-services.json`/`GoogleService-Info.plist` **einchecken** – laut
-      Firebase-Team keine Secrets, und CI braucht sie
-- [ ] `main.dart`: `FlutterError.onError` +
-      `PlatformDispatcher.instance.onError` (kein `runZonedGuarded`, kommt in
-      der offiziellen Anleitung nicht mehr vor)
-- [ ] Crashlytics in Debug-Builds deaktivieren
-      (`setCrashlyticsCollectionEnabled(!kDebugMode)`)
-- [ ] Der ProviderObserver meldet Fehler an beide: `logger` + Crashlytics
+      `providerDidFail(ProviderObserverContext, Object, StackTrace)`, darin
+      `if (error is ProviderException) return;` gegen Doppelmeldungen
+- [ ] `main.dart`: Logger einmal bauen, an Observer *und* per
+      `overrides: [loggerProvider.overrideWithValue(logger)]` an den Container
+      geben - der Observer existiert vor dem Container
+- [ ] `auth_interceptor.dart`: die verschluckte `CredentialsManagerException`
+      loggen (Request geht sonst kommentarlos ohne Token raus)
+
+Bewusst nicht: `didUpdateProvider` loggen (Rauschen), und keine
+`ErrorReporter`-Abstraktion (der Observer wird genau einmal registriert, in
+Tests laesst man ihn weg).
 
 ---
+
+## H2b) Crash-Reporting + Einwilligung
+
+Entscheidung: **Crashlytics statt Sentry**. Firebase kommt fuer FCM ohnehin,
+der einzige echte Vorteil von Sentry waere der wegfallende US-Transfer - die
+Einwilligungsfrage nach TDDDG ist bei beiden identisch. Kein
+`firebase_analytics` (Verhaltens-Tracking, zieht Consent-Pflicht nach sich,
+fuer Crashlytics nicht noetig).
+
+**Vorbedingung, vor allem anderen:** `applicationId` und iOS-Bundle-ID stehen
+noch auf `com.example.*`. Die wandern in `google-services.json` und sind danach
+faktisch fest - und `com.example.*` laesst sich nicht im Play Store
+veroeffentlichen. Also erst umbenennen, dann Firebase.
+
+- [ ] `applicationId`/`namespace` (Android) und `PRODUCT_BUNDLE_IDENTIFIER`
+      (iOS) auf eine echte ID aendern
+- [ ] Firebase-Projekt anlegen (dasselbe, das spaeter das Backend fuer FCM
+      nutzt), `flutterfire configure`
+- [ ] `firebase_core` + `firebase_crashlytics`; `firebase_options.dart`,
+      `google-services.json`, `GoogleService-Info.plist` einchecken (laut
+      Firebase keine Secrets)
+- [ ] Sammlung standardmaessig aus:
+      `firebase_crashlytics_collection_enabled=false` im Android-Manifest
+- [ ] `core/consent/`: Zustand `nichtGefragt`/`zugestimmt`/`abgelehnt` in
+      `shared_preferences` (erste Verwendung des Pakets)
+- [ ] Einwilligungs-Dialog beim **ersten App-Start** (nicht nach dem
+      Profil-Setup, sonst fehlen Onboarding-Abstuerze): zwei gleichwertige
+      Buttons, nichts vorausgewaehlt, Link zur Datenschutzerklaerung.
+      Zustimmung zur Datenschutzerklaerung ist *keine* Einwilligung - die
+      muss spezifisch fuer diesen Zweck erfolgen
+- [ ] `main.dart`: `Firebase.initializeApp`, `FlutterError.onError` +
+      `PlatformDispatcher.instance.onError`, `setCrashlyticsCollectionEnabled`
+      abhaengig vom Einwilligungszustand
+- [ ] Der `ProviderObserver` aus H2a meldet zusaetzlich an Crashlytics
+      (`recordError(..., fatal: false)`)
+
+Nicht-Code, aber Teil des Themas: Datenschutzerklaerung, Play-Data-Safety-
+Formular, Apple Privacy Nutrition Labels.
+
+---
+
+## H2c) Einstellungen (Widerruf)
+
+Faellt aus H2b heraus, weil es neue UI ist: der Widerruf der Einwilligung ist
+verpflichtend, es gibt aber noch keinen Einstellungs-Screen.
+
+- [ ] `pages/settings_page.dart` + `features/settings/presentation/
+      settings_section.dart` mit Schalter "Fehlerberichte senden"
+- [ ] Route + Einstieg vom Nutzerprofil aus
+
+
+## M) Auth0-Konfiguration vereinheitlichen
+
+Befund der Bestandsaufnahme: **kein Sicherheitsproblem.** In
+`auth_service.dart` stehen Auth0-Domain, Client-ID und Audience hartcodiert,
+in `build.gradle.kts` nochmal die Domain. Ein Client *Secret* existiert
+nirgends - richtig so, native Apps sind Public Clients und nutzen PKCE. Die
+Client-ID ist kein Geheimnis: sie steckt zwangslaeufig im App-Binary und in
+der Login-URL im Browser, Auth0 behandelt sie wie eine oeffentliche Kennung.
+Gleiche Kategorie wie `firebase_options.dart`.
+
+Was trotzdem stoert, ist Konfigurierbarkeit und Doppelung - genau das, was
+Punkt A fuer die Backend-URL schon geloest hat:
+
+- [ ] Auth0-Domain, Client-ID und Audience nach `core/config/env.dart`
+      (`AppEnv`), per `String.fromEnvironment` mit Default - analog zu
+      `apiBaseUrl`. Erlaubt einen zweiten Auth0-Tenant fuer Dev/Prod, ohne
+      Code zu aendern
+- [ ] Die Domain steht doppelt (Dart + Gradle-`manifestPlaceholders`). Gradle
+      kommt nicht an `AppEnv`; entweder `gradle.properties` als einzige Quelle
+      oder die Doppelung bewusst dokumentieren
+- [ ] Im Auth0-Dashboard pruefen, dass der Application Type **Native** ist
+      (Public Client + PKCE) und nicht "Regular Web Application" - bei
+    letzterem waere ein Client Secret im Spiel, das nicht in eine App gehoert
+- [ ] `audience: 'https://zockblock.net'` gegenpruefen: das ist der
+      API-Identifier aus dem Auth0-Dashboard, keine aufloesbare URL. Muss mit
+      dem uebereinstimmen, was das Backend als Audience erwartet
+
+---
+
 
 ## I) Tests aufsetzen
 
