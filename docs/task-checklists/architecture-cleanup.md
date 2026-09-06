@@ -281,7 +281,7 @@ Tests laesst man ihn weg).
 
 ---
 
-## H2b) Crash-Reporting + Einwilligung
+## H2b) Crash-Reporting + Einwilligung ✅
 
 Entscheidung: **Crashlytics statt Sentry**. Firebase kommt fuer FCM ohnehin,
 der einzige echte Vorteil von Sentry waere der wegfallende US-Transfer - die
@@ -294,27 +294,44 @@ noch auf `com.example.*`. Die wandern in `google-services.json` und sind danach
 faktisch fest - und `com.example.*` laesst sich nicht im Play Store
 veroeffentlichen. Also erst umbenennen, dann Firebase.
 
-- [ ] `applicationId`/`namespace` (Android) und `PRODUCT_BUNDLE_IDENTIFIER`
-      (iOS) auf eine echte ID aendern
-- [ ] Firebase-Projekt anlegen (dasselbe, das spaeter das Backend fuer FCM
-      nutzt), `flutterfire configure`
-- [ ] `firebase_core` + `firebase_crashlytics`; `firebase_options.dart`,
+- [x] `applicationId`/`namespace` (Android) und `PRODUCT_BUNDLE_IDENTIFIER`
+      (iOS) auf `com.zockblock.app` geaendert; Auth0-Callback-/Logout-URLs im
+      Dashboard nachgezogen (die enthalten den Package-Namen)
+- [x] Firebase-Projekt `zockblock-edb50` angelegt, `flutterfire configure`
+      (Analytics ist im Projekt verknuepft, ohne `firebase_analytics`-Paket
+      fliessen daraus aber keine Daten)
+- [x] `firebase_core` + `firebase_crashlytics`; `firebase_options.dart`,
       `google-services.json`, `GoogleService-Info.plist` einchecken (laut
       Firebase keine Secrets)
-- [ ] Sammlung standardmaessig aus:
+- [x] Sammlung standardmaessig aus:
       `firebase_crashlytics_collection_enabled=false` im Android-Manifest
-- [ ] `core/consent/`: Zustand `nichtGefragt`/`zugestimmt`/`abgelehnt` in
-      `shared_preferences` (erste Verwendung des Pakets)
-- [ ] Einwilligungs-Dialog beim **ersten App-Start** (nicht nach dem
+- [x] `core/consent/`: `CrashReportConsent`-Enum (`notAsked`/`granted`/
+      `denied`) in `shared_preferences`; gespeichert wird der `name`, nicht der
+      Index. Bewusst ohne Repository-Interface - ein einzelner Schluessel, und
+      `setMockInitialValues()` deckt Tests ab
+- [x] Einwilligungs-Dialog beim **ersten App-Start** (nicht nach dem
       Profil-Setup, sonst fehlen Onboarding-Abstuerze): zwei gleichwertige
       Buttons, nichts vorausgewaehlt, Link zur Datenschutzerklaerung.
       Zustimmung zur Datenschutzerklaerung ist *keine* Einwilligung - die
       muss spezifisch fuer diesen Zweck erfolgen
-- [ ] `main.dart`: `Firebase.initializeApp`, `FlutterError.onError` +
-      `PlatformDispatcher.instance.onError`, `setCrashlyticsCollectionEnabled`
-      abhaengig vom Einwilligungszustand
-- [ ] Der `ProviderObserver` aus H2a meldet zusaetzlich an Crashlytics
-      (`recordError(..., fatal: false)`)
+- [x] `main.dart`: `Firebase.initializeApp`, `FlutterError.onError` +
+      `PlatformDispatcher.instance.onError`. Das Scharfschalten liegt in
+      `core/crash_reporting/crash_reporting_provider.dart` - `WidgetRef.listen`
+      kennt kein `fireImmediately`, der gespeicherte Startwert waere sonst nie
+      angewendet worden
+- [x] Der `ProviderObserver` aus H2a meldet zusaetzlich an Crashlytics,
+      `fatal: false` (die App laeuft weiter) und mit `reason`, damit
+      Crashlytics nach Provider gruppiert
+
+- [x] Auf dem Geraet geprueft: Consent-Seite beim ersten Start, danach
+      regulaerer Ablauf
+- [x] `flutter analyze` + `import_lint` - keine Findings
+
+**Noch offen (iOS):** Das Pendant zum Manifest-Eintrag
+(`FirebaseCrashlyticsCollectionEnabled = false` in der `Info.plist`) und die
+`GoogleService-Info.plist` fehlen - beides erzeugt `flutterfire configure`
+erst auf einem Mac. Beim ersten iOS-Build nachholen, sonst sammelt iOS ohne
+Einwilligung.
 
 Nicht-Code, aber Teil des Themas: Datenschutzerklaerung, Play-Data-Safety-
 Formular, Apple Privacy Nutrition Labels.

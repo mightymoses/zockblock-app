@@ -53,5 +53,11 @@
     "errorUnauthorized": "Du bist nicht mehr angemeldet.",
     "errorUnknown": "Da ist etwas schiefgelaufen.",
     "errorSignInFailed": "Anmeldung fehlgeschlagen.",
-    "errorSignOutFailed": "Abmelden fehlgeschlagen."
+    "errorSignOutFailed": "Abmelden fehlgeschlagen.",
+
+    "consentTitle": "Fehlerberichte",
+    "consentHeadline": "Fehlerberichte senden?",
+    "consentBody": "Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in den Einstellungen ändern.",
+    "consentAccept": "Senden",
+    "consentDecline": "Nicht senden"
 }

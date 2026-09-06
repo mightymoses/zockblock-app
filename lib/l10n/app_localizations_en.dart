@@ -92,4 +92,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorSignOutFailed => 'Sign-out failed.';
+
+  @override
+  String get consentTitle => 'Crash reports';
+
+  @override
+  String get consentHeadline => 'Send crash reports?';
+
+  @override
+  String get consentBody =>
+      'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in the settings.';
+
+  @override
+  String get consentAccept => 'Send';
+
+  @override
+  String get consentDecline => 'Don\'t send';
 }

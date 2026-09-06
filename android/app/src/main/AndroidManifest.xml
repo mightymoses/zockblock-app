@@ -30,6 +30,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Crashlytics sammelt erst, wenn der Nutzer eingewilligt hat.
+             Ohne diesen Eintrag wuerde das SDK bereits beim Start senden,
+             also bevor die Einwilligungsfrage ueberhaupt angezeigt wurde.
+             Eingeschaltet wird zur Laufzeit in main.dart. -->
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

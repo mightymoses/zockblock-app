@@ -241,6 +241,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign-out failed.'**
   String get errorSignOutFailed;
+
+  /// No description provided for @consentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crash reports'**
+  String get consentTitle;
+
+  /// No description provided for @consentHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports?'**
+  String get consentHeadline;
+
+  /// No description provided for @consentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in the settings.'**
+  String get consentBody;
+
+  /// No description provided for @consentAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get consentAccept;
+
+  /// No description provided for @consentDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t send'**
+  String get consentDecline;
 }
 
 class _AppLocalizationsDelegate

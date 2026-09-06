@@ -92,4 +92,20 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorSignOutFailed => 'Abmelden fehlgeschlagen.';
+
+  @override
+  String get consentTitle => 'Fehlerberichte';
+
+  @override
+  String get consentHeadline => 'Fehlerberichte senden?';
+
+  @override
+  String get consentBody =>
+      'Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in den Einstellungen ändern.';
+
+  @override
+  String get consentAccept => 'Senden';
+
+  @override
+  String get consentDecline => 'Nicht senden';
 }
