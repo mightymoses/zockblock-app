@@ -250,24 +250,34 @@ dort wie `loading` behandelt werden soll.
 
 ---
 
-## H2a) Logging
+## H2a) Logging ✅
 
 `logger` schreibt nur lokal in die Konsole, es verlaesst das Geraet nicht.
-Level im Release auf `warning`, im Debug auf `debug`.
+Korrektur zum urspruenglichen Plan: ein Release-Level einzustellen waere
+wirkungslos - der Default-Filter (`DevelopmentFilter`) unterdrueckt im Release
+*alle* Ausgaben. Genau richtig so, fuer Produktion ist H2b zustaendig.
 
-- [ ] `core/logging/logger_provider.dart`: `createAppLogger()` + `loggerProvider`
-- [ ] `core/logging/app_provider_observer.dart`: `ProviderObserver` mit
+- [x] `core/logging/logger_provider.dart`: `createAppLogger()` + `loggerProvider`
+      (`PrettyPrinter` mit `methodCount: 0` gegen Rauschen, Stacktraces nur
+      bei Fehlern ueber `errorMethodCount`)
+- [x] `core/logging/app_provider_observer.dart`: `ProviderObserver` mit
       `providerDidFail(ProviderObserverContext, Object, StackTrace)`, darin
-      `if (error is ProviderException) return;` gegen Doppelmeldungen
-- [ ] `main.dart`: Logger einmal bauen, an Observer *und* per
+      `if (error is ProviderException) return;` gegen Doppelmeldungen.
+      Muss `final class` sein (Riverpod deklariert `abstract base class`),
+      und `ProviderException` kommt aus `flutter_riverpod/misc.dart`
+- [x] `main.dart`: Logger einmal bauen, an Observer *und* per
       `overrides: [loggerProvider.overrideWithValue(logger)]` an den Container
       geben - der Observer existiert vor dem Container
-- [ ] `auth_interceptor.dart`: die verschluckte `CredentialsManagerException`
-      loggen (Request geht sonst kommentarlos ohne Token raus)
+- [x] `auth_interceptor.dart`: die verschluckte `CredentialsManagerException`
+      loggen - `isNoCredentialsFound`/`isNoRefreshTokenFound` nur auf `debug`
+      (schlicht nicht eingeloggt, passiert bei jedem Start), alles andere als
+      `warning` (Token-Erneuerung gescheitert - der spaetere Raetsel-401)
 
 Bewusst nicht: `didUpdateProvider` loggen (Rauschen), und keine
 `ErrorReporter`-Abstraktion (der Observer wird genau einmal registriert, in
 Tests laesst man ihn weg).
+
+- [x] `flutter analyze` + `import_lint` - keine Findings
 
 ---
 

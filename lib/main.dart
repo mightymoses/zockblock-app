@@ -3,14 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zockblock_app/core/error/retry_policy.dart';
+import 'package:zockblock_app/core/logging/app_provider_observer.dart';
+import 'package:zockblock_app/core/logging/logger_provider.dart';
 import 'package:zockblock_app/core/theme/app_theme.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'package:zockblock_app/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Der Observer wird beim Bauen des Containers gebraucht, kann den Logger
+  // also nicht aus ihm beziehen - daher einmal hier erzeugen und per Override
+  // dieselbe Instanz auch in den Container geben.
+  final logger = createAppLogger();
+
   runApp(
-    const ProviderScope(retry: appRetryPolicy, child: ZockblockApp()),
+    ProviderScope(
+      retry: appRetryPolicy,
+      observers: [AppProviderObserver(logger)],
+      overrides: [loggerProvider.overrideWithValue(logger)],
+      child: const ZockblockApp(),
+    ),
   );
 }
 
