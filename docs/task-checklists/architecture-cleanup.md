@@ -534,12 +534,28 @@ und driften können – kostet aber knapp eine Minute pro Lauf. Nachrüstbar.
 
 ---
 
-## Abschluss
+## Abschluss ✅
 
-Nach E waren alle Checks grün; am Ende noch einmal vollständig durchlaufen:
+- [x] `fvm dart format .` – 65 Dateien, keine Änderung
+- [x] `fvm flutter analyze` – keine Findings
+- [x] `fvm dart run import_lint` – keine Findings
+- [x] `fvm flutter test` – 77 Tests, alle grün
+- [x] `docs/architecture/feature-status.md` auf den Endstand gebracht
 
-- [ ] `fvm dart format .`
-- [ ] `fvm flutter analyze`
-- [ ] `fvm dart run import_lint`
-- [ ] `fvm flutter test`
-- [ ] `docs/architecture/feature-status.md` auf den Endstand bringen
+Dieselben vier Checks laufen ab jetzt bei jedem Push in der CI (Punkt L).
+
+### Was bewusst offen bleibt
+
+Kein Restaufwand aus diesem Branch, sondern Punkte, die an eine Entscheidung
+oder an eine andere Umgebung gebunden sind – vollständig in
+`docs/architecture/feature-status.md`:
+
+- **iOS**: `GoogleService-Info.plist`, der Crashlytics-Schalter in der
+  `Info.plist` und die Universal-Links-Einrichtung. Braucht einen Mac und
+  einen bezahlten Apple-Developer-Account.
+- **`features/consent/`**: fragwürdiger Zuschnitt, auflösbar erst mit einer
+  Entscheidung über die Feature-Aufteilung insgesamt.
+- **Router bei `authSession`-Netzwerkfehler**: loggt aktuell optisch aus.
+- **Rechtliches** vor Veröffentlichung: Datenschutzerklärung,
+  Play-Data-Safety-Formular, Apple Privacy Nutrition Labels.
+- **`integration_test`**, sobald ein durchgehender Flow existiert.
