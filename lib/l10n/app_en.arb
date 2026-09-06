@@ -45,5 +45,13 @@
             "username": { "type": "String" }
         }
     },
-    "toHome": "To home screen"
+    "toHome": "To home screen",
+
+    "retry": "Try again",
+    "errorNetwork": "No connection. Check your internet.",
+    "errorServer": "Server is unavailable right now. Try again in a moment.",
+    "errorUnauthorized": "You are no longer signed in.",
+    "errorUnknown": "Something went wrong.",
+    "errorSignInFailed": "Sign-in failed.",
+    "errorSignOutFailed": "Sign-out failed."
 }

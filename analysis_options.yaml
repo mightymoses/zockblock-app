@@ -79,5 +79,8 @@ linter:
   rules:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
 
+formatter:
+  trailing_commas: preserve
+
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -199,6 +199,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'To home screen'**
   String get toHome;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @errorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Check your internet.'**
+  String get errorNetwork;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server is unavailable right now. Try again in a moment.'**
+  String get errorServer;
+
+  /// No description provided for @errorUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'You are no longer signed in.'**
+  String get errorUnauthorized;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get errorUnknown;
+
+  /// No description provided for @errorSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed.'**
+  String get errorSignInFailed;
+
+  /// No description provided for @errorSignOutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-out failed.'**
+  String get errorSignOutFailed;
 }
 
 class _AppLocalizationsDelegate

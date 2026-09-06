@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/core/error/dio_error_mapper.dart';
 import 'package:zockblock_app/core/network/dio_provider.dart';
 import 'package:zockblock_app/core/user/user.dart';
 
@@ -19,18 +20,26 @@ class UserService {
   final Dio _dio;
 
   /// Lädt das Profil des eingeloggten Nutzers.
-  /// Wirft [DioException] mit Status 404, wenn noch kein Profil existiert.
+  /// Wirft `NotFoundException`, wenn noch kein Profil existiert.
   Future<User> getCurrentUser() async {
-    final response = await _dio.get<Map<String, Object?>>('/users/current');
-    return User.fromJson(response.data!);
+    try {
+      final response = await _dio.get<Map<String, Object?>>('/users/current');
+      return User.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw mapDioException(e);
+    }
   }
 
   /// Legt ein neues Nutzerprofil an.
   Future<User> createUser(User user) async {
-    final response = await _dio.post<Map<String, Object?>>(
-      '/users/',
-      data: user.toJson(),
-    );
-    return User.fromJson(response.data!);
+    try {
+      final response = await _dio.post<Map<String, Object?>>(
+        '/users/',
+        data: user.toJson(),
+      );
+      return User.fromJson(response.data!);
+    } on DioException catch (e) {
+      throw mapDioException(e);
+    }
   }
 }

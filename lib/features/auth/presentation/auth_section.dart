@@ -57,6 +57,18 @@ class _AuthSectionState extends ConsumerState<AuthSection>
 
   @override
   Widget build(BuildContext context) {
+    // Auf dieser Seite fehlt bei einem Fehlschlag nichts, der Screen sieht
+    // aus wie vorher - deshalb eine eingeblendete Meldung.
+    ref.listen(authSessionProvider, (previous, next) {
+      if (next.hasError && previous?.hasError != true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.errorSignInFailed),
+          ),
+        );
+      }
+    });
+
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 

@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/core/error/app_exception.dart';
 import 'package:zockblock_app/core/user/user.dart';
 import 'package:zockblock_app/core/user/user_repository.dart';
 import 'package:zockblock_app/core/user/user_service.dart';
@@ -21,11 +21,9 @@ class UserRepositoryImpl implements UserRepository {
   Future<User?> getCurrentUser() async {
     try {
       return await _userService.getCurrentUser();
-    } on DioException catch (e) {
-      if (e.response?.statusCode == 404) {
-        return null;
-      }
-      rethrow;
+    } on NotFoundException {
+      // Noch kein Profil angelegt - kein Fehler, sondern ein gültiger Zustand.
+      return null;
     }
   }
 

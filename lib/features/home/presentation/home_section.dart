@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/core/user/current_user_provider.dart';
+import 'package:zockblock_app/core/user/user.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'package:zockblock_app/shared/widgets/atoms/app_filled_button.dart';
+import 'package:zockblock_app/shared/widgets/molecules/async_value_view.dart';
 
 /// Startseiten-Inhalt: Begrüßung des angemeldeten Nutzers und Einstieg ins
 /// Nutzerprofil.
@@ -15,12 +17,13 @@ class HomeSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final asyncUser = ref.watch(currentUserProvider);
 
     return Column(
       children: [
         const Spacer(),
-        asyncUser.maybeWhen(
+        AsyncValueView<User?>(
+          value: ref.watch(currentUserProvider),
+          onRetry: () => ref.invalidate(currentUserProvider),
           data: (user) => user == null
               ? const SizedBox.shrink()
               : Text(
@@ -31,7 +34,6 @@ class HomeSection extends ConsumerWidget {
                     fontSize: 28,
                   ),
                 ),
-          orElse: SizedBox.shrink,
         ),
         const Spacer(),
         AppFilledButton(

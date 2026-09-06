@@ -204,25 +204,75 @@ Barrel-Dateien pro Feature via `barrel_file_lints` – das Dart-Pendant zu Nx'
 
 ---
 
-## H) Fehlerbehandlung, Logging, Crash-Reporting
+## H1) Fehlerbehandlung ✅
 
-Vor den Tests, weil hier noch Code entsteht/umgebaut wird, den I sonst
-doppelt abdecken müsste.
+Heute enden zwei von drei Fehlerpfaden im stillen leeren Bildschirm:
+`currentUserProvider` im Fehlerfall → `maybeWhen(orElse: SizedBox.shrink)` in
+`home_section`/`user_profile_section`. Bei Render-Kaltstarts (Free-Tier fährt
+nach Leerlauf herunter) ist das kein Randfall, sondern der Normalfall beim
+ersten Start.
 
-- [ ] Zu klären vorab: Wie zeigen wir Fehler an? (SnackBar über einen
-      `core/`-Signal-Provider, Inline-Zustand pro Section, oder beides je nach
-      Fall) – aktuell verschwindet außerhalb des Profil-Formulars jeder
-      Fehler stillschweigend
-- [ ] Zu klären vorab: Eigene Fehler-Hierarchie in `core/error/` (z.B.
-      `AppException` mit Netzwerk-/Auth-/Server-Fällen) plus Mapping aus
-      `DioException`, oder reichen die Exceptions der Libraries?
-- [ ] `logger` einbinden, Provider in `core/`, sinnvolle Log-Punkte
-      (Interceptor, Repositories, ViewModels)
-- [ ] Firebase-Projekt anlegen + Crashlytics (`flutterfire configure`,
-      `google-services.json`/`GoogleService-Info.plist`, beide Dateien in
-      `.gitignore`?)
-- [ ] Uncaught-Errors an Crashlytics: `FlutterError.onError` +
-      `PlatformDispatcher.instance.onError` in `main.dart`
+Entscheidungen vorab: **kein** Result-Pattern (`AsyncValue` ist bereits einer,
+beides wäre doppelte Verpackung), **keine** Riverpod-Mutations (laut Doku
+"may change in a breaking way without a major version bump").
+
+- [x] `core/error/app_exception.dart`: `sealed class AppException` mit
+      `NetworkException`, `ServerException`, `UnauthorizedException`,
+      `NotFoundException`, `UnknownException` – bewusst klein halten
+- [x] `core/error/dio_error_mapper.dart`: `DioException` → `AppException`.
+      Mapping im **Service**, nicht im Interceptor (dio packt in `onError`
+      alles wieder in eine `DioException`, der Typ wäre nicht ersetzbar)
+- [x] `user_service.dart` mappt; `user_repository_impl.dart` fängt
+      `NotFoundException` statt `DioException`+404 → dio ist danach oberhalb
+      des Service unbekannt
+- [x] `dio_provider.dart`: Timeouts hoch (10s reicht für einen Kaltstart
+      nicht) – `connect` 15s, `receive` 60s, `send` 30s
+- [x] Globale `retry`-Policy (`core/error/retry_policy.dart`, im `ProviderScope`) im `ProviderScope`: Riverpod 3 retryt per Default
+      **jeden** Fehler unbegrenzt. Bei `UnauthorizedException`/
+      `NotFoundException` abbrechen (heilt nicht von selbst), sonst nach
+      wenigen Versuchen aufgeben
+- [x] `shared/widgets/molecules/error_view.dart`: Fehlertext + Retry-Button,
+      plus `appErrorMessage()` (AppException → lokalisierter Text)
+- [x] `shared/widgets/molecules/async_value_view.dart`: einheitliches
+      data/loading/error-Rendering, ersetzt `maybeWhen(orElse: shrink)`
+- [x] `home_section` + `user_profile_section` auf `AsyncValueView` umstellen
+- [x] SnackBar via `ref.listen` für Login (`auth_section`) und Logout
+      (`user_profile_section`) – dort fehlt nichts auf dem Schirm, deshalb
+      transient statt inline
+- [x] Neue ARB-Keys (de/en) für die Fehlertexte + "Erneut versuchen"
+- [x] `flutter analyze` + `import_lint` – keine Findings
+
+**Weiter offen:** Der Router-Redirect schickt bei `authSession`-Fehler auf
+`/auth`. Bei reinem Netzwerkfehler loggt das einen eingeloggten Nutzer beim
+Offline-Start optisch aus. Bewusst nicht mitverändert, weil es Routing-
+Verhalten ist und nicht Fehleranzeige – zu entscheiden, ob `NetworkException`
+dort wie `loading` behandelt werden soll.
+
+---
+
+## H2) Logging + Crash-Reporting
+
+Braucht ein neues Firebase-Projekt – dasselbe, das später das Backend für
+FCM nutzt, nicht zwei anlegen.
+
+Entscheidung: `logger` statt `talker` – der Mehrwert von `talker` wäre vor
+allem der In-App-Log-Viewer, der hier nicht gebraucht wird.
+
+- [ ] `logger` einbinden, Provider in `core/logging/`
+- [ ] `core/logging/app_provider_observer.dart`: `ProviderObserver` mit
+      `providerDidFail(ProviderObserverContext, Object, StackTrace)` – dabei
+      `if (error is ProviderException) return;`, sonst wird derselbe Fehler
+      doppelt gemeldet, wenn ein Provider von einem kaputten abhängt
+- [ ] Firebase-Projekt anlegen, `flutter pub add firebase_crashlytics
+      firebase_analytics`, `flutterfire configure`
+- [ ] `google-services.json`/`GoogleService-Info.plist` **einchecken** – laut
+      Firebase-Team keine Secrets, und CI braucht sie
+- [ ] `main.dart`: `FlutterError.onError` +
+      `PlatformDispatcher.instance.onError` (kein `runZonedGuarded`, kommt in
+      der offiziellen Anleitung nicht mehr vor)
+- [ ] Crashlytics in Debug-Builds deaktivieren
+      (`setCrashlyticsCollectionEnabled(!kDebugMode)`)
+- [ ] Der ProviderObserver meldet Fehler an beide: `logger` + Crashlytics
 
 ---
 

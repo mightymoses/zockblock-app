@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zockblock_app/core/auth/auth_session.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/core/user/current_user_provider.dart';
+import 'package:zockblock_app/core/user/user.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'package:zockblock_app/shared/widgets/atoms/app_filled_button.dart';
+import 'package:zockblock_app/shared/widgets/molecules/async_value_view.dart';
 
 const _valueStyle = TextStyle(fontFamily: 'ComradeBold', fontSize: 16);
 
@@ -17,13 +20,22 @@ class UserProfileSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final asyncAuthSession = ref.watch(authSessionProvider);
-    final asyncUser = ref.watch(currentUserProvider);
+
+    // Abmelden ändert nichts Sichtbares auf dieser Seite - ein Fehlschlag
+    // braucht deshalb eine eingeblendete Meldung statt einer Inline-Anzeige.
+    ref.listen(authSessionProvider, (previous, next) {
+      if (next.hasError && previous?.hasError != true) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.errorSignOutFailed)));
+      }
+    });
 
     return Column(
       children: [
         const Spacer(),
-        asyncAuthSession.maybeWhen(
+        AsyncValueView<AuthSession?>(
+          value: ref.watch(authSessionProvider),
           data: (authSession) => authSession == null
               ? const SizedBox.shrink()
               : Text(
@@ -31,9 +43,10 @@ class UserProfileSection extends ConsumerWidget {
                   textAlign: TextAlign.center,
                   style: _valueStyle,
                 ),
-          orElse: SizedBox.shrink,
         ),
-        asyncUser.maybeWhen(
+        AsyncValueView<User?>(
+          value: ref.watch(currentUserProvider),
+          onRetry: () => ref.invalidate(currentUserProvider),
           data: (user) => user == null
               ? const SizedBox.shrink()
               : Column(
@@ -52,7 +65,6 @@ class UserProfileSection extends ConsumerWidget {
                     ),
                   ],
                 ),
-          orElse: SizedBox.shrink,
         ),
         const Spacer(),
         AppFilledButton(
@@ -60,10 +72,7 @@ class UserProfileSection extends ConsumerWidget {
           onPressed: () => ref.read(authSessionProvider.notifier).logout(),
         ),
         const SizedBox(height: AppSpacing.xl),
-        AppFilledButton(
-          label: l10n.toHome,
-          onPressed: () => context.go('/'),
-        ),
+        AppFilledButton(label: l10n.toHome, onPressed: () => context.go('/')),
         const SizedBox(height: AppSpacing.xl),
       ],
     );

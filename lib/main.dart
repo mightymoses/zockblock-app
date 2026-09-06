@@ -2,13 +2,16 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/core/error/retry_policy.dart';
 import 'package:zockblock_app/core/theme/app_theme.dart';
 import 'package:zockblock_app/l10n/app_localizations.dart';
 import 'package:zockblock_app/routing/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const ProviderScope(child: ZockblockApp()));
+  runApp(
+    const ProviderScope(retry: appRetryPolicy, child: ZockblockApp()),
+  );
 }
 
 /// Wurzel-Widget: verdrahtet Router, Lokalisierung und Theme.

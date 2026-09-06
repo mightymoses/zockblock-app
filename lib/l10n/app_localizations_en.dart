@@ -70,4 +70,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toHome => 'To home screen';
+
+  @override
+  String get retry => 'Try again';
+
+  @override
+  String get errorNetwork => 'No connection. Check your internet.';
+
+  @override
+  String get errorServer =>
+      'Server is unavailable right now. Try again in a moment.';
+
+  @override
+  String get errorUnauthorized => 'You are no longer signed in.';
+
+  @override
+  String get errorUnknown => 'Something went wrong.';
+
+  @override
+  String get errorSignInFailed => 'Sign-in failed.';
+
+  @override
+  String get errorSignOutFailed => 'Sign-out failed.';
 }

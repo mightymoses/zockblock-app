@@ -70,4 +70,26 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get toHome => 'Zum Homescreen';
+
+  @override
+  String get retry => 'Erneut versuchen';
+
+  @override
+  String get errorNetwork => 'Keine Verbindung. Prüf mal dein Internet.';
+
+  @override
+  String get errorServer =>
+      'Server gerade nicht erreichbar. Probier es gleich nochmal.';
+
+  @override
+  String get errorUnauthorized => 'Du bist nicht mehr angemeldet.';
+
+  @override
+  String get errorUnknown => 'Da ist etwas schiefgelaufen.';
+
+  @override
+  String get errorSignInFailed => 'Anmeldung fehlgeschlagen.';
+
+  @override
+  String get errorSignOutFailed => 'Abmelden fehlgeschlagen.';
 }

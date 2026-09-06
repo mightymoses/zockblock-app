@@ -45,5 +45,13 @@
             "username": { "type": "String" }
         }
     },
-    "toHome": "Zum Homescreen"
+    "toHome": "Zum Homescreen",
+
+    "retry": "Erneut versuchen",
+    "errorNetwork": "Keine Verbindung. Prüf mal dein Internet.",
+    "errorServer": "Server gerade nicht erreichbar. Probier es gleich nochmal.",
+    "errorUnauthorized": "Du bist nicht mehr angemeldet.",
+    "errorUnknown": "Da ist etwas schiefgelaufen.",
+    "errorSignInFailed": "Anmeldung fehlgeschlagen.",
+    "errorSignOutFailed": "Abmelden fehlgeschlagen."
 }
