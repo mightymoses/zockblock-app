@@ -1,3 +1,64 @@
 {
-  "@@locale": "de"
+    "@@locale": "de",
+
+    "signIn": "ANmeLdeN",
+    "signOut": "Abmelden",
+
+    "homeTitle": "Home",
+    "homeGreeting": "Herzlich Willkommen, {username}!",
+    "@homeGreeting": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toUserProfile": "Zum Nutzerprofil",
+
+    "profileSetupTitle": "Willkommen",
+    "profileSetupIntro": "Bevor du loslegen kannst, musst du ein Nutzerprofil erstellen!",
+    "profileSetupSubmitError": "Profil konnte nicht angelegt werden. Bitte versuch es erneut.",
+    "usernameLabel": "Nutzername",
+    "usernameErrorEmpty": "Bitte gib einen Nutzernamen an.",
+    "usernameErrorTooShort": "Der Nutzername muss mindestens {minLength} Zeichen enthalten.",
+    "@usernameErrorTooShort": {
+        "placeholders": {
+            "minLength": { "type": "int" }
+        }
+    },
+    "create": "Erstellen",
+
+    "userProfileTitle": "Nutzerprofil",
+    "authIdValue": "Auth Id:\n{id}",
+    "@authIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "userIdValue": "User Id:\n{id}",
+    "@userIdValue": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "usernameValue": "Nutzername:\n{username}",
+    "@usernameValue": {
+        "placeholders": {
+            "username": { "type": "String" }
+        }
+    },
+    "toHome": "Zum Homescreen",
+
+    "retry": "Erneut versuchen",
+    "errorNetwork": "Keine Verbindung. Prüf mal dein Internet.",
+    "errorServer": "Server gerade nicht erreichbar. Probier es gleich nochmal.",
+    "errorUnauthorized": "Du bist nicht mehr angemeldet.",
+    "errorUnknown": "Da ist etwas schiefgelaufen.",
+    "errorSignInFailed": "Anmeldung fehlgeschlagen.",
+    "errorSignOutFailed": "Abmelden fehlgeschlagen.",
+
+    "consentTitle": "Fehlerberichte",
+    "consentHeadline": "Fehlerberichte senden?",
+    "consentBody": "Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in deinem Nutzerprofil ändern.",
+    "consentAccept": "Senden",
+    "consentDecline": "Nicht senden",
+    "consentToggleLabel": "Fehlerberichte senden"
 }

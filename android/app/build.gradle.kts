@@ -1,11 +1,14 @@
 plugins {
     id("com.android.application")
+    // START: FlutterFire Configuration
+    id("com.google.gms.google-services")
+    // END: FlutterFire Configuration
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
-    namespace = "com.example.zockblock_app"
+    namespace = "com.zockblock.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -15,14 +18,20 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.zockblock_app"
+        applicationId = "com.zockblock.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        // Auth0: registriert den Intent-Filter fuer den Login-Callback.
+        // Die Domain steht doppelt - hier und als AppEnv.auth0Domain in
+        // lib/core/config/env.dart. Gradle kann die Dart-Konstante nicht
+        // lesen, ein gemeinsamer Ort existiert also nicht: bei einem
+        // Tenant-Wechsel muessen beide Stellen geaendert werden, sonst
+        // oeffnet sich der Login und der Callback kommt nie zurueck.
+        manifestPlaceholders += mapOf("auth0Domain" to "zockblock.eu.auth0.com", "auth0Scheme" to "https")
     }
 
     buildTypes {

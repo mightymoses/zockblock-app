@@ -43,3 +43,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# CLAUDE
+CLAUDE.local.md
+.claude/settings.local.json
+
+# FVM (Flutter Version Management) - SDK symlink/cache is machine-specific,
+# .fvmrc / .fvm/fvm_config.json (the actual version pin) stay tracked
+
+# FVM Version Cache
+.fvm/

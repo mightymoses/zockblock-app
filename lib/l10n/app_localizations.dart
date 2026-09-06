@@ -97,6 +97,186 @@ abstract class AppLocalizations {
     Locale('de'),
     Locale('en'),
   ];
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'LOGIN'**
+  String get signIn;
+
+  /// No description provided for @signOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get signOut;
+
+  /// No description provided for @homeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get homeTitle;
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, {username}!'**
+  String homeGreeting(String username);
+
+  /// No description provided for @toUserProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'To user profile'**
+  String get toUserProfile;
+
+  /// No description provided for @profileSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome'**
+  String get profileSetupTitle;
+
+  /// No description provided for @profileSetupIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Before you can get started, you need to create a user profile!'**
+  String get profileSetupIntro;
+
+  /// No description provided for @profileSetupSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create the profile. Please try again.'**
+  String get profileSetupSubmitError;
+
+  /// No description provided for @usernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get usernameLabel;
+
+  /// No description provided for @usernameErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a username.'**
+  String get usernameErrorEmpty;
+
+  /// No description provided for @usernameErrorTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'The username must contain at least {minLength} characters.'**
+  String usernameErrorTooShort(int minLength);
+
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get create;
+
+  /// No description provided for @userProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'User profile'**
+  String get userProfileTitle;
+
+  /// No description provided for @authIdValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Auth Id:\n{id}'**
+  String authIdValue(String id);
+
+  /// No description provided for @userIdValue.
+  ///
+  /// In en, this message translates to:
+  /// **'User Id:\n{id}'**
+  String userIdValue(String id);
+
+  /// No description provided for @usernameValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Username:\n{username}'**
+  String usernameValue(String username);
+
+  /// No description provided for @toHome.
+  ///
+  /// In en, this message translates to:
+  /// **'To home screen'**
+  String get toHome;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get retry;
+
+  /// No description provided for @errorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Check your internet.'**
+  String get errorNetwork;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server is unavailable right now. Try again in a moment.'**
+  String get errorServer;
+
+  /// No description provided for @errorUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'You are no longer signed in.'**
+  String get errorUnauthorized;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get errorUnknown;
+
+  /// No description provided for @errorSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-in failed.'**
+  String get errorSignInFailed;
+
+  /// No description provided for @errorSignOutFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign-out failed.'**
+  String get errorSignOutFailed;
+
+  /// No description provided for @consentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crash reports'**
+  String get consentTitle;
+
+  /// No description provided for @consentHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports?'**
+  String get consentHeadline;
+
+  /// No description provided for @consentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in your user profile.'**
+  String get consentBody;
+
+  /// No description provided for @consentAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get consentAccept;
+
+  /// No description provided for @consentDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t send'**
+  String get consentDecline;
+
+  /// No description provided for @consentToggleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports'**
+  String get consentToggleLabel;
 }
 
 class _AppLocalizationsDelegate
