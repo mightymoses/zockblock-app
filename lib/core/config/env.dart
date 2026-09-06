@@ -18,4 +18,32 @@ class AppEnv {
     'API_BASE_URL',
     defaultValue: 'https://zockblock-backend.onrender.com/api',
   );
+
+  /// Auth0-Tenant, gegen den angemeldet wird.
+  ///
+  /// Steht zusätzlich als `manifestPlaceholders` in
+  /// `android/app/build.gradle.kts` – Gradle kann diese Konstante nicht lesen,
+  /// beide Stellen müssen also zusammen geändert werden.
+  static const String auth0Domain = String.fromEnvironment(
+    'AUTH0_DOMAIN',
+    defaultValue: 'zockblock.eu.auth0.com',
+  );
+
+  /// Client-ID der nativen Auth0-Anwendung.
+  ///
+  /// Kein Geheimnis: native Apps sind Public Clients und melden sich per PKCE
+  /// an. Die ID steckt ohnehin im App-Binary und in der Login-URL im Browser.
+  static const String auth0ClientId = String.fromEnvironment(
+    'AUTH0_CLIENT_ID',
+    defaultValue: 'saaES4mot3pMpTKt2ZHB9c1rDQrvPziy',
+  );
+
+  /// API-Identifier, den das Backend als Audience im Token erwartet.
+  ///
+  /// Ein Bezeichner, keine aufrufbare URL – muss auf beiden Seiten exakt
+  /// gleich lauten.
+  static const String auth0Audience = String.fromEnvironment(
+    'AUTH0_AUDIENCE',
+    defaultValue: 'https://zockblock.net',
+  );
 }

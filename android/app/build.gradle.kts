@@ -25,7 +25,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        // Auth0
+        // Auth0: registriert den Intent-Filter fuer den Login-Callback.
+        // Die Domain steht doppelt - hier und als AppEnv.auth0Domain in
+        // lib/core/config/env.dart. Gradle kann die Dart-Konstante nicht
+        // lesen, ein gemeinsamer Ort existiert also nicht: bei einem
+        // Tenant-Wechsel muessen beide Stellen geaendert werden, sonst
+        // oeffnet sich der Login und der Callback kommt nie zurueck.
         manifestPlaceholders += mapOf("auth0Domain" to "zockblock.eu.auth0.com", "auth0Scheme" to "https")
     }
 

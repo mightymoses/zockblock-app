@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:zockblock_app/core/config/env.dart';
 
 /// Stellt den [AuthService] bereit.
 final authServiceProvider = Provider<AuthService>((ref) {
@@ -10,16 +11,13 @@ final authServiceProvider = Provider<AuthService>((ref) {
 
 /// Dünner Wrapper um das Auth0-SDK für Login, Logout und Token-Zugriff.
 class AuthService {
-  final _auth0 = Auth0(
-    'zockblock.eu.auth0.com',
-    'saaES4mot3pMpTKt2ZHB9c1rDQrvPziy',
-  );
+  final _auth0 = Auth0(AppEnv.auth0Domain, AppEnv.auth0ClientId);
 
   /// Startet den Auth0-Login-Flow (Universal Login im Browser).
   Future<Credentials> login() async {
     final credentials = await _auth0.webAuthentication().login(
       useHTTPS: true,
-      audience: 'https://zockblock.net',
+      audience: AppEnv.auth0Audience,
     );
     return credentials;
   }

@@ -378,19 +378,42 @@ Gleiche Kategorie wie `firebase_options.dart`.
 Was trotzdem stoert, ist Konfigurierbarkeit und Doppelung - genau das, was
 Punkt A fuer die Backend-URL schon geloest hat:
 
-- [ ] Auth0-Domain, Client-ID und Audience nach `core/config/env.dart`
+- [x] Auth0-Domain, Client-ID und Audience nach `core/config/env.dart`
       (`AppEnv`), per `String.fromEnvironment` mit Default - analog zu
-      `apiBaseUrl`. Erlaubt einen zweiten Auth0-Tenant fuer Dev/Prod, ohne
-      Code zu aendern
-- [ ] Die Domain steht doppelt (Dart + Gradle-`manifestPlaceholders`). Gradle
-      kommt nicht an `AppEnv`; entweder `gradle.properties` als einzige Quelle
-      oder die Doppelung bewusst dokumentieren
-- [ ] Im Auth0-Dashboard pruefen, dass der Application Type **Native** ist
+      `apiBaseUrl`. `auth_service.dart` liest nur noch `AppEnv`
+- [x] Die Doppelung (Dart + Gradle-`manifestPlaceholders`) bleibt bestehen -
+      es gibt keinen gemeinsamen Ort: `String.fromEnvironment` landet im
+      Dart-Snapshot, `manifestPlaceholders` im AndroidManifest.
+      `gradle.properties` haette nur die Gradle-Kopie verschoben. Stattdessen
+      zeigen beide Stellen per Kommentar aufeinander
+- [x] *(Dashboard, offen)* Pruefen, dass der Application Type **Native** ist
       (Public Client + PKCE) und nicht "Regular Web Application" - bei
     letzterem waere ein Client Secret im Spiel, das nicht in eine App gehoert
-- [ ] `audience: 'https://zockblock.net'` gegenpruefen: das ist der
+- [x] *(Dashboard, offen)* `audience: 'https://zockblock.net'` gegenpruefen: das ist der
       API-Identifier aus dem Auth0-Dashboard, keine aufloesbare URL. Muss mit
       dem uebereinstimmen, was das Backend als Audience erwartet
+
+**iOS-Seite (kein akutes Problem, aber unvollstaendig).** Nachgeprueft: die
+`Info.plist` ist die unveraenderte Flutter-Vorlage, es gibt keine
+`.entitlements`-Datei. Laut auth0_flutter-README ist `useHTTPS: true` aber
+kein Alles-oder-nichts - das SDK faellt auf iOS < 17.4 automatisch auf das
+Custom-Scheme zurueck, und dessen Callback-URL ist im Dashboard hinterlegt.
+Der Login ist auf iOS also nicht generell kaputt.
+
+Erst auf **iOS 17.4+** greifen Universal Links, und dann fehlt:
+
+- [ ] Associated-Domains-Capability `applinks:zockblock.eu.auth0.com` in Xcode
+      (erzeugt die `Runner.entitlements`)
+- [ ] Apple Team ID + Bundle-ID unter Advanced Settings > Device Settings im
+      Auth0-Dashboard
+
+Beides setzt einen **bezahlten** Apple-Developer-Account voraus, und die App
+muss auch im Simulator mit dem Team-Zertifikat signiert sein. Alternative
+waere `useHTTPS: false` (Custom-Scheme ueberall, kein Setup noetig) - dann
+aber anfaellig fuer Client-Impersonation nach RFC 8252, weshalb Auth0
+Universal Links empfiehlt. Entscheidung faellt beim ersten Mac-Build, dort
+sowieso zusammen mit den offenen iOS-Punkten aus H2b
+(`GoogleService-Info.plist`, `FirebaseCrashlyticsCollectionEnabled`).
 
 ---
 
