@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @consentBody.
   ///
   /// In en, this message translates to:
-  /// **'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in the settings.'**
+  /// **'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in your user profile.'**
   String get consentBody;
 
   /// No description provided for @consentAccept.
@@ -271,6 +271,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t send'**
   String get consentDecline;
+
+  /// No description provided for @consentToggleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send crash reports'**
+  String get consentToggleLabel;
 }
 
 class _AppLocalizationsDelegate

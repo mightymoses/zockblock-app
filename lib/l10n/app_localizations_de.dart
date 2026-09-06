@@ -101,11 +101,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get consentBody =>
-      'Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in den Einstellungen ändern.';
+      'Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in deinem Nutzerprofil ändern.';
 
   @override
   String get consentAccept => 'Senden';
 
   @override
   String get consentDecline => 'Nicht senden';
+
+  @override
+  String get consentToggleLabel => 'Fehlerberichte senden';
 }

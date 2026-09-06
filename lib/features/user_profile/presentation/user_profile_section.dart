@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zockblock_app/core/auth/auth_session.dart';
 import 'package:zockblock_app/core/auth/auth_session_provider.dart';
+import 'package:zockblock_app/core/consent/crash_report_consent.dart';
+import 'package:zockblock_app/core/consent/crash_report_consent_provider.dart';
 import 'package:zockblock_app/core/theme/app_dimensions.dart';
 import 'package:zockblock_app/core/user/current_user_provider.dart';
 import 'package:zockblock_app/core/user/user.dart';
@@ -20,6 +24,9 @@ class UserProfileSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
+    final consentState = ref.watch(crashReportConsentProvider);
+    final consent = consentState.value;
+    final consentIsSaving = consentState.isLoading;
 
     // Abmelden ändert nichts Sichtbares auf dieser Seite - ein Fehlschlag
     // braucht deshalb eine eingeblendete Meldung statt einer Inline-Anzeige.
@@ -67,6 +74,22 @@ class UserProfileSection extends ConsumerWidget {
                 ),
         ),
         const Spacer(),
+        // Widerruf der Einwilligung aus dem ersten Start. Muss laut DSGVO
+        // genauso einfach sein wie das Zustimmen, deshalb direkt hier und
+        // nicht hinter einem weiteren Screen.
+        SwitchListTile(
+          value: consent == CrashReportConsent.granted,
+          onChanged: consentIsSaving
+              ? null
+              : (granted) => unawaited(
+                  granted
+                      ? ref.read(crashReportConsentProvider.notifier).grant()
+                      : ref.read(crashReportConsentProvider.notifier).deny(),
+                ),
+          title: Text(l10n.consentToggleLabel, style: _valueStyle),
+          contentPadding: EdgeInsets.zero,
+        ),
+        const SizedBox(height: AppSpacing.lg),
         AppFilledButton(
           label: l10n.signOut,
           onPressed: () => ref.read(authSessionProvider.notifier).logout(),

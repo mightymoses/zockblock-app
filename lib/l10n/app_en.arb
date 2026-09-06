@@ -57,7 +57,8 @@
 
     "consentTitle": "Crash reports",
     "consentHeadline": "Send crash reports?",
-    "consentBody": "If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in the settings.",
+    "consentBody": "If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in your user profile.",
     "consentAccept": "Send",
-    "consentDecline": "Don't send"
+    "consentDecline": "Don't send",
+    "consentToggleLabel": "Send crash reports"
 }

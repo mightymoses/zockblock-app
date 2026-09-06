@@ -57,7 +57,8 @@
 
     "consentTitle": "Fehlerberichte",
     "consentHeadline": "Fehlerberichte senden?",
-    "consentBody": "Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in den Einstellungen ändern.",
+    "consentBody": "Wenn die App abstürzt, hilft uns ein automatischer Bericht dabei, den Fehler zu finden. Er enthält technische Daten zum Absturz und zu deinem Gerät, aber keine Inhalte deiner Spiele. Du kannst das jederzeit in deinem Nutzerprofil ändern.",
     "consentAccept": "Senden",
-    "consentDecline": "Nicht senden"
+    "consentDecline": "Nicht senden",
+    "consentToggleLabel": "Fehlerberichte senden"
 }

@@ -16,6 +16,13 @@
 
 ### Bekannte offene Punkte
 
+- `features/consent/` ist ein fragwuerdiger Zuschnitt: nur `presentation/`,
+  kein `domain/`, keine `data/` – nach eigener Regel das Warnsignal fuer "kein
+  echtes Feature". Wahrscheinlich besserer Schnitt spaeter: ein
+  `features/settings/` bzw. `features/privacy/`, das die Frage beim ersten
+  Start *und* den Widerrufs-Schalter besitzt (der liegt derzeit im
+  Nutzerprofil). `core/consent/` bleibt, wo es ist – der Router braucht es.
+  Voraussetzung ist eine Entscheidung ueber den Feature-Zuschnitt insgesamt.
 - Keine Tests vorhanden (`mocktail` ist noch nicht mal Dependency), keine CI.
 - Kein Logging/Crash-Reporting (`logger`, Crashlytics) – Fehler werden zwar
   angezeigt, aber nirgends festgehalten.

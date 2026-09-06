@@ -101,11 +101,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get consentBody =>
-      'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in the settings.';
+      'If the app crashes, an automatic report helps us track down the problem. It contains technical details about the crash and your device, but nothing from your games. You can change this any time in your user profile.';
 
   @override
   String get consentAccept => 'Send';
 
   @override
   String get consentDecline => 'Don\'t send';
+
+  @override
+  String get consentToggleLabel => 'Send crash reports';
 }

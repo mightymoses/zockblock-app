@@ -338,14 +338,31 @@ Formular, Apple Privacy Nutrition Labels.
 
 ---
 
-## H2c) Einstellungen (Widerruf)
+## H2c) Widerruf der Einwilligung ✅
 
-Faellt aus H2b heraus, weil es neue UI ist: der Widerruf der Einwilligung ist
-verpflichtend, es gibt aber noch keinen Einstellungs-Screen.
+Entscheidung: **kein eigener Einstellungs-Screen**, der Schalter kommt
+vorerst aufs bestehende Nutzerprofil. Ein Screen mit genau einem Schalter
+waere eine leere Huelle, und wie die Features spaeter geschnitten werden, ist
+noch offen. Der Widerruf muss laut DSGVO genauso einfach sein wie das
+Zustimmen - deshalb sofort sichtbar statt hinter einem weiteren Screen.
 
-- [ ] `pages/settings_page.dart` + `features/settings/presentation/
-      settings_section.dart` mit Schalter "Fehlerberichte senden"
-- [ ] Route + Einstieg vom Nutzerprofil aus
+- [x] ARB: `consentToggleLabel` neu; `consentBody` sagt jetzt "in deinem
+      Nutzerprofil" statt "in den Einstellungen" - der Satz muss beschreiben,
+      was es wirklich gibt
+- [x] `SwitchListTile` in `user_profile_section.dart`, liest und schreibt
+      `crashReportConsentProvider`. `value` kommt direkt aus dem Enum, es gibt
+      keinen zweiten Zustand im Widget - schlaegt das Speichern fehl, springt
+      der Schalter zurueck statt eine Zustimmung vorzutaeuschen
+- [x] Wirkt sofort: `crashReportingProvider` beobachtet die Einwilligung
+      ohnehin, es braucht keinen zusaetzlichen Code und keinen Neustart
+- [x] `flutter analyze` + `import_lint` - keine Findings
+
+**Vorlaeufig, bewusst:** Die Consent-UI liegt jetzt an zwei Stellen - die
+Frage in `features/consent/`, der Schalter in `features/user_profile/`.
+Zusammenlegen geht nicht, weil ein Feature nicht auf `presentation/` eines
+anderen zugreifen darf; beide haengen aber nur an `core/consent/`, also kein
+Verstoss. Siehe auch den Zuschnitt-Punkt in
+`docs/architecture/feature-status.md`.
 
 
 ## M) Auth0-Konfiguration vereinheitlichen
