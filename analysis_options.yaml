@@ -9,6 +9,15 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:very_good_analysis/analysis_options.yaml
 
+analyzer:
+  # Generierter Code wird nicht geprueft: Er entsteht neu bei jedem Build, laesst
+  # sich nicht anpassen und haelt sich nicht an unser Lint-Preset - json_serializable
+  # erzeugt z.B. bei Enums mit unknownEnumValue Code, den very_good_analysis ruegt.
+  # Echte Fehler darin faellt trotzdem auf: Der Code wird kompiliert.
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+
 plugins:
   import_lint: 2.0.0
 

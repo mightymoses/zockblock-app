@@ -122,10 +122,9 @@ und `Schlange` hieß `cobra`. Wir nehmen die Originale – vollständiger und h�
 - [x] Konvertiert nach `assets/images/animals/`: 52 Dateien, 768×768, `yuva420p` (Transparenz
       erhalten), zusammen 4,2 MB. Skript liegt im Scratchpad (`convert_animals.py`), die Quelle
       wurde nur gelesen.
-- [ ] Im Auswahl-Sheet `cacheWidth` passend zur Kachelgröße setzen, damit nicht 52 Bilder in
-      voller Auflösung im Speicher liegen – bei 768² sind das 2,4 MB RAM pro dekodiertem Bild
-- [ ] `pubspec.yaml`: `assets/images/animals/` ergänzen
-- [ ] Original-PNGs nicht mit einchecken
+- [x] `pubspec.yaml`: `assets/images/animals/` ergänzt – als **eigener** Eintrag, denn
+      `assets/images/` erfasst Unterordner nicht mit
+- [x] Original-PNGs nicht eingecheckt (liegen ausserhalb des Repos)
 
 **Namens-Mapping** (deutscher Dateiname → `animalAssetName`):
 
@@ -147,12 +146,19 @@ und `Schlange` hieß `cobra`. Wir nehmen die Originale – vollständiger und h�
 
 ## 2. Dependencies
 
-- [ ] `fvm flutter pub add image_picker image_cropper`
-- [ ] Android-Konfiguration für `image_cropper` (`UCropActivity` in der `AndroidManifest.xml`)
-- [ ] iOS: `NSCameraUsageDescription` und `NSPhotoLibraryUsageDescription` in die `Info.plist`
-      (Texte deutsch/englisch, erscheinen im System-Dialog) – wird beim ersten Mac-Build
-      zusammen mit den anderen offenen iOS-Punkten geprüft
-- [ ] Kurz gegenprüfen, dass `flutter analyze` und die CI weiterhin durchlaufen
+- [x] `image_cropper: ^12.2.1`, `image_picker: ^1.2.3`
+- [x] `UCropActivity` in der `AndroidManifest.xml` registriert. Debug-APK gebaut: der Merge läuft
+      durch, `@style/Theme.AppCompat.Light.NoActionBar` löst auf (AppCompat kommt transitiv über
+      uCrop). Keine zusätzliche Berechtigung nötig – der System-Photo-Picker wählt ausserhalb
+      unserer App aus.
+- [x] `NSCameraUsageDescription` und `NSPhotoLibraryUsageDescription` in der `Info.plist`, mit
+      konkreter Zweckangabe (generische Texte lehnt Apple im Review ab). Nur deutsch;
+      mehrsprachig ginge über `InfoPlist.strings` je Sprachordner – offen fürs erste Mac-Build.
+      `image_cropper` braucht iOS-seitig laut Doku keine Konfiguration.
+- [x] Lokal geprüft: Format, `flutter analyze`, `import_lint`, 77 Tests – alles grün
+- [ ] **CI-Lauf auf GitHub steht noch aus**: Der Branch ist nicht gepusht, und die
+      Workflow-Datei hat mit den Codegen-Schritten selbst Änderungen bekommen, die noch nie auf
+      einem Runner gelaufen sind. Beim ersten Push draufschauen.
 
 **Warum diese Pakete:** `image_picker` nutzt auf Android ab API 33 den System-Photo-Picker und auf
 iOS `PHPicker` – das ist die "richtige" native Galerie inklusive Berechtigungsverhalten. Der
@@ -167,14 +173,22 @@ und exakt im Design der App. Fallback, falls es doch fummelig wird: `flex_color_
 
 ## 3. `core/user/user.dart` erweitern
 
-- [ ] Felder ergänzen (bis auf `avatarMode` alle nullable, das Backend liefert sie so):
+- [x] Felder ergänzt (bis auf `avatarMode` alle nullable, das Backend liefert sie so):
       `animalAssetName`, `avatarColor` (`int?`), `bioLine1`, `bioLine2`, `avatarUrl`,
       `avatarMode` (Enum `animal | photo`, Default `animal`)
-- [ ] Unbekannten `avatarMode` aus einer neueren Backend-Version tolerant auf `animal` abbilden
-      (`@JsonEnum(unknownEnumValue: ...)`), statt beim Parsen zu werfen
-- [ ] Serialisierung prüfen: das Backend liefert **camelCase** (Pydantic-`to_camel`), damit passt
-      die Default-Serialisierung – im generierten Code einmal verifizieren
-- [ ] `fvm dart run build_runner build --delete-conflicting-outputs`
+- [x] Unbekannter `avatarMode` wird tolerant auf `animal` abgebildet – zwei verschiedene Fälle,
+      zwei Annotationen: `@JsonKey(unknownEnumValue:)` gegen einen unbekannten *Wert* aus einer
+      neueren Backend-Version, `@Default` gegen ein *fehlendes* Feld
+- [x] Serialisierung im Generat verifiziert: camelCase passt ohne Umbenennungen,
+      `$enumDecodeNullable(..., unknownValue: AvatarMode.animal) ?? AvatarMode.animal`
+- [x] `avatar`-Getter ergänzt, der `Avatar.of` aufruft – dafür braucht die freezed-Klasse einen
+      privaten Konstruktor (`const User._();`)
+- [x] `createdAt`/`updatedAt` bewusst weggelassen: von der App nirgends gebraucht, unbekannte
+      JSON-Schlüssel ignoriert der Generator beim Parsen
+- [x] `analysis_options.yaml`: `**/*.g.dart` und `**/*.freezed.dart` von der Analyse ausgenommen.
+      json_serializable erzeugt für Enums mit `unknownEnumValue` Code, den `very_good_analysis`
+      rügt (`unnecessary_null_checks`, `specify_nonobvious_property_types`) – anpassen lässt er
+      sich nicht, und `flutter analyze` bricht auch bei `info` ab
 
 ## 4. Avatar-Fachlichkeit in `core/user/` – **wird vor Abschnitt 3 umgesetzt**
 
@@ -200,14 +214,15 @@ Helligkeitsgrenzen geplant – beides gestrichen:
       zugleich Backend-Key und Dateiname, deshalb ohne Zuordnungstabelle. Dazu `assetPath`,
       `fromName(String?)` (tolerant, `null` bei unbekanntem Tier aus einer neueren
       Backend-Version) und `random([Random?])` für die Vorbelegung.
-- [ ] `core/user/avatar.dart`: `AvatarMode { animal, photo }` als schlichter Enum ohne
-      JSON-Annotationen, plus `Avatar` als Wertobjekt mit der Regel, was angezeigt wird –
-      entschieden über `avatarMode`, nicht über das bloße Vorhandensein eines Fotos. Absicherung:
-      Modus `photo` ohne `avatarUrl` fällt auf das Tier zurück statt auf eine leere Fläche.
-      Nimmt nur primitive Werte entgegen und kennt `User` **nicht**, sonst entsteht ein
-      Import-Ring zwischen den beiden Dateien.
-- [ ] Kein Riverpod; beim Umsetzen entscheiden, ob `Color` hier stört (dann `int` durchreichen und
-      erst im Widget umwandeln)
+- [x] `core/user/avatar.dart`: `AvatarMode { animal, photo }` als schlichter Enum ohne
+      JSON-Annotationen, plus `Avatar` als **versiegelte freezed-Union** aus `AnimalAvatar` und
+      `PhotoAvatar`. Eine flache Klasse hätte in jedem Widget ein `photoUrl!` erzwungen; so ist
+      der `switch` erschöpfend und ohne Null-Prüfung. Die Auswahl fällt einmal in `Avatar.of`,
+      inklusive Rückfall aufs Tier, wenn der Modus `photo` ist, aber keine URL vorliegt.
+      Kennt `User` **nicht**, sonst entstünde ein Import-Ring.
+- [x] Kein Riverpod. `color` bleibt ein `int?` (ARGB) statt `Color`: So bleibt die Datei reines
+      Dart und entspricht dem Wire-Format; die Umwandlung und der Rückfall auf
+      `colorScheme.primary` passieren im Widget, das dafür ohnehin `BuildContext` braucht.
 
 ## 5. `core/user/user_service.dart` und Repository erweitern
 
@@ -374,7 +389,9 @@ ProfileSetupPage (pages/)                     – Scaffold + Section, sonst nich
       hellen Nutzerfarben weiße Schrift unlesbar
 - [ ] `presentation/widgets/profile_form_fields.dart`
 - [ ] `presentation/widgets/animal_picker_sheet.dart` – Grid über alle 52 Tiere, scrollbar
-      (`DraggableScrollableSheet`), aktuelle Auswahl markiert
+      (`DraggableScrollableSheet`), aktuelle Auswahl markiert. Dabei `cacheWidth` passend zur
+      Kachelgröße setzen: Die Bilder sind 768², ein dekodiertes belegt 2,4 MB RAM – ohne das
+      liegen beim Scrollen schnell alle 52 in voller Auflösung im Speicher.
 - [ ] `presentation/widgets/color_picker_sheet.dart` – Presets zur Schnellauswahl, darunter
       Farbton- und Helligkeits-Balken (zwei `AppColorSlider`), live-Vorschau des Avatars
 - [ ] `presentation/widgets/photo_source_sheet.dart` – Kamera, Galerie, Foto entfernen
