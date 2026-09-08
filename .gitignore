@@ -33,6 +33,16 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Generierter Code. Bewusst nicht eingecheckt: Der Diff einer einzigen neuen
+# Modell-Eigenschaft waere sonst mehrere hundert Zeilen Generat, in denen die
+# eigentliche Aenderung untergeht, dazu Merge-Konflikte in Dateien, die niemand
+# sinnvoll aufloesen kann. Die CI erzeugt sie vor allen Checks neu.
+# Lokal: "dart run build_runner build" bzw. "flutter gen-l10n"
+# (siehe Befehle in der Projekt-Doku).
+*.freezed.dart
+*.g.dart
+lib/l10n/app_localizations*.dart
+
 # Symbolication related
 app.*.symbols
 

@@ -29,6 +29,17 @@ jobs:
       - name: Dependencies
         run: flutter pub get
 
+      # Generierter Code liegt nicht im Repo (siehe .gitignore) und muss vor
+      # allen Checks entstehen - ohne ihn fehlen die "part"-Dateien und
+      # "flutter analyze" schlaegt sofort fehl. Bewusst ohne
+      # "if: !cancelled()": schlaegt die Generierung fehl, sind alle
+      # nachfolgenden Ergebnisse wertlos.
+      - name: Code generieren
+        run: dart run build_runner build
+
+      - name: Lokalisierung generieren
+        run: flutter gen-l10n
+
       # Ab hier laufen alle Checks durch, auch wenn einer fehlschlaegt:
       # sonst sieht man pro Push nur das erste Problem.
       - name: Format
