@@ -116,6 +116,9 @@ und `Schlange` hieß `cobra`. Wir nehmen die Originale – vollständiger und h�
 - [x] **Entscheidung: englische Keys**, klein und `snake_case` – vermeidet Umlaute in Dateinamen
       und Datenbankwerten. Mapping siehe unten.
 - [x] **Entscheidung: `Schaf` kommt nicht mit** (52 Tiere), `Schlange` heißt `snake`.
+- [x] `Blauwal` heißt `whale`, nicht `blue_whale`: Ein Unterstrich im Enum-Wert verstößt gegen
+      `constant_identifier_names`, und der Enum-Name muss dem Dateinamen entsprechen. `whale` ist
+      eindeutig, ein zweiter Wal ist nicht im Satz (`orca` heißt orca).
 - [x] Konvertiert nach `assets/images/animals/`: 52 Dateien, 768×768, `yuva420p` (Transparenz
       erhalten), zusammen 4,2 MB. Skript liegt im Scratchpad (`convert_animals.py`), die Quelle
       wurde nur gelesen.
@@ -129,7 +132,7 @@ und `Schlange` hieß `cobra`. Wir nehmen die Originale – vollständiger und h�
 | | | | |
 | --- | --- | --- | --- |
 | Adler → `eagle` | Affe → `monkey` | Anglerfisch → `anglerfish` | Biber → `beaver` |
-| Biene → `bee` | Blauwal → `blue_whale` | Bär → `bear` | Delfin → `dolphin` |
+| Biene → `bee` | Blauwal → `whale` | Bär → `bear` | Delfin → `dolphin` |
 | Drache → `dragon` | Eichhörnchen → `squirrel` | Elefant → `elephant` | Esel → `donkey` |
 | Eule → `owl` | Faultier → `sloth` | Frosch → `frog` | Fuchs → `fox` |
 | Giraffe → `giraffe` | Hahn → `rooster` | Hai → `shark` | Hase → `hare` |
@@ -173,21 +176,36 @@ und exakt im Design der App. Fallback, falls es doch fummelig wird: `flex_color_
       die Default-Serialisierung – im generierten Code einmal verifizieren
 - [ ] `fvm dart run build_runner build --delete-conflicting-outputs`
 
-## 4. `core/user/avatar.dart` – Avatar-Fachlichkeit
+## 4. Avatar-Fachlichkeit in `core/user/` – **wird vor Abschnitt 3 umgesetzt**
 
-- [ ] `AnimalAsset`: Katalog der gebündelten Tiere, mit `name` (= Key fürs Backend) und
-      `assetPath`; dazu `AnimalAsset.byName(String?)` mit Fallback, damit ein vom Backend
-      geliefertes unbekanntes Tier (ältere App-Version) nicht zum Absturz führt
-- [ ] `AvatarColor`: Regeln zur freien Farbwahl statt einer festen Palette
-  - [ ] `null` heißt "noch nicht gewählt" – die Anzeige fällt auf `colorScheme.primary` zurück,
-        das Formular wertet es aber als fehlend (siehe Abschnitt 9)
-  - [ ] Helligkeit begrenzen (Vorschlag HSV-`value` zwischen ~0.35 und ~0.95): verhindert
-        schwarze oder grellweiße Avatare, die im Feed nicht mehr erkennbar sind
-  - [ ] eine Handvoll `presets` für die Schnellauswahl im Sheet
-- [ ] `Avatar`: was tatsächlich angezeigt wird – entschieden über `avatarMode`, nicht über das
-      bloße Vorhandensein eines Fotos. Als Getter an einer Stelle, nicht verteilt über die
-      Widgets. Absicherung: Modus `photo` ohne `avatarUrl` fällt auf das Tier zurück, statt eine
-      leere Fläche zu zeigen.
+Reihenfolge getauscht: `user.dart` braucht den Typ von `avatarMode`, der hier entsteht. Andersherum
+müsste der Enum erst im DTO angelegt und später verschoben werden.
+
+**Keine Farbregeln.** Ursprünglich waren hier eine `AvatarColor`-Klasse mit Default-Semantik und
+Helligkeitsgrenzen geplant – beides gestrichen:
+
+- Die Default-Semantik ist keine Logik, sondern zwei Einzeiler an Stellen, die es schon gibt: Das
+  Formular wertet `avatarColor == null` als fehlend (`ProfileDraft.validate()`), die Anzeige macht
+  `color ?? Theme.of(context).colorScheme.primary` – Letzteres braucht `BuildContext` und dürfte
+  in `core/` ohnehin nicht stehen.
+- Helligkeitsgrenzen sind unnötig: praktisch getestet, die Tiere bleiben auf jeder Farbe gut
+  erkennbar, auch auf Schwarz und Weiß. Volle Farbwahl ohne Sonderbehandlung.
+- Kontrast (helle oder dunkle Schrift auf der Nutzerfarbe) braucht keine eigene Funktion,
+  `ThemeData.estimateBrightnessForColor` ist eingebaut. Falls uns deren Schwelle irgendwann nicht
+  passt, gehört eine eigene nach `core/theme/` – Farbmathematik hat nichts mit Nutzern zu tun.
+- Die Farb-Presets für die Schnellauswahl leben im Farb-Sheet des Features, nicht in `core/`:
+  außerhalb des Sheets braucht sie niemand.
+
+- [x] `core/user/animal_asset.dart`: `AnimalAsset` als Enum mit 52 Werten. Der Enum-Name ist
+      zugleich Backend-Key und Dateiname, deshalb ohne Zuordnungstabelle. Dazu `assetPath`,
+      `fromName(String?)` (tolerant, `null` bei unbekanntem Tier aus einer neueren
+      Backend-Version) und `random([Random?])` für die Vorbelegung.
+- [ ] `core/user/avatar.dart`: `AvatarMode { animal, photo }` als schlichter Enum ohne
+      JSON-Annotationen, plus `Avatar` als Wertobjekt mit der Regel, was angezeigt wird –
+      entschieden über `avatarMode`, nicht über das bloße Vorhandensein eines Fotos. Absicherung:
+      Modus `photo` ohne `avatarUrl` fällt auf das Tier zurück statt auf eine leere Fläche.
+      Nimmt nur primitive Werte entgegen und kennt `User` **nicht**, sonst entsteht ein
+      Import-Ring zwischen den beiden Dateien.
 - [ ] Kein Riverpod; beim Umsetzen entscheiden, ob `Color` hier stört (dann `int` durchreichen und
       erst im Widget umwandeln)
 
@@ -358,8 +376,7 @@ ProfileSetupPage (pages/)                     – Scaffold + Section, sonst nich
 - [ ] `presentation/widgets/animal_picker_sheet.dart` – Grid über alle 52 Tiere, scrollbar
       (`DraggableScrollableSheet`), aktuelle Auswahl markiert
 - [ ] `presentation/widgets/color_picker_sheet.dart` – Presets zur Schnellauswahl, darunter
-      Farbton- und Helligkeits-Balken (zwei `AppColorSlider`), live-Vorschau des Avatars;
-      Helligkeit wird auf den in Abschnitt 4 festgelegten Bereich begrenzt
+      Farbton- und Helligkeits-Balken (zwei `AppColorSlider`), live-Vorschau des Avatars
 - [ ] `presentation/widgets/photo_source_sheet.dart` – Kamera, Galerie, Foto entfernen
 - [ ] `profile_setup_section.dart` neu aufbauen: bleibt **eine** Section (ein Formular, ein
       Submit), intern aus den Widgets oben zusammengesetzt
@@ -384,8 +401,10 @@ ProfileSetupPage (pages/)                     – Scaffold + Section, sonst nich
 - [ ] `domain/bio_line_test.dart`
 - [ ] `domain/profile_draft_test.dart`: `validate()` meldet mehrere Fehler gleichzeitig; was im
       Tier- gegenüber dem Foto-Modus gespeichert wird
-- [ ] `core/user/avatar_test.dart`: "Foto gewinnt", unbekannter Tier-Key fällt sauber zurück,
-      Helligkeitsgrenzen
+- [ ] `core/user/avatar_test.dart`: der Modus entscheidet über die Anzeige, Modus `photo` ohne
+      `avatarUrl` fällt aufs Tier zurück
+- [ ] `core/user/animal_asset_test.dart`: `fromName` liefert `null` statt zu werfen, jeder
+      Enum-Wert hat eine passende Asset-Datei (fängt Tippfehler und vergessene Bilder ab)
 - [ ] `core/user/user_repository_impl_test.dart` erweitern: 409 wird zu `ConflictException`
 - [ ] `data/avatar_upload_service_test.dart`: der signierte `Content-Type` wird durchgereicht und
       im PUT steht **kein** `Authorization`-Header (der wichtigste Test in dieser Liste), dazu die
