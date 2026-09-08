@@ -1,5 +1,8 @@
 gradle-wrapper.jar
 /.gradle
+# Gradle legt seine Build-Ausgaben hier ab, nicht im /build/ der Projektwurzel -
+# das deckt die .gitignore ganz oben also nicht mit ab.
+/build/
 /captures/
 /gradlew
 /gradlew.bat
