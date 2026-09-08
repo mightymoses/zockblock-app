@@ -26,6 +26,16 @@
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>
 		<true/>
+		<!-- Begruendungstexte fuer die System-Dialoge beim Profilfoto
+		     (image_picker). Apple lehnt Apps ab, die hier nur "Zugriff auf
+		     Fotos" o. ae. schreiben - der Text muss den konkreten Zweck
+		     nennen. Aktuell nur deutsch: Info.plist kennt nur eine Sprache,
+		     mehrsprachig ginge ueber InfoPlist.strings je Sprachordner -
+		     nachzuholen beim ersten Mac-Build. -->
+		<key>NSCameraUsageDescription</key>
+		<string>Zockblock braucht Zugriff auf die Kamera, damit du ein Profilfoto aufnehmen kannst.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>Zockblock braucht Zugriff auf deine Fotos, damit du ein Profilfoto aus deiner Galerie auswählen kannst.</string>
 		<key>UIApplicationSceneManifest</key>
 		<dict>
 			<key>UIApplicationSupportsMultipleScenes</key>
